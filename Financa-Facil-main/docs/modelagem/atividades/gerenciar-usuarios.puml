@@ -1,0 +1,24 @@
+@startuml
+start
+
+:Administrador acessa o sistema;
+:Seleciona gerenciamento de usuários;
+:Sistema lista usuários cadastrados;
+:Administrador seleciona usuário;
+
+if (Editar usuário?) then (Sim)
+  :Administrador altera informações;
+  :Sistema atualiza cadastro;
+else (Não)
+  if (Excluir usuário?) then (Sim)
+    :Administrador confirma exclusão;
+    :Sistema remove usuário;
+  else (Consultar)
+    :Sistema exibe dados do usuário;
+  endif
+endif
+
+:Sistema exibe confirmação;
+
+stop
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+start
+
+:Usuário acessa painel financeiro;
+:Seleciona cadastrar receita;
+:Informa valor, data, categoria e descrição;
+
+if (Dados válidos?) then (Sim)
+  :Sistema registra receita;
+  :Sistema atualiza saldo;
+  :Sistema exibe confirmação;
+else (Não)
+  :Sistema exibe mensagem de erro;
+endif
+
+stop
+@enduml

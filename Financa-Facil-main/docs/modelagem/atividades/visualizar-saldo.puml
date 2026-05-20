@@ -1,0 +1,12 @@
+@startuml
+start
+
+:Usuário acessa painel financeiro;
+:Sistema consulta receitas registradas;
+:Sistema consulta despesas registradas;
+:Sistema consulta parcelas pagas e pendentes;
+:Sistema calcula saldo atualizado;
+:Sistema exibe saldo ao usuário;
+
+stop
+@enduml

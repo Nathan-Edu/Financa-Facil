@@ -1,0 +1,122 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam nodesep 80
+skinparam ranksep 70
+skinparam linetype ortho
+
+class Usuario {
+-idUsuario: int
+-nome: string
+-email: string
+-senha: string
+-tipoUsuario: string
++cadastrar()
++login()
++editarPerfil()
+}
+
+class Categoria {
+-idCategoria: int
+-nome: string
+-tipo: string
++cadastrarCategoria()
++editarCategoria()
++excluirCategoria()
+}
+
+abstract class Transacao {
+-idTransacao: int
+-valor: decimal
+-data: date
+-descricao: string
+-status: string
++registrar()
++editar()
++excluir()
+}
+
+class Receita {
+-origemReceita: string
+-recorrente: boolean
++registrarReceita()
+}
+
+class Despesa {
+-formaPagamento: string
+-dataVencimento: date
+-paga: boolean
++registrarDespesa()
++marcarComoPaga()
+}
+
+class ContaParcelada {
+-idConta: int
+-descricao: string
+-valorTotal: decimal
+-quantidadeParcelas: int
+-dataCompra: date
+-status: string
++gerarParcelas()
++calcularValorParcela()
+}
+
+class Parcela {
+-idParcela: int
+-numero: int
+-valor: decimal
+-dataVencimento: date
+-dataPagamento: date
+-status: string
++registrarPagamento()
++alterarStatus()
+}
+
+class Relatorio {
+-idRelatorio: int
+-tipo: string
+-dataGeracao: date
+-periodoInicial: date
+-periodoFinal: date
++gerarRelatorio()
+}
+
+class Alerta {
+-idAlerta: int
+-mensagem: string
+-dataAlerta: date
+-lido: boolean
++gerarAlerta()
++marcarComoLido()
+}
+Usuario -[hidden]right- Relatorio
+Relatorio -[hidden]right- Alerta
+
+Receita -[hidden]right- Transacao
+Transacao -[hidden]right- Despesa
+Despesa -[hidden]right- ContaParcelada
+
+Transacao -[hidden]down- Categoria
+Categoria -[hidden]right- Parcela
+
+Usuario -[hidden]down- ContaParcelada
+ContaParcelada -[hidden]down- Parcela
+
+' Relacionamentos
+Usuario "1" -- "0..*" Transacao
+Usuario "1" -- "0..*" ContaParcelada
+Usuario "1" -- "0..*" Relatorio
+Usuario "1" -- "0..*" Alerta
+
+Categoria "1" -- "0..*" Transacao
+
+ContaParcelada "1" *-- "1..*" Parcela
+
+Relatorio "1" -- "0..*" Transacao
+
+Parcela ..> Despesa : <<gera>>  ' se for o caso
+
+Receita --|> Transacao
+Despesa --|> Transacao
+
+@enduml

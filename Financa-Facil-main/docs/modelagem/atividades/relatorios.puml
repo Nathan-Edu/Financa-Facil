@@ -1,0 +1,17 @@
+@startuml
+start
+
+:Usuário acessa relatórios;
+:Seleciona período e tipo de relatório;
+
+if (Filtros válidos?) then (Sim)
+  :Sistema consulta movimentações;
+  :Sistema organiza dados financeiros;
+  :Sistema gera gráficos e resumo;
+  :Sistema exibe relatório;
+else (Não)
+  :Sistema solicita ajuste dos filtros;
+endif
+
+stop
+@enduml

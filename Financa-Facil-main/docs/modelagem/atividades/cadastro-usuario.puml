@@ -1,0 +1,22 @@
+@startuml
+start
+
+:Usuário acessa tela de cadastro;
+:Informa nome, e-mail e senha;
+
+if (Dados preenchidos corretamente?) then (Sim)
+  :Sistema verifica e-mail;
+
+  if (E-mail já cadastrado?) then (Sim)
+    :Sistema exibe mensagem de e-mail existente;
+  else (Não)
+    :Sistema registra novo usuário;
+    :Sistema exibe confirmação de cadastro;
+  endif
+
+else (Não)
+  :Sistema exibe mensagem de dados inválidos;
+endif
+
+stop
+@enduml

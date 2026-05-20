@@ -1,0 +1,16 @@
+@startuml
+start
+
+:Usuário acessa histórico de transações;
+:Informa filtros de busca;
+
+if (Filtros informados?) then (Sim)
+  :Sistema busca transações conforme filtros;
+else (Não)
+  :Sistema lista todas as transações;
+endif
+
+:Sistema exibe histórico ao usuário;
+
+stop
+@enduml

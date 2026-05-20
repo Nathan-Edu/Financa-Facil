@@ -1,0 +1,15 @@
+@startuml
+start
+
+:Sistema verifica contas parceladas;
+:Sistema identifica parcelas próximas do vencimento;
+
+if (Existem parcelas próximas?) then (Sim)
+  :Sistema gera alerta;
+  :Sistema exibe alerta ao usuário;
+else (Não)
+  :Sistema não gera notificação;
+endif
+
+stop
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+left to right direction
+skinparam linetype ortho
+
+actor "Usuário" as Usuario
+actor "Administrador" as Admin
+
+  usecase "Cadastrar-se" as UC1
+  usecase "Fazer login" as UC2
+  usecase "Cadastrar receita" as UC3
+  usecase "Cadastrar despesa" as UC4
+  usecase "Gerenciar categorias" as UC5
+  usecase "Gerenciar contas\nparceladas" as UC6
+  usecase "Registrar pagamento\nde parcela" as UC7
+  usecase "Visualizar saldo" as UC8
+  usecase "Gerar relatórios\nfinanceiros" as UC9
+  usecase "Consultar histórico\nde transações" as UC10
+  usecase "Receber alertas\nde vencimento" as UC11
+  usecase "Gerenciar usuários" as UC12
+
+  UC1 -[hidden]right- UC2
+  UC2 -[hidden]right- UC3
+  UC3 -[hidden]right- UC4
+  UC4 -[hidden]right- UC5
+  UC5 -[hidden]down- UC6
+  UC6 -[hidden]right- UC7
+  UC7 -[hidden]right- UC8
+  UC8 -[hidden]right- UC9
+  UC9 -[hidden]down- UC10
+  UC10 -[hidden]right- UC11
+  UC11 -[hidden]right- UC12
+}
+
+Usuario --> UC1
+Usuario --> UC2
+Usuario --> UC3
+Usuario --> UC4
+Usuario --> UC5
+Usuario --> UC6
+Usuario --> UC8
+Usuario --> UC9
+Usuario --> UC10
+Usuario --> UC11
+
+UC2 <-- Admin
+UC12 <-- Admin
+
+UC6 .> UC7 : <<include>>
+UC3 .> UC8 : <<include>>
+UC4 .> UC8 : <<include>>
+UC7 .> UC8 : <<include>>
+UC9 .> UC10 <<include>>
+
+
+@enduml

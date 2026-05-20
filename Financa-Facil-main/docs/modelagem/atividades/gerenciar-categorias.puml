@@ -1,0 +1,24 @@
+@startuml
+start
+
+:Usuário acessa categorias;
+:Seleciona ação desejada;
+
+if (Criar categoria?) then (Sim)
+  :Informa nome e tipo da categoria;
+  :Sistema salva nova categoria;
+else (Não)
+  if (Editar categoria?) then (Sim)
+    :Seleciona categoria existente;
+    :Altera informações;
+    :Sistema atualiza categoria;
+  else (Excluir)
+    :Seleciona categoria;
+    :Sistema remove categoria;
+  endif
+endif
+
+:Sistema exibe confirmação;
+
+stop
+@enduml
