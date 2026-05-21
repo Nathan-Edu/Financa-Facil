@@ -1,0 +1,23 @@
+@startuml
+title Diagrama de Sequência — Conta Parcelada
+
+actor "Usuário" as Usuario
+participant "Interface" as Interface
+participant "Sistema Finança Fácil" as Sistema
+database "Banco de Dados" as Banco
+
+Usuario -> Interface: Informa descrição, valor total, quantidade de parcelas e vencimento
+Interface -> Sistema: Envia informações da conta
+Sistema -> Sistema: Valida dados informados
+
+alt Dados inválidos
+    Sistema --> Interface: Retorna mensagem de erro
+    Interface --> Usuario: Exibe inconsistência nos dados
+else Dados válidos
+    Sistema -> Sistema: Calcula valor de cada parcela
+    Sistema -> Banco: Salva conta parcelada e parcelas geradas
+    Banco --> Sistema: Confirma registro
+    Sistema --> Interface: Retorna parcelas geradas
+    Interface --> Usuario: Exibe confirmação e parcelas
+end
+@enduml

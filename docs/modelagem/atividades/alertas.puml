@@ -1,15 +1,21 @@
 @startuml
+title Alerta de Parcelas Próximas do Vencimento
+
 start
 
-:Sistema verifica contas parceladas;
-:Sistema identifica parcelas próximas do vencimento;
+repeat
+  :Sistema verifica contas parceladas;
+  :Sistema identifica parcelas próximas do vencimento;
 
-if (Existem parcelas próximas?) then (Sim)
-  :Sistema gera alerta;
-  :Sistema exibe alerta ao usuário;
-else (Não)
-  :Sistema não gera notificação;
-endif
+  if (Existem parcelas próximas?) then (Sim)
+    :Sistema gera alerta;
+    :Sistema exibe alerta ao usuário;
+  else (Não)
+    :Sistema não gera notificação;
+  endif
+
+repeat while (Continuar monitorando?) is (Sim)
+-> Não;
 
 stop
 @enduml

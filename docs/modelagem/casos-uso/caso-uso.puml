@@ -5,6 +5,7 @@ skinparam linetype ortho
 actor "Usuário" as Usuario
 actor "Administrador" as Admin
 
+rectangle Sistema {
   usecase "Cadastrar-se" as UC1
   usecase "Fazer login" as UC2
   usecase "Cadastrar receita" as UC3
@@ -37,19 +38,19 @@ Usuario --> UC3
 Usuario --> UC4
 Usuario --> UC5
 Usuario --> UC6
+Usuario --> UC7
 Usuario --> UC8
 Usuario --> UC9
 Usuario --> UC10
 Usuario --> UC11
 
-UC2 <-- Admin
-UC12 <-- Admin
+Admin --> UC2
+Admin --> UC12
 
 UC6 .> UC7 : <<include>>
 UC3 .> UC8 : <<include>>
 UC4 .> UC8 : <<include>>
 UC7 .> UC8 : <<include>>
-UC9 .> UC10 <<include>>
-
+UC9 .> UC10 : <<include>>
 
 @enduml

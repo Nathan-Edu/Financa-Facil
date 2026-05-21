@@ -1,0 +1,22 @@
+@startuml
+title Diagrama de Sequência — Alertas de Vencimento
+
+actor "Sistema" as SistemaAtor
+participant "Sistema Finança Fácil" as Sistema
+participant "Interface" as Interface
+database "Banco de Dados" as Banco
+actor "Usuário" as Usuario
+
+SistemaAtor -> Sistema: Executa verificação periódica
+Sistema -> Banco: Consulta parcelas pendentes próximas ao vencimento
+Banco --> Sistema: Retorna lista de parcelas
+
+alt Parcelas próximas ao vencimento
+    Sistema -> Banco: Registra alerta gerado
+    Banco --> Sistema: Confirma registro
+    Sistema -> Interface: Envia notificação de vencimento
+    Interface -> Usuario: Exibe alerta de parcela próxima ao vencimento
+else Sem parcelas próximas
+    Sistema -> Sistema: Nenhuma ação necessária
+end
+@enduml

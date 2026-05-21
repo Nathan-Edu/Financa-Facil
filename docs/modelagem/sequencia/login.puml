@@ -1,0 +1,29 @@
+@startuml
+title Diagrama de Sequência — Login
+
+actor "Usuário" as Usuario
+participant "Interface" as Interface
+participant "Sistema Finança Fácil" as Sistema
+database "Banco de Dados" as Banco
+
+Usuario -> Interface: Informa e-mail e senha
+Interface -> Sistema: Envia credenciais
+Sistema -> Banco: Verifica usuário e senha
+Banco --> Sistema: Retorna dados do usuário
+
+alt Credenciais válidas
+    Sistema --> Interface: Libera acesso
+    Interface --> Usuario: Exibe painel financeiro
+else Credenciais inválidas
+    Sistema -> Banco: Incrementa tentativas de login
+    Banco --> Sistema: Retorna total de tentativas
+    alt 5 ou mais tentativas incorretas
+        Sistema -> Banco: Bloqueia conta temporariamente
+        Sistema --> Interface: Retorna erro de conta bloqueada
+        Interface --> Usuario: Exibe mensagem de conta bloqueada
+    else Menos de 5 tentativas
+        Sistema --> Interface: Retorna erro de credenciais
+        Interface --> Usuario: Exibe mensagem de e-mail ou senha incorretos
+    end
+end
+@enduml

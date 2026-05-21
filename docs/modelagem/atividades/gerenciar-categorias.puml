@@ -1,17 +1,41 @@
 @startuml
+title Gerenciar Categorias
+
 start
 
 :Usuário acessa categorias;
 :Seleciona ação desejada;
 
 if (Criar categoria?) then (Sim)
-  :Informa nome e tipo da categoria;
-  :Sistema salva nova categoria;
+
+  repeat
+    :Informa nome e tipo da categoria;
+
+    if (Dados válidos?) then (Sim)
+      :Sistema salva nova categoria;
+    else (Não)
+      :Sistema exibe mensagem de erro;
+    endif
+
+  repeat while (Dados válidos?) is (Não)
+  -> Sim;
+
 else (Não)
   if (Editar categoria?) then (Sim)
     :Seleciona categoria existente;
-    :Altera informações;
-    :Sistema atualiza categoria;
+
+    repeat
+      :Altera informações;
+
+      if (Dados válidos?) then (Sim)
+        :Sistema atualiza categoria;
+      else (Não)
+        :Sistema exibe mensagem de erro;
+      endif
+
+    repeat while (Dados válidos?) is (Não)
+    -> Sim;
+
   else (Excluir)
     :Seleciona categoria;
     :Sistema remove categoria;

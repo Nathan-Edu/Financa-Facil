@@ -1,19 +1,26 @@
 @startuml
+title Pagamento de Parcela
+
 start
 
 :Usuário acessa contas parceladas;
 :Seleciona conta;
 :Seleciona parcela em aberto;
-:Confirma pagamento;
 
-if (Parcela está pendente?) then (Sim)
-  :Sistema registra pagamento;
-  :Sistema atualiza status da parcela;
-  :Sistema atualiza saldo financeiro;
-  :Sistema exibe confirmação;
-else (Não)
-  :Sistema informa que a parcela já foi paga;
-endif
+repeat
+  :Confirma pagamento;
+
+  if (Parcela está pendente?) then (Sim)
+    :Sistema registra pagamento;
+    :Sistema atualiza status da parcela;
+    :Sistema atualiza saldo financeiro;
+    :Sistema exibe confirmação;
+  else (Não)
+    :Sistema informa que a parcela já foi paga;
+  endif
+
+repeat while (Parcela está pendente?) is (Não)
+-> Sim;
 
 stop
 @enduml

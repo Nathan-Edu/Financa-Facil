@@ -1,0 +1,27 @@
+@startuml
+title Diagrama de Sequência — Registro de Transação Financeira
+
+actor "Usuário" as Usuario
+participant "Interface Web/Mobile" as Interface
+participant "Sistema Finança Fácil" as Sistema
+database "Banco de Dados" as Banco
+
+Usuario -> Interface: Acessa o painel financeiro
+Usuario -> Interface: Seleciona cadastrar transação
+Usuario -> Interface: Informa valor, data, categoria e descrição
+Interface -> Sistema: Envia dados da transação
+Sistema -> Sistema: Valida dados informados
+
+alt Dados válidos
+    Sistema -> Banco: Registra transação financeira
+    Banco --> Sistema: Confirma registro
+    Sistema -> Banco: Consulta movimentações financeiras
+    Banco --> Sistema: Retorna receitas e despesas
+    Sistema -> Sistema: Calcula saldo atualizado
+    Sistema --> Interface: Retorna confirmação e saldo atualizado
+    Interface --> Usuario: Exibe mensagem de sucesso
+else Dados inválidos
+    Sistema --> Interface: Retorna mensagem de erro
+    Interface --> Usuario: Exibe inconsistência nos dados
+end
+@enduml

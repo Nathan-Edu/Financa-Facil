@@ -1,17 +1,25 @@
 @startuml
+
+title Cadastrar despesa
+
 start
 
 :Usuário acessa painel financeiro;
 :Seleciona cadastrar despesa;
-:Informa valor, data, categoria e descrição;
 
-if (Dados válidos?) then (Sim)
-  :Sistema registra despesa;
-  :Sistema atualiza saldo;
-  :Sistema exibe confirmação;
-else (Não)
-  :Sistema exibe mensagem de erro;
-endif
+repeat
+  :Informa valor, data, categoria e descrição;
+
+  if (Dados válidos?) then (Sim)
+    :Sistema registra despesa;
+    :Sistema atualiza saldo;
+    :Sistema exibe confirmação;
+  else (Não)
+    :Sistema exibe mensagem de erro;
+  endif
+
+repeat while (Dados válidos?) is (Não)
+-> Sim;
 
 stop
 @enduml

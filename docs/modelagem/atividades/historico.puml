@@ -1,14 +1,27 @@
 @startuml
+title Histórico de Transações
+
 start
 
 :Usuário acessa histórico de transações;
-:Informa filtros de busca;
 
-if (Filtros informados?) then (Sim)
-  :Sistema busca transações conforme filtros;
-else (Não)
-  :Sistema lista todas as transações;
-endif
+repeat
+  :Informa filtros de busca;
+
+  if (Filtros informados?) then (Sim)
+
+    if (Filtros válidos?) then (Sim)
+      :Sistema busca transações conforme filtros;
+    else (Não)
+      :Sistema exibe mensagem de filtro inválido;
+    endif
+
+  else (Não)
+    :Sistema lista todas as transações;
+  endif
+
+repeat while (Filtros válidos?) is (Não)
+-> Sim;
 
 :Sistema exibe histórico ao usuário;
 

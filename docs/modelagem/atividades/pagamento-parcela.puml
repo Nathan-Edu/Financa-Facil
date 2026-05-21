@@ -1,17 +1,24 @@
 @startuml
+title Cadastrar Conta Parcelada
+
 start
 
 :Usuário acessa contas parceladas;
-:Informa descrição, valor total, quantidade de parcelas e vencimento;
 
-if (Dados válidos?) then (Sim)
-  :Sistema calcula valor das parcelas;
-  :Sistema gera parcelas;
-  :Sistema registra conta parcelada;
-  :Sistema exibe confirmação;
-else (Não)
-  :Sistema exibe mensagem de erro;
-endif
+repeat
+  :Informa descrição, valor total, quantidade de parcelas e vencimento;
+
+  if (Dados válidos?) then (Sim)
+    :Sistema calcula valor das parcelas;
+    :Sistema gera parcelas;
+    :Sistema registra conta parcelada;
+    :Sistema exibe confirmação;
+  else (Não)
+    :Sistema exibe mensagem de erro;
+  endif
+
+repeat while (Dados válidos?) is (Não)
+-> Sim;
 
 stop
 @enduml

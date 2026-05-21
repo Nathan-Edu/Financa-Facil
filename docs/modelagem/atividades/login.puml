@@ -1,22 +1,29 @@
 @startuml
+title Login de Usuário
+
 start
 
 :Usuário acessa o sistema;
-:Informa e-mail e senha;
 
-if (Campos preenchidos?) then (Sim)
-  :Sistema valida credenciais;
+repeat
+  :Informa e-mail e senha;
 
-  if (Credenciais válidas?) then (Sim)
-    :Sistema libera acesso;
-    :Usuário acessa o painel financeiro;
+  if (Campos preenchidos?) then (Sim)
+    :Sistema valida credenciais;
+
+    if (Credenciais válidas?) then (Sim)
+      :Sistema libera acesso;
+      :Usuário acessa o painel financeiro;
+    else (Não)
+      :Sistema exibe mensagem de erro;
+    endif
+
   else (Não)
-    :Sistema exibe mensagem de erro;
+    :Sistema solicita preenchimento dos campos;
   endif
 
-else (Não)
-  :Sistema solicita preenchimento dos campos;
-endif
+repeat while (Credenciais válidas?) is (Não)
+-> Sim;
 
 stop
 @enduml

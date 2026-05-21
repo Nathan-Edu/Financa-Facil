@@ -1,4 +1,6 @@
 @startuml
+title Gerenciar Usuários
+
 start
 
 :Administrador acessa o sistema;
@@ -7,18 +9,27 @@ start
 :Administrador seleciona usuário;
 
 if (Editar usuário?) then (Sim)
-  :Administrador altera informações;
-  :Sistema atualiza cadastro;
+
+  repeat
+    :Administrador altera informações;
+
+    if (Dados válidos?) then (Sim)
+      :Sistema atualiza cadastro;
+    else (Não)
+      :Sistema exibe mensagem de erro;
+    endif
+
+  repeat while (Dados válidos?) is (Não)
+  -> Sim;
+
 else (Não)
   if (Excluir usuário?) then (Sim)
     :Administrador confirma exclusão;
-    :Sistema remove usuário;
+
+    if (Confirmação válida?) then (Sim)
+      :Sistema remove usuário;
+    else (Não)
+      :Sistema cancela operação;
+    endif
+
   else (Consultar)
-    :Sistema exibe dados do usuário;
-  endif
-endif
-
-:Sistema exibe confirmação;
-
-stop
-@enduml

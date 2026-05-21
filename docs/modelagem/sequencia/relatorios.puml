@@ -1,0 +1,24 @@
+@startuml
+title Diagrama de Sequência — Geração de Relatórios
+
+actor "Usuário" as Usuario
+participant "Interface" as Interface
+participant "Sistema Finança Fácil" as Sistema
+database "Banco de Dados" as Banco
+
+Usuario -> Interface: Seleciona período e tipo de relatório
+Interface -> Sistema: Solicita geração de relatório
+Sistema -> Sistema: Valida filtros informados
+
+alt Filtros inválidos
+    Sistema --> Interface: Retorna erro de filtros
+    Interface --> Usuario: Exibe mensagem de filtros inválidos
+else Filtros válidos
+    Sistema -> Banco: Consulta movimentações do período
+    Banco --> Sistema: Retorna dados financeiros
+    Sistema -> Sistema: Organiza e agrupa informações
+    Sistema -> Sistema: Gera gráficos e resumo financeiro
+    Sistema --> Interface: Retorna relatório gerado
+    Interface --> Usuario: Exibe relatório financeiro
+end
+@enduml

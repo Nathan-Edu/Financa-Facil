@@ -1,0 +1,29 @@
+@startuml
+title Diagrama de Sequência — Cadastro de Usuário
+
+actor "Usuário" as Usuario
+participant "Interface" as Interface
+participant "Sistema Finança Fácil" as Sistema
+database "Banco de Dados" as Banco
+
+Usuario -> Interface: Informa nome, e-mail, CPF e senha
+Interface -> Sistema: Envia dados de cadastro
+Sistema -> Sistema: Valida formato dos dados e CPF
+
+alt Dados inválidos
+    Sistema --> Interface: Retorna erro de validação
+    Interface --> Usuario: Exibe mensagem de dados inválidos
+else Dados válidos
+    Sistema -> Banco: Verifica se e-mail já está cadastrado
+    Banco --> Sistema: Retorna resultado da verificação
+    alt E-mail já cadastrado
+        Sistema --> Interface: Retorna erro de e-mail existente
+        Interface --> Usuario: Exibe mensagem de e-mail já cadastrado
+    else E-mail disponível
+        Sistema -> Banco: Salva novo usuário
+        Banco --> Sistema: Confirma cadastro
+        Sistema --> Interface: Retorna confirmação de cadastro
+        Interface --> Usuario: Exibe mensagem de sucesso
+    end
+end
+@enduml

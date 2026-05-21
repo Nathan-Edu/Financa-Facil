@@ -1,4 +1,6 @@
 @startuml
+title Visualizar Painel Financeiro
+
 start
 
 :Usuário acessa painel financeiro;
