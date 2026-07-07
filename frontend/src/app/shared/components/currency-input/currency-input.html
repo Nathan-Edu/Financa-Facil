@@ -1,0 +1,14 @@
+<div class="currency-input">
+
+    @if(label){
+
+        <label>{{ label }}</label>
+
+    }
+
+    <input
+        type="text"
+        [value]="displayValue"
+        (input)="onInput($event)">
+
+</div>

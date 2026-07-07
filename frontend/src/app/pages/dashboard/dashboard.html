@@ -99,13 +99,15 @@
         Ver Todos
       </app-button>
 
-      <div class="alert danger">
-        Parcela do cartão vence em 3 dias.
-      </div>
+      <app-alert-item
+  type="danger"
+  message="Parcela do cartão vence em 3 dias.">
+</app-alert-item>
 
-      <div class="alert warning">
-        Meta de gastos do mês atingida.
-      </div>
+<app-alert-item
+  type="warning"
+  message="Meta de gastos do mês atingida.">
+</app-alert-item>
 
     </app-card>
 

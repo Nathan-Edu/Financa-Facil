@@ -47,25 +47,6 @@
   }
 }
 
-.alert {
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  color: white;
-
-  &.danger {
-    background: #7f1d1d88;
-    border-left: 4px solid #ef4444;
-  }
-
-  &.warning {
-    background: #78350f88;
-    border-left: 4px solid #eab308;
-  }
-}
-
 @media (max-width: 900px) {
   .cards,
   .content-grid {

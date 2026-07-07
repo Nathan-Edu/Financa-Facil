@@ -1,0 +1,21 @@
+<div class="select">
+
+  @if(label){
+    <label>{{ label }}</label>
+  }
+
+  <select
+    [value]="value"
+    (change)="onChange($event)">
+
+    @for(item of options; track item){
+
+      <option [value]="item">
+        {{ item }}
+      </option>
+
+    }
+
+  </select>
+
+</div>
