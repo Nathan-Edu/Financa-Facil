@@ -1,0 +1,22 @@
+<div class="transaction-item" [class]="type">
+
+  <div class="transaction-left">
+
+    <div class="transaction-icon">
+      <mat-icon>
+        {{ type === 'income' ? 'trending_up' : 'trending_down' }}
+      </mat-icon>
+    </div>
+
+    <div>
+      <strong>{{ title }}</strong>
+      <p>{{ date }}</p>
+    </div>
+
+  </div>
+
+  <span>
+    {{ value }}
+  </span>
+
+</div>

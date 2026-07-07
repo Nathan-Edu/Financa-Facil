@@ -1,0 +1,114 @@
+<main class="dashboard">
+
+  <app-page-header
+    title="Dashboard"
+    subtitle="Visão geral das suas finanças">
+
+    <app-button color="danger" icon="add">
+      Nova Despesa
+    </app-button>
+
+    <app-button color="success" icon="add">
+      Nova Receita
+    </app-button>
+
+    <app-button
+      color="outline"
+      icon="edit"
+      appearance="icon">
+    </app-button>
+
+  </app-page-header>
+
+
+  <section class="cards">
+
+    <app-stat-card
+      title="Saldo Atual"
+      value="R$ 2.450,80"
+      subtitle="+2,5% desde o mês passado"
+      icon="account_balance_wallet"
+      color="primary">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Receitas"
+      value="R$ 5.200,00"
+      subtitle="Este mês"
+      icon="trending_up"
+      color="success">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Despesas"
+      value="R$ 2.749,20"
+      subtitle="Este mês"
+      icon="trending_down"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Contas Parceladas"
+      value="4"
+      subtitle="Ativas"
+      icon="credit_card"
+      color="violet">
+    </app-stat-card>
+
+  </section>
+
+
+  <section class="content-grid">
+
+    <app-card
+      title="Transações Recentes"
+      subtitle="Últimas movimentações registradas">
+
+      <app-transaction-item
+  title="Supermercado"
+  date="20/01/2026"
+  value="- R$ 180,50"
+  type="expense">
+</app-transaction-item>
+
+<app-transaction-item
+  title="Salário"
+  date="19/01/2026"
+  value="+ R$ 3.500,00"
+  type="income">
+</app-transaction-item>
+
+<app-transaction-item
+  title="Conta de Luz"
+  date="18/01/2026"
+  value="- R$ 95,30"
+  type="expense">
+</app-transaction-item>
+
+    </app-card>
+
+
+    <app-card
+      title="Alertas"
+      subtitle="Compromissos próximos">
+
+      <app-button
+        card-action
+        color="outline"
+        size="small">
+        Ver Todos
+      </app-button>
+
+      <div class="alert danger">
+        Parcela do cartão vence em 3 dias.
+      </div>
+
+      <div class="alert warning">
+        Meta de gastos do mês atingida.
+      </div>
+
+    </app-card>
+
+  </section>
+
+</main>

@@ -1,0 +1,74 @@
+.dashboard {
+  min-height: calc(100vh - 72px);
+  padding: 36px 7%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 22px;
+}
+
+.transaction {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text);
+
+  strong {
+    color: var(--text);
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  &.expense span {
+    color: #f87171;
+  }
+
+  &.income span {
+    color: #4ade80;
+  }
+}
+
+.alert {
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+
+  &.danger {
+    background: #7f1d1d88;
+    border-left: 4px solid #ef4444;
+  }
+
+  &.warning {
+    background: #78350f88;
+    border-left: 4px solid #eab308;
+  }
+}
+
+@media (max-width: 900px) {
+  .cards,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

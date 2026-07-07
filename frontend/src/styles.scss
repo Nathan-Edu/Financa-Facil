@@ -1,0 +1,145 @@
+:root,
+.theme-dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --card: #334155;
+  --nav-bg: #020617;
+
+  --text: #ffffff;
+  --text-muted: #cbd5e1;
+  --border: #475569;
+
+  --primary: #3b82f6;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #9333ea;
+}
+
+.theme-light {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --card: #e2e8f0;
+  --nav-bg: #ffffff;
+
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #cbd5e1;
+
+  --primary: #2563eb;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #9333ea;
+}
+
+.theme-green {
+  --bg: #052e1b;
+  --surface: #064e3b;
+  --card: #065f46;
+  --nav-bg: #022c22;
+
+  --text: #ffffff;
+  --text-muted: #bbf7d0;
+  --border: #10b981;
+
+  --primary: #22c55e;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #84cc16;
+}
+
+.theme-violet {
+    --bg:#231942;
+    --surface:#312E81;
+    --card:#4338CA;
+    --nav-bg:#1E1B4B;
+
+    --text:#FFFFFF;
+    --text-muted:#C4B5FD;
+    --border:#6D28D9;
+
+    --primary:#A855F7;
+    --success:#22C55E;
+    --danger:#EF4444;
+    --warning:#F59E0B;
+    --purple:#C084FC;
+
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.mat-mdc-menu-panel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  min-width: 280px !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45) !important;
+  overflow: hidden !important;
+}
+
+.mat-mdc-menu-content {
+  padding: 8px 0 !important;
+  background: var(--surface) !important;
+}
+
+.mat-mdc-menu-item {
+  color: var(--text) !important;
+  min-height: 46px !important;
+}
+
+.mat-mdc-menu-item .mat-icon {
+  color: var(--text) !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.cdk-overlay-pane {
+  background: transparent !important;
+}
+
+.current-value{
+
+    background:#334155;
+    color:white;
+    padding:3px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+
+}
+
+.theme-dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    margin-right:12px;
+}
+
+.dark{
+    background:#0F172A;
+}
+
+.light{
+    background:#E2E8F0;
+}
+
+.green{
+    background:#16A34A;
+}
+
+.violet{
+    background:#A855F7;
+}
