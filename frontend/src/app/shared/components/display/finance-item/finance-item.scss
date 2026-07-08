@@ -1,0 +1,77 @@
+.finance-item {
+  width: 100%;
+  min-height: 86px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 18px;
+  margin-bottom: 14px;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  color: var(--text);
+}
+
+.finance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  strong {
+    color: var(--text);
+    font-size: 15px;
+  }
+}
+
+.finance-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  span {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+}
+
+.finance-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.value {
+  min-width: 110px;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.income .value {
+  color: #22c55e;
+}
+
+.expense .value {
+  color: #ef4444;
+}
+
+@media (max-width: 700px) {
+  .finance-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .finance-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .value {
+    text-align: left;
+  }
+}

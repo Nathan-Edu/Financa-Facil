@@ -20,7 +20,7 @@
 
   </app-page-header>
 
-
+  <!-- Cards Resumo -->
   <section class="cards">
 
     <app-stat-card
@@ -57,37 +57,45 @@
 
   </section>
 
-
+  <!-- Conteúdo -->
   <section class="content-grid">
 
+    <!-- Transações -->
     <app-card
       title="Transações Recentes"
       subtitle="Últimas movimentações registradas">
 
+      <app-button
+        card-action
+        color="outline"
+        size="small">
+        Ver Todas
+      </app-button>
+
       <app-transaction-item
-  title="Supermercado"
-  date="20/01/2026"
-  value="- R$ 180,50"
-  type="expense">
-</app-transaction-item>
+        title="Supermercado"
+        date="20/01/2026"
+        value="- R$ 180,55"
+        type="expense">
+      </app-transaction-item>
 
-<app-transaction-item
-  title="Salário"
-  date="19/01/2026"
-  value="+ R$ 3.500,00"
-  type="income">
-</app-transaction-item>
+      <app-transaction-item
+        title="Salário"
+        date="19/01/2026"
+        value="+ R$ 3.500,00"
+        type="income">
+      </app-transaction-item>
 
-<app-transaction-item
-  title="Conta de Luz"
-  date="18/01/2026"
-  value="- R$ 95,30"
-  type="expense">
-</app-transaction-item>
+      <app-transaction-item
+        title="Conta de Luz"
+        date="18/01/2026"
+        value="- R$ 95,30"
+        type="expense">
+      </app-transaction-item>
 
     </app-card>
 
-
+    <!-- Alertas -->
     <app-card
       title="Alertas"
       subtitle="Compromissos próximos">
@@ -100,17 +108,17 @@
       </app-button>
 
       <app-alert-item
-  type="danger"
-  message="Parcela do cartão vence em 3 dias.">
-</app-alert-item>
+        type="danger"
+        message="Parcela do cartão vence em 3 dias.">
+      </app-alert-item>
 
-<app-alert-item
-  type="warning"
-  message="Meta de gastos do mês atingida.">
-</app-alert-item>
+      <app-alert-item
+        type="warning"
+        message="Meta de gastos do mês atingida.">
+      </app-alert-item>
 
     </app-card>
 
   </section>
-
+  
 </main>

@@ -1,0 +1,33 @@
+<div class="textarea">
+
+  @if(label){
+
+    <label>
+
+      {{ label }}
+
+      @if(required){
+
+        <span>*</span>
+
+      }
+
+    </label>
+
+  }
+
+  <textarea
+
+      [rows]="rows"
+
+      [value]="value"
+
+      [disabled]="disabled"
+
+      [placeholder]="placeholder"
+
+      (input)="valueChange.emit(($any($event.target)).value)">
+
+  </textarea>
+
+</div>

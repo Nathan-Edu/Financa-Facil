@@ -1,0 +1,66 @@
+src/app/
+│
+├── core/
+│   ├── guards/
+│   ├── interceptors/
+│   ├── models/
+│   ├── services/
+│   └── utils/
+│
+├── pages/
+│   ├── dashboard/
+│   ├── financeiro/
+│   │   ├── categorias/
+│   │   ├── despesas/
+│   │   ├── parcelas/
+│   │   ├── receitas/
+│   │   └── relatorios/
+│   └── usuario/
+│       ├── cadastro/
+│       ├── configuracoes/
+│       ├── login/
+│       └── perfil/
+│
+└── shared/
+    ├── components/
+    │   ├── display/
+    │   │   ├── alert-item/
+    │   │   ├── badge/
+    │   │   ├── finance-item/
+    │   │   ├── stat-card/
+    │   │   └── transaction-item/
+    │   │
+    │   ├── feedback/
+    │   │   ├── confirm-dialog/
+    │   │   ├── empty-state/
+    │   │   ├── loading/
+    │   │   └── modal/
+    │   │
+    │   ├── forms/
+    │   │   ├── button/
+    │   │   ├── currency-input/
+    │   │   ├── input/
+    │   │   ├── search-input/
+    │   │   └── select/
+    │   │
+    │   ├── layout/
+    │   │   ├── card/
+    │   │   ├── footer/
+    │   │   ├── navbar/
+    │   │   ├── page-header/
+    │   │   ├── settings-menu/
+    │   │   └── sidebar/
+    │   │
+    │   └── tables/
+    │       └── data-table/
+    │
+    ├── directives/
+    ├── interfaces/
+    ├── pipes/
+    └── README.md
+
+Tudo que é visual reutilizável → shared/components
+Tudo que é tela do sistema → pages
+Tudo que conversa com backend → core/services
+Tudo que representa dados → core/models
+

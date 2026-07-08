@@ -1,0 +1,33 @@
+<div class="finance-item" [class]="type">
+  <div class="finance-info">
+    <strong>{{ title }}</strong>
+
+    <div class="finance-meta">
+      <app-badge [color]="type === 'income' ? 'success' : 'danger'">
+        {{ category }}
+      </app-badge>
+
+      <span>{{ date }}</span>
+    </div>
+  </div>
+
+  <div class="finance-actions">
+    <span class="value">
+      {{ type === 'income' ? '+ ' : '- ' }}{{ value }}
+    </span>
+
+    <app-button
+      color="outline"
+      size="small"
+      (click)="edit.emit()">
+      Editar
+    </app-button>
+
+    <app-button
+      color="danger"
+      size="small"
+      (click)="delete.emit()">
+      Excluir
+    </app-button>
+  </div>
+</div>

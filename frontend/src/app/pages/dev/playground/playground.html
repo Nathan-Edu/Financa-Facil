@@ -1,0 +1,223 @@
+<main class="playground">
+
+  <app-page-header
+    title="Playground"
+    subtitle="Área de testes dos componentes reutilizáveis do Finança Fácil">
+  </app-page-header>
+
+  <app-card
+    title="Botões"
+    subtitle="Variações do componente Button">
+
+    <div class="section-grid">
+      <app-button color="primary">Primary</app-button>
+      <app-button color="success">Success</app-button>
+      <app-button color="danger">Danger</app-button>
+      <app-button color="warning">Warning</app-button>
+      <app-button color="outline">Outline</app-button>
+      <app-button color="ghost">Ghost</app-button>
+      <app-button color="outline" icon="edit" appearance="icon"></app-button>
+    </div>
+
+  </app-card>
+
+  <app-card
+    title="Formulários"
+    subtitle="Inputs e campos reutilizáveis">
+
+    <div class="form-grid">
+      <app-search-input placeholder="Buscar receitas..."></app-search-input>
+
+      <app-select
+        label="Categoria"
+        [options]="['Todas', 'Trabalho', 'Alimentação', 'Moradia']">
+      </app-select>
+
+      <app-currency-input label="Valor"></app-currency-input>
+
+      <app-date-input label="Data" [required]="true"></app-date-input>
+
+      <app-textarea
+        label="Observações"
+        placeholder="Digite uma observação...">
+      </app-textarea>
+    </div>
+
+  </app-card>
+
+  <app-card
+    title="Display"
+    subtitle="Componentes visuais e informativos">
+
+    <div class="section-grid">
+      <app-badge color="success">Recebido</app-badge>
+      <app-badge color="warning">Pendente</app-badge>
+      <app-badge color="danger">Atrasado</app-badge>
+      <app-badge color="violet">Parcelado</app-badge>
+    </div>
+
+    <div class="stat-grid">
+      <app-stat-card
+        title="Saldo Atual"
+        value="R$ 2.450,80"
+        subtitle="+2,5% desde o mês passado"
+        icon="account_balance_wallet"
+        color="primary">
+      </app-stat-card>
+
+      <app-stat-card
+        title="Receitas"
+        value="R$ 5.200,00"
+        subtitle="Este mês"
+        icon="trending_up"
+        color="success">
+      </app-stat-card>
+    </div>
+
+    <app-finance-item
+      title="Salário"
+      category="Trabalho"
+      date="01/01/2026"
+      value="R$ 5.000,00"
+      type="income">
+    </app-finance-item>
+
+    <app-finance-item
+      title="Supermercado"
+      category="Alimentação"
+      date="02/01/2026"
+      value="R$ 285,50"
+      type="expense">
+    </app-finance-item>
+
+    <app-transaction-item
+      title="Conta de Luz"
+      date="18/01/2026"
+      value="- R$ 95,30"
+      type="expense">
+    </app-transaction-item>
+
+    <app-alert-item
+      type="warning"
+      message="Meta de gastos do mês atingida.">
+    </app-alert-item>
+
+  </app-card>
+
+  <app-card
+    title="Feedback"
+    subtitle="Modal, confirmação, loading, empty state e toast">
+
+    <div class="section-grid">
+      <app-button color="primary" (click)="showModal = true">
+        Abrir Modal
+      </app-button>
+
+      <app-button color="danger" (click)="showConfirm = true">
+        Abrir ConfirmDialog
+      </app-button>
+
+      <app-button color="success" (click)="showSuccess()">
+        Toast Success
+      </app-button>
+
+      <app-button color="danger" (click)="showError()">
+        Toast Error
+      </app-button>
+
+      <app-button color="warning" (click)="showWarning()">
+        Toast Warning
+      </app-button>
+
+      <app-button color="primary" (click)="showInfo()">
+        Toast Info
+      </app-button>
+    </div>
+
+    <app-loading
+      message="Carregando dados..."
+      size="medium">
+    </app-loading>
+
+    <app-empty-state
+      icon="receipt_long"
+      title="Nenhuma receita cadastrada"
+      description="Clique em Nova Receita para começar a controlar suas finanças.">
+    </app-empty-state>
+
+  </app-card>
+
+  <app-card
+    title="Paginação"
+    subtitle="Componente de navegação entre páginas">
+
+    <app-pagination
+      [currentPage]="1"
+      [totalPages]="5">
+    </app-pagination>
+
+  </app-card>
+
+  @if (showModal) {
+    <app-modal
+      title="Nova Receita"
+      subtitle="Cadastre uma nova receita"
+      size="medium"
+      (close)="showModal = false">
+
+      <div modal-body>
+        <div class="form-grid">
+          <app-search-input placeholder="Descrição da receita"></app-search-input>
+          <app-currency-input label="Valor"></app-currency-input>
+          <app-date-input label="Data" [required]="true"></app-date-input>
+
+          <app-select
+            label="Categoria"
+            [options]="['Trabalho', 'Freelance', 'Investimentos', 'Outros']">
+          </app-select>
+
+          <app-textarea
+            label="Observações"
+            placeholder="Digite uma observação...">
+          </app-textarea>
+        </div>
+      </div>
+
+      <div modal-footer>
+        <app-button color="outline" (click)="showModal = false">
+          Cancelar
+        </app-button>
+
+        <app-button color="success" (click)="showModal = false">
+          Salvar
+        </app-button>
+      </div>
+
+    </app-modal>
+  }
+
+  @if (showConfirm) {
+    <app-confirm-dialog
+      title="Excluir Receita"
+      message="Tem certeza que deseja excluir esta receita? Esta ação não poderá ser desfeita."
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      (confirm)="showConfirm = false"
+      (cancel)="showConfirm = false">
+    </app-confirm-dialog>
+  }
+
+  <app-card
+  title="DataTable"
+  subtitle="Tabela reutilizável para relatórios e cadastros">
+
+  <app-data-table
+    [columns]="tableColumns"
+    [data]="tableData"
+    [currentPage]="1"
+    [totalPages]="3">
+  </app-data-table>
+
+</app-card>
+
+</main>
