@@ -1,0 +1,46 @@
+.receitas-page {
+  min-height: calc(100vh - 72px);
+  padding: 36px 7%;
+  background: var(--bg);
+  color: var(--text);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.finance-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.form-grid app-textarea {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .summary-grid,
+  .filters,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

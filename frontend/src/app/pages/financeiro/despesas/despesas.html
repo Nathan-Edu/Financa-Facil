@@ -1,0 +1,147 @@
+<main class="despesas-page">
+
+  <app-page-header
+    title="Despesas"
+    subtitle="Gerencie todos os seus gastos financeiros">
+
+    <app-button color="danger" icon="add" (click)="showModal = true">
+      Nova Despesa
+    </app-button>
+
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total Gasto"
+      value="R$ 651,30"
+      subtitle="Somatório das despesas"
+      icon="payments"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Mês Atual"
+      value="R$ 651,30"
+      subtitle="Despesas em janeiro"
+      icon="calendar_month"
+      color="warning">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Despesas"
+      value="3"
+      subtitle="Registros cadastrados"
+      icon="trending_down"
+      color="violet">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Suas Despesas"
+    subtitle="Lista de despesas cadastradas no sistema">
+
+    <div class="filters">
+
+      <app-search-input
+        label="Buscar"
+        placeholder="Buscar despesas..."
+        [(value)]="search">
+      </app-search-input>
+
+      <app-select
+        label="Categoria"
+        [options]="categorias"
+        [(value)]="categoria">
+      </app-select>
+
+    </div>
+
+    @if (despesasFiltradas.length === 0) {
+
+      <app-empty-state
+        icon="receipt_long"
+        title="Nenhuma despesa encontrada"
+        description="Cadastre uma nova despesa ou ajuste os filtros de busca.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="finance-list">
+
+        @for (despesa of despesasFiltradas; track despesa.id) {
+
+          <app-finance-item
+            [title]="despesa.descricao"
+            [category]="despesa.categoria"
+            [date]="despesa.data"
+            [value]="despesa.valorFormatado"
+            type="expense"
+            (edit)="editar()"
+            (delete)="excluir()">
+          </app-finance-item>
+
+        }
+
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages">
+      </app-pagination>
+
+    }
+
+  </app-card>
+
+  @if (showModal) {
+
+    <app-modal
+      title="Nova Despesa"
+      subtitle="Cadastre uma nova saída financeira"
+      size="medium"
+      (close)="showModal = false">
+
+      <div modal-body>
+        <div class="form-grid">
+
+          <app-search-input
+            label="Descrição"
+            placeholder="Descrição da despesa">
+          </app-search-input>
+
+          <app-select
+            label="Categoria"
+            [options]="['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Outros']">
+          </app-select>
+
+          <app-currency-input label="Valor"></app-currency-input>
+
+          <app-date-input label="Data" [required]="true"></app-date-input>
+
+          <app-textarea
+            label="Observações"
+            placeholder="Digite uma observação...">
+          </app-textarea>
+
+        </div>
+      </div>
+
+      <div modal-footer>
+
+        <app-button color="outline" (click)="showModal = false">
+          Cancelar
+        </app-button>
+
+        <app-button color="danger" (click)="salvar()">
+          Salvar
+        </app-button>
+
+      </div>
+
+    </app-modal>
+
+  }
+
+</main>

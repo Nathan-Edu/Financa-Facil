@@ -1,0 +1,162 @@
+<main class="parceladas-page">
+
+  <app-page-header
+    title="Contas Parceladas"
+    subtitle="Controle suas compras parceladas">
+
+    <app-button color="primary" icon="add" (click)="showModal = true">
+      Nova Conta Parcelada
+    </app-button>
+
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total em Aberto"
+      [value]="totalAberto"
+      subtitle="Contas não finalizadas"
+      icon="credit_card"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Contas Ativas"
+      [value]="contasAtivas"
+      subtitle="Parcelas em andamento"
+      icon="schedule"
+      color="warning">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Contas Finalizadas"
+      [value]="contasFinalizadas"
+      subtitle="Parcelamentos concluídos"
+      icon="check_circle"
+      color="success">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Próx. Vencimento"
+      [value]="proximoVencimento"
+      subtitle="Próxima parcela ativa"
+      icon="calendar_month"
+      color="primary">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Suas Contas Parceladas"
+    subtitle="Lista de compras parceladas cadastradas no sistema">
+
+    <div class="filters">
+
+      <app-search-input
+        label="Buscar"
+        placeholder="Buscar conta parcelada..."
+        [(value)]="search">
+      </app-search-input>
+
+      <app-select
+        label="Status"
+        [options]="statusOptions"
+        [(value)]="status">
+      </app-select>
+
+    </div>
+
+    @if (parcelasFiltradas.length === 0) {
+
+      <app-empty-state
+        icon="credit_card_off"
+        title="Nenhuma conta parcelada encontrada"
+        description="Cadastre uma nova conta parcelada ou ajuste os filtros de busca.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="parcel-list">
+
+        @for (parcela of parcelasFiltradas; track parcela.id) {
+
+          <app-parcel-item
+            [parcela]="parcela"
+            (view)="verParcelas($event)"
+            (edit)="editar($event)">
+          </app-parcel-item>
+
+        }
+
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="mudarPagina($event)">
+      </app-pagination>
+
+    }
+
+  </app-card>
+
+  @if (showModal) {
+
+    <app-modal
+      title="Nova Conta Parcelada"
+      subtitle="Cadastre uma nova compra parcelada"
+      size="medium"
+      (close)="showModal = false">
+
+      <div modal-body>
+        <div class="form-grid">
+
+          <app-search-input
+            label="Descrição"
+            placeholder="Ex: Notebook Dell">
+          </app-search-input>
+
+          <app-select
+            label="Categoria"
+            [options]="['Tecnologia', 'Casa', 'Educação', 'Saúde', 'Outros']">
+          </app-select>
+
+          <app-currency-input label="Valor Total"></app-currency-input>
+
+          <app-currency-input label="Valor da Parcela"></app-currency-input>
+
+          <app-search-input
+            label="Quantidade de Parcelas"
+            placeholder="Ex: 12">
+          </app-search-input>
+
+          <app-date-input
+            label="Próximo Vencimento"
+            [required]="true">
+          </app-date-input>
+
+          <app-textarea
+            label="Observações"
+            placeholder="Digite uma observação...">
+          </app-textarea>
+
+        </div>
+      </div>
+
+      <div modal-footer>
+        <app-button color="outline" (click)="showModal = false">
+          Cancelar
+        </app-button>
+
+        <app-button color="primary" (click)="salvar()">
+          Salvar
+        </app-button>
+      </div>
+     
+    </app-modal>
+
+    
+
+  }
+
+</main>

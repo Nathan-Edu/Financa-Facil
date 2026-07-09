@@ -23,6 +23,9 @@ import { Pagination } from '../../../shared/components/tables/pagination/paginat
 import { DateInput } from '../../../shared/components/forms/date-input/date-input';
 import { Textarea } from '../../../shared/components/forms/textarea/textarea';
 import { DataTable } from '../../../shared/components/tables/data-table/data-table';
+import{ProgressBar} from '../../../shared/components/display/progress-bar/progress-bar';
+import { ParcelItem } from '../../../shared/components/display/parcel-item/parcel-item';
+import { Parcela } from '../../../core/models/parcela.model';
 
 @Component({
   selector: 'app-playground',
@@ -45,7 +48,9 @@ import { DataTable } from '../../../shared/components/tables/data-table/data-tab
     Pagination,
     DateInput,
     Textarea,
-    DataTable
+    DataTable,
+    ProgressBar,
+    ParcelItem
   ],
   templateUrl: './playground.html',
   styleUrl: './playground.scss',
@@ -95,6 +100,34 @@ tableData = [
     status: 'Pendente'
   }
 ];
+
+parcela: Parcela = {
+
+  id:1,
+
+  descricao:'Notebook Dell',
+
+  categoria:'Tecnologia',
+
+  valorTotal:2400,
+
+  valorTotalFormatado:'R$ 2.400',
+
+  valorParcela:200,
+
+  valorParcelaFormatado:'R$ 200',
+
+  parcelasPagas:4,
+
+  totalParcelas:12,
+
+  percentualPago:33,
+
+  dataVencimento:'15/02/2026',
+
+  status:'ativa'
+
+};
 
 }
 

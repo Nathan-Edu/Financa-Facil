@@ -1,16 +1,35 @@
-<div class="search-input">
-  <mat-icon>search</mat-icon>
+<div class="form-field">
 
-  <input
-    type="text"
-    [placeholder]="placeholder"
-    [value]="value"
-    (input)="onInput($event)"
-  />
+  @if (label) {
+    <label>
+      {{ label }}
 
-  @if (value) {
-    <button type="button" (click)="clear()">
-      <mat-icon>close</mat-icon>
-    </button>
+      @if (required) {
+        <span>*</span>
+      }
+    </label>
   }
+
+  <div class="control">
+    <mat-icon>search</mat-icon>
+
+    <input
+      type="text"
+      [placeholder]="placeholder"
+      [value]="value"
+      [disabled]="disabled"
+      (input)="onInput($event)"
+    />
+
+    @if (value && !disabled) {
+      <button type="button" (click)="clear()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (hint) {
+    <small>{{ hint }}</small>
+  }
+
 </div>

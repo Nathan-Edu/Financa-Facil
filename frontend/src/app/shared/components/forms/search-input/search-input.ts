@@ -8,8 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './search-input.scss',
 })
 export class SearchInput {
+  @Input() label = '';
   @Input() placeholder = 'Buscar...';
   @Input() value = '';
+  @Input() required = false;
+  @Input() disabled = false;
+  @Input() hint = '';
 
   @Output() valueChange = new EventEmitter<string>();
 

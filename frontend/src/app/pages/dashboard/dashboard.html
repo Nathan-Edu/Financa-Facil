@@ -23,37 +23,37 @@
   <!-- Cards Resumo -->
   <section class="cards">
 
-    <app-stat-card
-      title="Saldo Atual"
-      value="R$ 2.450,80"
-      subtitle="+2,5% desde o mês passado"
-      icon="account_balance_wallet"
-      color="primary">
-    </app-stat-card>
+      <app-stat-card
+        title="Saldo Atual"
+        [value]="formatarMoeda(resumo.saldo)"
+        subtitle="+2,5% desde o mês passado"
+        icon="account_balance_wallet"
+        color="primary">
+      </app-stat-card>
 
-    <app-stat-card
-      title="Receitas"
-      value="R$ 5.200,00"
-      subtitle="Este mês"
-      icon="trending_up"
-      color="success">
-    </app-stat-card>
+      <app-stat-card
+        title="Receitas"
+        [value]="formatarMoeda(resumo.receitas)"
+        subtitle="Este mês"
+        icon="trending_up"
+        color="success">
+      </app-stat-card>
 
-    <app-stat-card
-      title="Despesas"
-      value="R$ 2.749,20"
-      subtitle="Este mês"
-      icon="trending_down"
-      color="danger">
-    </app-stat-card>
+      <app-stat-card
+        title="Despesas"
+        [value]="formatarMoeda(resumo.despesas)"
+        subtitle="Este mês"
+        icon="trending_down"
+        color="danger">
+      </app-stat-card>
 
-    <app-stat-card
-      title="Contas Parceladas"
-      value="4"
-      subtitle="Ativas"
-      icon="credit_card"
-      color="violet">
-    </app-stat-card>
+      <app-stat-card
+        title="Contas Parceladas"
+        [value]="resumo.parceladas.toString()"
+        subtitle="Ativas"
+        icon="credit_card"
+        color="violet">
+      </app-stat-card>
 
   </section>
 
