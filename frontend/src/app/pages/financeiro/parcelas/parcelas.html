@@ -159,4 +159,59 @@
 
   }
 
+  @if (showParcelasModal && parcelaSelecionada) {
+
+  <app-modal
+    [title]="parcelaSelecionada.descricao"
+    subtitle="Histórico das parcelas"
+    size="medium"
+    (close)="fecharParcelasModal()">
+
+    <div modal-body>
+
+      <div class="parcel-history">
+
+        @for (numero of historicoParcelas; track numero) {
+
+          <div
+            class="history-item"
+            [class.paid]="parcelaEstaPaga(numero)">
+
+            <div>
+              <strong>
+                Parcela {{ numero }}/{{ parcelaSelecionada.totalParcelas }}
+              </strong>
+
+              <span>
+                {{ parcelaSelecionada.valorParcelaFormatado }}
+              </span>
+            </div>
+
+            <app-badge
+              [color]="parcelaEstaPaga(numero) ? 'success' : 'warning'">
+
+              {{ parcelaEstaPaga(numero) ? 'Paga' : 'Pendente' }}
+
+            </app-badge>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+    <div modal-footer>
+      <app-button
+        color="outline"
+        (click)="fecharParcelasModal()">
+        Fechar
+      </app-button>
+    </div>
+
+  </app-modal>
+
+}
+
 </main>

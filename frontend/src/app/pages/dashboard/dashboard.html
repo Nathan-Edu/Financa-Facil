@@ -1,124 +1,28 @@
-<main class="dashboard">
+<main class="dashboard-page">
 
   <app-page-header
     title="Dashboard"
     subtitle="Visão geral das suas finanças">
-
-    <app-button color="danger" icon="add">
-      Nova Despesa
-    </app-button>
-
-    <app-button color="success" icon="add">
-      Nova Receita
-    </app-button>
-
-    <app-button
-      color="outline"
-      icon="edit"
-      appearance="icon">
-    </app-button>
-
   </app-page-header>
 
-  <!-- Cards Resumo -->
-  <section class="cards">
+  <app-dashboard-summary
+    [resumo]="resumo">
+  </app-dashboard-summary>
 
-      <app-stat-card
-        title="Saldo Atual"
-        [value]="formatarMoeda(resumo.saldo)"
-        subtitle="+2,5% desde o mês passado"
-        icon="account_balance_wallet"
-        color="primary">
-      </app-stat-card>
+  <app-dashboard-quick-actions>
+  </app-dashboard-quick-actions>
 
-      <app-stat-card
-        title="Receitas"
-        [value]="formatarMoeda(resumo.receitas)"
-        subtitle="Este mês"
-        icon="trending_up"
-        color="success">
-      </app-stat-card>
+  <app-dashboard-transactions
+    [receitas]="resumo.ultimasReceitas"
+    [despesas]="resumo.ultimasDespesas">
+  </app-dashboard-transactions>
 
-      <app-stat-card
-        title="Despesas"
-        [value]="formatarMoeda(resumo.despesas)"
-        subtitle="Este mês"
-        icon="trending_down"
-        color="danger">
-      </app-stat-card>
+  <app-dashboard-alerts
+    [alertas]="resumo.alertas">
+  </app-dashboard-alerts>
 
-      <app-stat-card
-        title="Contas Parceladas"
-        [value]="resumo.parceladas.toString()"
-        subtitle="Ativas"
-        icon="credit_card"
-        color="violet">
-      </app-stat-card>
+  <app-dashboard-analysis
+    [resumo]="resumo">
+  </app-dashboard-analysis>
 
-  </section>
-
-  <!-- Conteúdo -->
-  <section class="content-grid">
-
-    <!-- Transações -->
-    <app-card
-      title="Transações Recentes"
-      subtitle="Últimas movimentações registradas">
-
-      <app-button
-        card-action
-        color="outline"
-        size="small">
-        Ver Todas
-      </app-button>
-
-      <app-transaction-item
-        title="Supermercado"
-        date="20/01/2026"
-        value="- R$ 180,55"
-        type="expense">
-      </app-transaction-item>
-
-      <app-transaction-item
-        title="Salário"
-        date="19/01/2026"
-        value="+ R$ 3.500,00"
-        type="income">
-      </app-transaction-item>
-
-      <app-transaction-item
-        title="Conta de Luz"
-        date="18/01/2026"
-        value="- R$ 95,30"
-        type="expense">
-      </app-transaction-item>
-
-    </app-card>
-
-    <!-- Alertas -->
-    <app-card
-      title="Alertas"
-      subtitle="Compromissos próximos">
-
-      <app-button
-        card-action
-        color="outline"
-        size="small">
-        Ver Todos
-      </app-button>
-
-      <app-alert-item
-        type="danger"
-        message="Parcela do cartão vence em 3 dias.">
-      </app-alert-item>
-
-      <app-alert-item
-        type="warning"
-        message="Meta de gastos do mês atingida.">
-      </app-alert-item>
-
-    </app-card>
-
-  </section>
-  
 </main>

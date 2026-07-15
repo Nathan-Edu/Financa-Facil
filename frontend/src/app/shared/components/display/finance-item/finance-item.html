@@ -1,33 +1,70 @@
-<div class="finance-item" [class]="type">
-  <div class="finance-info">
-    <strong>{{ title }}</strong>
+<div
+  class="finance-item"
+  [class.income]="type === 'income'"
+  [class.expense]="type === 'expense'">
 
-    <div class="finance-meta">
-      <app-badge [color]="type === 'income' ? 'success' : 'danger'">
-        {{ category }}
-      </app-badge>
+  <div class="finance-main">
 
-      <span>{{ date }}</span>
+    <div class="finance-icon">
+      <mat-icon>{{ icon }}</mat-icon>
     </div>
+
+    <div class="finance-info">
+
+      <strong class="finance-title">
+        {{ title }}
+      </strong>
+
+      <div class="finance-meta">
+
+        <app-badge
+          [color]="
+            type === 'income'
+              ? 'success'
+              : 'danger'
+          ">
+          {{ category }}
+        </app-badge>
+
+        <span class="finance-date">
+          {{ dataFormatada }}
+        </span>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="finance-actions">
-    <span class="value">
-      {{ type === 'income' ? '+ ' : '- ' }}{{ value }}
-    </span>
+  <div class="finance-right">
 
-    <app-button
-      color="outline"
-      size="small"
-      (click)="edit.emit()">
-      Editar
-    </app-button>
+    <strong class="finance-value">
+      {{ type === 'income' ? '+' : '-' }}
+      {{ value }}
+    </strong>
 
-    <app-button
-      color="danger"
-      size="small"
-      (click)="delete.emit()">
-      Excluir
-    </app-button>
+    <div class="finance-actions">
+
+      <app-button
+        color="outline"
+        size="small"
+        icon="edit"
+        appearance="icon"
+        aria-label="Editar"
+        (click)="edit.emit()">
+      </app-button>
+
+      <app-button
+        color="danger"
+        size="small"
+        icon="delete"
+        appearance="icon"
+        aria-label="Excluir"
+        (click)="delete.emit()">
+      </app-button>
+
+    </div>
+
   </div>
+
 </div>

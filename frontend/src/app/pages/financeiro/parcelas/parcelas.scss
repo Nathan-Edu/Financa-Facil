@@ -50,4 +50,45 @@
   .form-grid {
     grid-template-columns: 1fr;
   }
+
+  .parcel-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 14px 16px;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  transition: .2s;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  strong {
+    color: var(--text);
+    font-size: 14px;
+  }
+
+  span {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+}
+
+.history-item.paid {
+  border-left: 4px solid #22c55e;
+}
 }

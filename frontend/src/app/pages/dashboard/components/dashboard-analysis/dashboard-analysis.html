@@ -1,0 +1,215 @@
+<app-card
+  title="Análise Financeira"
+  subtitle="Acompanhe o desempenho das suas finanças">
+
+  <app-button
+    card-action
+    color="outline"
+    size="small"
+    [icon]="expanded ? 'expand_less' : 'expand_more'"
+    (click)="alternar()">
+
+    {{ expanded ? 'Recolher' : 'Expandir' }}
+
+  </app-button>
+
+  @if (expanded) {
+
+    <div class="analysis-content">
+
+      <div class="analysis-header">
+
+        <div>
+          <span>Receitas</span>
+
+          <strong class="income">
+            {{
+              formatarMoeda(
+                resumo.totalReceitas
+              )
+            }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Despesas</span>
+
+          <strong class="expense">
+            {{
+              formatarMoeda(
+                resumo.totalDespesas
+              )
+            }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Saldo</span>
+
+          <strong>
+            {{
+              formatarMoeda(
+                resumo.saldo
+              )
+            }}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="expense-progress">
+
+        <div class="progress-title">
+          <span>
+            Comprometimento das receitas
+          </span>
+
+          <strong>
+            {{ percentualDespesas }}%
+          </strong>
+        </div>
+
+        <app-progress-bar
+          [value]="percentualDespesas">
+        </app-progress-bar>
+
+      </div>
+
+      <div class="chart-tabs">
+
+        <button
+          type="button"
+          [class.active]="
+            activeChart === 'comparison'
+          "
+          (click)="
+            selecionarGrafico('comparison')
+          ">
+          Receitas x Despesas
+        </button>
+
+        <button
+          type="button"
+          [class.active]="
+            activeChart === 'balance'
+          "
+          (click)="
+            selecionarGrafico('balance')
+          ">
+          Evolução do Saldo
+        </button>
+
+        <button
+          type="button"
+          [class.active]="
+            activeChart === 'categories'
+          "
+          (click)="
+            selecionarGrafico('categories')
+          ">
+          Categorias
+        </button>
+
+      </div>
+
+      <div class="chart-container">
+
+        @if (
+          activeChart === 'comparison'
+        ) {
+
+          <canvas
+            baseChart
+            [type]="comparisonType"
+            [data]="comparisonData"
+            [options]="barOptions">
+          </canvas>
+
+        }
+
+        @if (
+          activeChart === 'balance'
+        ) {
+
+          <canvas
+            baseChart
+            [type]="balanceType"
+            [data]="balanceData"
+            [options]="lineOptions">
+          </canvas>
+
+        }
+
+        @if (
+          activeChart === 'categories'
+        ) {
+
+          <canvas
+            baseChart
+            [type]="categoriesType"
+            [data]="categoriesData"
+            [options]="doughnutOptions">
+          </canvas>
+
+        }
+
+      </div>
+
+      <div class="budget-list">
+
+        <h3>
+          Orçamentos por categoria
+        </h3>
+
+        @for (
+          categoria of resumo.categorias;
+          track categoria.id
+        ) {
+
+          @if (
+            categoria.tipo === 'despesa' &&
+            categoria.orcamentoMensal
+          ) {
+
+            <div class="budget-item">
+
+              <div
+                class="budget-icon"
+                [style.background-color]="
+                  categoria.cor
+                ">
+
+                <span class="material-icons">
+                  {{ categoria.icone }}
+                </span>
+
+              </div>
+
+              <div>
+                <strong>
+                  {{ categoria.nome }}
+                </strong>
+
+                <span>
+                  Limite:
+                  {{
+                    formatarMoeda(
+                      categoria.orcamentoMensal
+                    )
+                  }}
+                </span>
+              </div>
+
+            </div>
+
+          }
+
+        }
+
+      </div>
+
+    </div>
+
+  }
+
+</app-card>

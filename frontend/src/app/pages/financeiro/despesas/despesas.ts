@@ -21,6 +21,9 @@ import { Modal } from '../../../shared/components/feedback/modal/modal';
 import { EmptyState } from '../../../shared/components/feedback/empty-state/empty-state';
 import { Pagination } from '../../../shared/components/tables/pagination/pagination';
 
+import { Categoria } from '../../../core/models/categoria.model';
+import { CategoriaService } from '../../../core/services/categoria.service';
+
 @Component({
   selector: 'app-despesas',
   imports: [
@@ -50,25 +53,20 @@ export class Despesas implements OnInit {
   currentPage = 1;
   totalPages = 1;
 
-  categorias = [
-    'Todas',
-    'Alimentação',
-    'Moradia',
-    'Transporte',
-    'Lazer',
-    'Saúde',
-    'Outros'
-  ];
+  categorias: string[] = ['Todas'];
+  categoriasFormulario: string[] = [];
 
   despesas: Despesa[] = [];
 
   constructor(
-    private despesaService: DespesaService,
-    private toast: ToastService
+  private despesaService: DespesaService,
+  private categoriaService: CategoriaService,
+  private toast: ToastService
   ) {}
 
   ngOnInit(): void {
-    this.carregarDespesas();
+  this.carregarDespesas();
+  this.carregarCategorias();
   }
 
   carregarDespesas(): void {
@@ -113,4 +111,23 @@ export class Despesas implements OnInit {
   mudarPagina(page: number): void {
     this.currentPage = page;
   }
+
+  carregarCategorias(): void {
+  this.categoriaService.listar().subscribe({
+    next: (categorias: Categoria[]) => {
+      const categoriasDespesa = categorias
+        .filter((categoria) =>
+          categoria.ativa &&
+          categoria.tipo === 'despesa'
+        )
+        .map((categoria) => categoria.nome);
+
+      this.categoriasFormulario = categoriasDespesa;
+      this.categorias = ['Todas', ...categoriasDespesa];
+    },
+    error: () => {
+      this.toast.error('Erro ao carregar categorias de despesas.');
+    }
+  });
+}
 }

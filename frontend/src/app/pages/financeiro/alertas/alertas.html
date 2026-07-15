@@ -1,0 +1,127 @@
+<main class="alertas-page">
+
+  <app-page-header
+    title="Alertas"
+    subtitle="Acompanhe notificações importantes do sistema">
+
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total"
+      [value]="totalAlertas"
+      subtitle="Alertas cadastrados"
+      icon="notifications"
+      color="primary">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Não Visualizados"
+      [value]="naoVisualizados"
+      subtitle="Pendentes de leitura"
+      icon="mark_email_unread"
+      color="warning">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Alta Prioridade"
+      [value]="altaPrioridade"
+      subtitle="Necessitam atenção"
+      icon="priority_high"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Visualizados"
+      [value]="visualizados"
+      subtitle="Já conferidos"
+      icon="check_circle"
+      color="success">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Central de Alertas"
+    subtitle="Todos os alertas gerados pelo sistema">
+
+    @if (naoVisualizados !== '0') {
+
+      <div class="info-banner">
+
+        <strong>
+          Você possui {{ naoVisualizados }} alerta(s) não visualizado(s).
+        </strong>
+
+        <span>
+          Recomendamos verificar os alertas de alta prioridade primeiro.
+        </span>
+
+      </div>
+
+    }
+
+    @if (alertas.length === 0) {
+
+      <div class="empty">
+
+        <mat-icon>notifications_off</mat-icon>
+
+        <h3>Nenhum alerta encontrado</h3>
+
+        <p>
+          Todos os alertas foram resolvidos ou descartados.
+        </p>
+
+      </div>
+
+    } @else {
+
+      <div class="alert-list">
+
+        @for (alerta of alertas; track alerta.id) {
+
+          <app-alert-item
+            [alerta]="alerta"
+            (markAsRead)="marcarComoLido($event)"
+            (discard)="descartar($event)">
+          </app-alert-item>
+
+        }
+
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="mudarPagina($event)">
+      </app-pagination>
+
+    }
+
+    @if(showConfirmDialog){
+
+<app-confirm-dialog
+
+    title="Descartar alerta"
+
+    message="Deseja realmente descartar este alerta? Esta ação poderá ser desfeita apenas quando houver persistência em banco."
+
+    confirmText="Descartar"
+
+    cancelText="Cancelar"
+
+    (confirm)="confirmarDescarte()"
+
+    (cancel)="cancelarDescarte()">
+
+</app-confirm-dialog>
+
+}
+
+
+  </app-card>
+
+</main>
+

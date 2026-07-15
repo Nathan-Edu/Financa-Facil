@@ -20,6 +20,7 @@ import { ParcelItem } from '../../../shared/components/display/parcel-item/parce
 import { Modal } from '../../../shared/components/feedback/modal/modal';
 import { EmptyState } from '../../../shared/components/feedback/empty-state/empty-state';
 import { Pagination } from '../../../shared/components/tables/pagination/pagination';
+import { Badge } from '../../../shared/components/display/badge/badge';
 
 @Component({
   selector: 'app-parceladas',
@@ -36,7 +37,8 @@ import { Pagination } from '../../../shared/components/tables/pagination/paginat
     ParcelItem,
     Modal,
     EmptyState,
-    Pagination
+    Pagination,
+    Badge
   ],
   templateUrl: './parcelas.html',
   styleUrl: './parcelas.scss',
@@ -49,6 +51,9 @@ export class Parcelas implements OnInit {
 
   currentPage = 1;
   totalPages = 1;
+
+  showParcelasModal = false;
+  parcelaSelecionada: Parcela | null = null;
 
   statusOptions = ['Todos', 'Ativa', 'Finalizada', 'Atrasada'];
 
@@ -92,12 +97,17 @@ export class Parcelas implements OnInit {
   }
 
   get totalAberto(): string {
-    const total = this.parcelas
-      .filter((item) => item.status !== 'finalizada')
-      .reduce((acc, item) => acc + item.valorTotal, 0);
+  const total = this.parcelas
+    .filter((item) => item.status !== 'finalizada')
+    .reduce((acc, item) => {
+      const parcelasRestantes =
+        item.totalParcelas - item.parcelasPagas;
 
-    return this.formatarMoeda(total);
-  }
+      return acc + parcelasRestantes * item.valorParcela;
+    }, 0);
+
+  return this.formatarMoeda(total);
+}
 
   get contasAtivas(): string {
     return this.parcelas
@@ -153,13 +163,38 @@ export class Parcelas implements OnInit {
 
   }
 
+  pagarParcela(parcela: Parcela): void {
+
+  this.parcelaService.pagar(parcela.id).subscribe({
+
+    next: (ok) => {
+
+      if (!ok) {
+
+        this.toast.warning('Esta conta já está finalizada.');
+
+        return;
+
+      }
+
+      this.toast.success('Parcela registrada com sucesso.');
+
+      this.carregarParcelas();
+
+    }
+
+  });
+
+}
+
   salvar(): void {
     this.showModal = false;
     this.toast.success('Conta parcelada cadastrada com sucesso.');
   }
 
   verParcelas(parcela: Parcela): void {
-    this.toast.info(`Visualizando parcelas de ${parcela.descricao}.`);
+  this.parcelaSelecionada = parcela;
+  this.showParcelasModal = true;
   }
 
   editar(parcela: Parcela): void {
@@ -169,4 +204,26 @@ export class Parcelas implements OnInit {
   mudarPagina(page: number): void {
     this.currentPage = page;
   }
+
+  fecharParcelasModal(): void {
+  this.showParcelasModal = false;
+  this.parcelaSelecionada = null;
+  
+  }
+
+    get historicoParcelas(): number[] {
+      if (!this.parcelaSelecionada) {
+        return [];
+      }
+
+      return Array.from(
+        { length: this.parcelaSelecionada.totalParcelas },
+        (_, index) => index + 1
+      );
+    }
+
+    parcelaEstaPaga(numero: number): boolean {
+      return numero <= (this.parcelaSelecionada?.parcelasPagas ?? 0);
+    }
+
 }

@@ -4,7 +4,10 @@
     title="Receitas"
     subtitle="Gerencie todas as suas entradas financeiras">
 
-    <app-button color="success" icon="add" (click)="showModal = true">
+    <app-button
+      color="success"
+      icon="add"
+      (click)="abrirNovaReceita()">
       Nova Receita
     </app-button>
 
@@ -14,7 +17,7 @@
 
     <app-stat-card
       title="Total Recebido"
-      value="R$ 5.970,50"
+      [value]="totalRecebido"
       subtitle="Somatório das receitas"
       icon="payments"
       color="success">
@@ -22,15 +25,15 @@
 
     <app-stat-card
       title="Mês Atual"
-      value="R$ 5.850,00"
-      subtitle="Receitas em janeiro"
+      [value]="totalMesAtual"
+      subtitle="Receitas do mês corrente"
       icon="calendar_month"
       color="primary">
     </app-stat-card>
 
     <app-stat-card
       title="Receitas"
-      value="3"
+      [value]="quantidadeReceitas"
       subtitle="Registros cadastrados"
       icon="trending_up"
       color="violet">
@@ -43,6 +46,7 @@
     subtitle="Lista de receitas cadastradas no sistema">
 
     <div class="filters">
+
       <app-search-input
         label="Buscar"
         placeholder="Buscar receitas..."
@@ -54,6 +58,7 @@
         [options]="categorias"
         [(value)]="categoria">
       </app-select>
+
     </div>
 
     @if (receitasFiltradas.length === 0) {
@@ -68,7 +73,10 @@
 
       <div class="finance-list">
 
-        @for (receita of receitasFiltradas; track receita.id) {
+        @for (
+          receita of receitasFiltradas;
+          track receita.id
+        ) {
 
           <app-finance-item
             [title]="receita.descricao"
@@ -76,8 +84,8 @@
             [date]="receita.data"
             [value]="receita.valorFormatado"
             type="income"
-            (edit)="editarReceita()"
-            (delete)="excluirReceita()">
+            (edit)="editarReceita(receita)"
+            (delete)="solicitarExclusao(receita)">
           </app-finance-item>
 
         }
@@ -97,47 +105,78 @@
   @if (showModal) {
 
     <app-modal
-      title="Nova Receita"
-      subtitle="Cadastre uma nova entrada financeira"
+      [title]="tituloModal"
+      [subtitle]="subtituloModal"
       size="medium"
-      (close)="showModal = false">
+      (close)="fecharModal()">
 
       <div modal-body>
+
         <div class="form-grid">
 
           <app-search-input
             label="Descrição"
-            placeholder="Descrição da receita">
+            placeholder="Descrição da receita"
+            [(value)]="descricao">
           </app-search-input>
 
           <app-select
             label="Categoria"
-            [options]="['Trabalho', 'Freelance', 'Investimentos', 'Outros']">
+            [options]="categoriasFormulario"
+            [(value)]="categoriaFormulario">
           </app-select>
 
-          <app-currency-input label="Valor"></app-currency-input>
+          <app-currency-input
+            label="Valor"
+            [(value)]="valor">
+          </app-currency-input>
 
-          <app-date-input label="Data" [required]="true"></app-date-input>
+          <app-date-input
+            label="Data"
+            [required]="true"
+            [(value)]="data">
+          </app-date-input>
 
           <app-textarea
             label="Observações"
-            placeholder="Digite uma observação...">
+            placeholder="Digite uma observação..."
+            [(value)]="observacao">
           </app-textarea>
 
         </div>
+
       </div>
 
       <div modal-footer>
-        <app-button color="outline" (click)="showModal = false">
+
+        <app-button
+          color="outline"
+          (click)="fecharModal()">
           Cancelar
         </app-button>
 
-        <app-button color="success" (click)="salvarReceita()">
+        <app-button
+          color="success"
+          (click)="salvarReceita()">
           Salvar
         </app-button>
+
       </div>
 
     </app-modal>
+
+  }
+
+  @if (showConfirmDialog) {
+
+    <app-confirm-dialog
+      title="Excluir receita"
+      message="Deseja realmente excluir esta receita? Esta ação não poderá ser desfeita."
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      (confirm)="confirmarExclusao()"
+      (cancel)="cancelarExclusao()">
+    </app-confirm-dialog>
 
   }
 

@@ -1,0 +1,37 @@
+<app-card
+  title="Ações Rápidas"
+  subtitle="Acesse rapidamente as principais funções">
+
+  <div class="quick-actions">
+
+    <app-button
+      color="success"
+      icon="add"
+      (click)="navegar('/receitas')">
+      Nova Receita
+    </app-button>
+
+    <app-button
+      color="danger"
+      icon="add"
+      (click)="navegar('/despesas')">
+      Nova Despesa
+    </app-button>
+
+    <app-button
+      color="primary"
+      icon="credit_card"
+      (click)="navegar('/parcelas')">
+      Nova Conta Parcelada
+    </app-button>
+
+    <app-button
+      color="outline"
+      icon="category"
+      (click)="navegar('/categorias')">
+      Nova Categoria
+    </app-button>
+
+  </div>
+
+</app-card>

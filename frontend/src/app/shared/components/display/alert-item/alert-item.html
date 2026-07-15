@@ -1,7 +1,57 @@
-<div class="alert-item" [class]="type">
-  <mat-icon>{{ icon }}</mat-icon>
+<div
+  class="alert-item"
+  [class.unread]="!alerta.visualizado"
+  [class.compact]="compact">
 
-  <span>
-    {{ message }}
-  </span>
+  <div class="alert-icon">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+
+  <div class="alert-content">
+
+    <div class="alert-title-row">
+      <h3>{{ alerta.titulo }}</h3>
+
+      @if (!alerta.visualizado) {
+        <app-badge color="danger">
+          Novo
+        </app-badge>
+      }
+
+      <app-badge [color]="priorityColor">
+        {{ priorityLabel }}
+      </app-badge>
+    </div>
+
+    <p>{{ alerta.descricao }}</p>
+
+    <small>
+      <mat-icon>calendar_today</mat-icon>
+      {{ formattedDate }}
+    </small>
+
+  </div>
+
+  @if (!compact) {
+    <div class="alert-actions">
+
+      @if (!alerta.visualizado) {
+        <app-button
+          color="outline"
+          size="small"
+          (click)="markAsRead.emit(alerta)">
+          Marcar como lido
+        </app-button>
+      }
+
+      <app-button
+        color="ghost"
+        size="small"
+        (click)="discard.emit(alerta)">
+        Descartar
+      </app-button>
+
+    </div>
+  }
+
 </div>

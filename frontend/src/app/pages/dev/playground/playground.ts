@@ -25,6 +25,7 @@ import { Textarea } from '../../../shared/components/forms/textarea/textarea';
 import { DataTable } from '../../../shared/components/tables/data-table/data-table';
 import{ProgressBar} from '../../../shared/components/display/progress-bar/progress-bar';
 import { ParcelItem } from '../../../shared/components/display/parcel-item/parcel-item';
+import { Alerta } from '../../../core/models/alerta.model';
 import { Parcela } from '../../../core/models/parcela.model';
 
 @Component({
@@ -127,6 +128,17 @@ parcela: Parcela = {
 
   status:'ativa'
 
+};
+
+alertaTeste: Alerta = {
+  id: 1,
+  titulo: 'Meta de gastos atingida',
+  descricao: 'Você atingiu o limite de gastos definido para este mês.',
+  data: '2026-07-14',
+  tipo: 'orcamento',
+  prioridade: 'media',
+  visualizado: false,
+  descartado: false
 };
 
 }

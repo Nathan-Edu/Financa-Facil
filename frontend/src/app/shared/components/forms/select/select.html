@@ -15,9 +15,9 @@
     [disabled]="disabled"
     (change)="onChange($event)">
 
-    @for (item of options; track item) {
-      <option [value]="item">
-        {{ item }}
+    @for (item of options; track item.value) {
+      <option [value]="item.value">
+        {{ item.label }}
       </option>
     }
 

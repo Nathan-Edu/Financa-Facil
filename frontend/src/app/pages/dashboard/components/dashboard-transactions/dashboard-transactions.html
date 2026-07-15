@@ -1,0 +1,69 @@
+<section class="transactions-grid">
+
+  <app-card
+    title="Últimas Receitas"
+    subtitle="Entradas financeiras recentes">
+
+    @if (receitas.length === 0) {
+
+      <app-empty-state
+        icon="trending_up"
+        title="Nenhuma receita"
+        description="Ainda não existem receitas cadastradas.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="transaction-list">
+
+        @for (receita of receitas; track receita.id) {
+
+          <app-transaction-item
+            [title]="receita.descricao"
+            [date]="receita.data"
+            [value]="receita.valorFormatado"
+            type="income">
+          </app-transaction-item>
+
+        }
+
+      </div>
+
+    }
+
+  </app-card>
+
+  <app-card
+    title="Últimas Despesas"
+    subtitle="Saídas financeiras recentes">
+
+    @if (despesas.length === 0) {
+
+      <app-empty-state
+        icon="trending_down"
+        title="Nenhuma despesa"
+        description="Ainda não existem despesas cadastradas.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="transaction-list">
+
+        @for (despesa of despesas; track despesa.id) {
+
+          <app-transaction-item
+            [title]="despesa.descricao"
+            [date]="despesa.data"
+            [value]="despesa.valorFormatado"
+            type="expense">
+          </app-transaction-item>
+
+        }
+
+      </div>
+
+    }
+
+  </app-card>
+
+</section>
