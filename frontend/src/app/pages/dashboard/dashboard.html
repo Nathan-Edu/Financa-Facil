@@ -1,28 +1,65 @@
 <main class="dashboard-page">
 
   <app-page-header
-    title="Dashboard"
-    subtitle="Visão geral das suas finanças">
+    title="Painel de Controle"
+    subtitle="Monitoramento centralizado de receitas e fluxos">
+
+    <app-dashboard-quick-actions>
+    </app-dashboard-quick-actions>
+
   </app-page-header>
 
-  <app-dashboard-summary
-    [resumo]="resumo">
-  </app-dashboard-summary>
+  <section class="dashboard-summary-section">
 
-  <app-dashboard-quick-actions>
-  </app-dashboard-quick-actions>
+    <app-dashboard-summary
+      [resumo]="resumo">
+    </app-dashboard-summary>
 
-  <app-dashboard-transactions
-    [receitas]="resumo.ultimasReceitas"
-    [despesas]="resumo.ultimasDespesas">
-  </app-dashboard-transactions>
+  </section>
 
-  <app-dashboard-alerts
-    [alertas]="resumo.alertas">
-  </app-dashboard-alerts>
+  <section class="dashboard-main-grid">
 
-  <app-dashboard-analysis
-    [resumo]="resumo">
-  </app-dashboard-analysis>
+    <div class="dashboard-main-column">
+
+      <div class="dashboard-analysis-area">
+
+        <app-dashboard-analysis
+          [resumo]="resumo">
+        </app-dashboard-analysis>
+
+      </div>
+
+      <div class="dashboard-transactions-section">
+
+        <app-dashboard-transactions
+          [receitas]="resumo.ultimasReceitas"
+          [despesas]="resumo.ultimasDespesas">
+        </app-dashboard-transactions>
+
+      </div>
+
+      <div class="dashboard-categories-section">
+
+        <app-dashboard-categories
+          [categorias]="resumo.categorias">
+        </app-dashboard-categories>
+
+      </div>
+
+    </div>
+
+    <aside class="dashboard-sidebar">
+
+      <app-dashboard-payments
+        [parcelas]="resumo.parcelasAtivas">
+      </app-dashboard-payments>
+
+      <app-dashboard-alerts
+        [alertas]="resumo.alertas">
+      </app-dashboard-alerts>
+
+    </aside>
+
+  </section>
 
 </main>

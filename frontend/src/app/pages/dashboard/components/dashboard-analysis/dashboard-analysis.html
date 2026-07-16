@@ -23,11 +23,7 @@
           <span>Receitas</span>
 
           <strong class="income">
-            {{
-              formatarMoeda(
-                resumo.totalReceitas
-              )
-            }}
+            {{ formatarMoeda(resumo.totalReceitas) }}
           </strong>
         </div>
 
@@ -35,11 +31,7 @@
           <span>Despesas</span>
 
           <strong class="expense">
-            {{
-              formatarMoeda(
-                resumo.totalDespesas
-              )
-            }}
+            {{ formatarMoeda(resumo.totalDespesas) }}
           </strong>
         </div>
 
@@ -47,11 +39,7 @@
           <span>Saldo</span>
 
           <strong>
-            {{
-              formatarMoeda(
-                resumo.saldo
-              )
-            }}
+            {{ formatarMoeda(resumo.saldo) }}
           </strong>
         </div>
 
@@ -60,6 +48,7 @@
       <div class="expense-progress">
 
         <div class="progress-title">
+
           <span>
             Comprometimento das receitas
           </span>
@@ -67,6 +56,7 @@
           <strong>
             {{ percentualDespesas }}%
           </strong>
+
         </div>
 
         <app-progress-bar
@@ -79,44 +69,36 @@
 
         <button
           type="button"
-          [class.active]="
-            activeChart === 'comparison'
-          "
-          (click)="
-            selecionarGrafico('comparison')
-          ">
+          [class.active]="activeChart === 'comparison'"
+          (click)="selecionarGrafico('comparison')">
+
           Receitas x Despesas
+
         </button>
 
         <button
           type="button"
-          [class.active]="
-            activeChart === 'balance'
-          "
-          (click)="
-            selecionarGrafico('balance')
-          ">
+          [class.active]="activeChart === 'balance'"
+          (click)="selecionarGrafico('balance')">
+
           Evolução do Saldo
+
         </button>
 
         <button
           type="button"
-          [class.active]="
-            activeChart === 'categories'
-          "
-          (click)="
-            selecionarGrafico('categories')
-          ">
+          [class.active]="activeChart === 'categories'"
+          (click)="selecionarGrafico('categories')">
+
           Categorias
+
         </button>
 
       </div>
 
       <div class="chart-container">
 
-        @if (
-          activeChart === 'comparison'
-        ) {
+        @if (activeChart === 'comparison') {
 
           <canvas
             baseChart
@@ -127,9 +109,7 @@
 
         }
 
-        @if (
-          activeChart === 'balance'
-        ) {
+        @if (activeChart === 'balance') {
 
           <canvas
             baseChart
@@ -140,9 +120,7 @@
 
         }
 
-        @if (
-          activeChart === 'categories'
-        ) {
+        @if (activeChart === 'categories') {
 
           <canvas
             baseChart
@@ -150,59 +128,6 @@
             [data]="categoriesData"
             [options]="doughnutOptions">
           </canvas>
-
-        }
-
-      </div>
-
-      <div class="budget-list">
-
-        <h3>
-          Orçamentos por categoria
-        </h3>
-
-        @for (
-          categoria of resumo.categorias;
-          track categoria.id
-        ) {
-
-          @if (
-            categoria.tipo === 'despesa' &&
-            categoria.orcamentoMensal
-          ) {
-
-            <div class="budget-item">
-
-              <div
-                class="budget-icon"
-                [style.background-color]="
-                  categoria.cor
-                ">
-
-                <span class="material-icons">
-                  {{ categoria.icone }}
-                </span>
-
-              </div>
-
-              <div>
-                <strong>
-                  {{ categoria.nome }}
-                </strong>
-
-                <span>
-                  Limite:
-                  {{
-                    formatarMoeda(
-                      categoria.orcamentoMensal
-                    )
-                  }}
-                </span>
-              </div>
-
-            </div>
-
-          }
 
         }
 

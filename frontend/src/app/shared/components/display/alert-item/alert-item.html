@@ -1,6 +1,7 @@
 <div
   class="alert-item"
   [class.unread]="!alerta.visualizado"
+  [class.discarded]="alerta.descartado"
   [class.compact]="compact">
 
   <div class="alert-icon">
@@ -10,17 +11,29 @@
   <div class="alert-content">
 
     <div class="alert-title-row">
+
       <h3>{{ alerta.titulo }}</h3>
 
       @if (!alerta.visualizado) {
+
         <app-badge color="danger">
           Novo
         </app-badge>
+
+      }
+
+      @if (alerta.descartado) {
+
+        <app-badge color="warning">
+          Descartado
+        </app-badge>
+
       }
 
       <app-badge [color]="priorityColor">
         {{ priorityLabel }}
       </app-badge>
+
     </div>
 
     <p>{{ alerta.descricao }}</p>
@@ -32,26 +45,58 @@
 
   </div>
 
-  @if (!compact) {
-    <div class="alert-actions">
+@if (!compact) {
 
-      @if (!alerta.visualizado) {
-        <app-button
-          color="outline"
-          size="small"
-          (click)="markAsRead.emit(alerta)">
-          Marcar como lido
-        </app-button>
-      }
+  <div class="alert-actions">
+
+  @if (alerta.descartado) {
+
+    <app-button
+      color="success"
+      size="small"
+      icon="restore"
+      appearance="icon"
+      aria-label="Restaurar alerta"
+      (click)="restore.emit(alerta)">
+    </app-button>
+
+  } @else {
+
+    @if (!alerta.visualizado) {
 
       <app-button
-        color="ghost"
+        color="primary"
         size="small"
-        (click)="discard.emit(alerta)">
-        Descartar
+        icon="done"
+        appearance="icon"
+        aria-label="Marcar como lido"
+        (click)="markAsRead.emit(alerta)">
       </app-button>
 
-    </div>
+    } @else {
+
+      <app-button
+        color="warning"
+        size="small"
+        icon="mark_email_unread"
+        appearance="icon"
+        aria-label="Marcar como não lido"
+        (click)="markAsUnread.emit(alerta)">
+      </app-button>
+
+    }
+
+    <app-button
+      color="danger"
+      size="small"
+      icon="delete_outline"
+      appearance="icon"
+      aria-label="Descartar alerta"
+      (click)="discard.emit(alerta)">
+    </app-button>
+
   }
 
 </div>
+
+}

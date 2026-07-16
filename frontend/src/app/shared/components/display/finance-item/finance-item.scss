@@ -49,20 +49,27 @@
   }
 }
 
-.finance-item.income .finance-icon {
-  background: rgba(34, 197, 94, 0.14);
+.finance-icon {
 
-  mat-icon {
-    color: #22c55e;
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  flex-shrink: 0;
+
+  mat-icon{
+
+    font-size:22px;
+    width:22px;
+    height:22px;
+
   }
-}
 
-.finance-item.expense .finance-icon {
-  background: rgba(239, 68, 68, 0.14);
-
-  mat-icon {
-    color: #ef4444;
-  }
 }
 
 .finance-info {

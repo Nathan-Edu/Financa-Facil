@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Despesa } from '../../../core/models/despesa.model';
+import { Categoria } from '../../../core/models/categoria.model';
+
 import { DespesaService } from '../../../core/services/despesa.service';
+import { CategoriaService } from '../../../core/services/categoria.service';
+
 import { ToastService } from '../../../shared/components/feedback/toast/toast.service';
 
 import { PageHeader } from '../../../shared/components/layout/page-header/page-header';
@@ -18,11 +22,10 @@ import { StatCard } from '../../../shared/components/display/stat-card/stat-card
 import { FinanceItem } from '../../../shared/components/display/finance-item/finance-item';
 
 import { Modal } from '../../../shared/components/feedback/modal/modal';
+import { ConfirmDialog } from '../../../shared/components/feedback/confirm-dialog/confirm-dialog';
 import { EmptyState } from '../../../shared/components/feedback/empty-state/empty-state';
-import { Pagination } from '../../../shared/components/tables/pagination/pagination';
 
-import { Categoria } from '../../../core/models/categoria.model';
-import { CategoriaService } from '../../../core/services/categoria.service';
+import { Pagination } from '../../../shared/components/tables/pagination/pagination';
 
 @Component({
   selector: 'app-despesas',
@@ -38,17 +41,27 @@ import { CategoriaService } from '../../../core/services/categoria.service';
     StatCard,
     FinanceItem,
     Modal,
+    ConfirmDialog,
     EmptyState,
     Pagination
   ],
   templateUrl: './despesas.html',
-  styleUrl: './despesas.scss',
+  styleUrl: './despesas.scss'
 })
 export class Despesas implements OnInit {
   showModal = false;
+  showConfirmDialog = false;
+
+  despesaSelecionada: Despesa | null = null;
 
   search = '';
   categoria = 'Todas';
+
+  descricao = '';
+  categoriaFormulario = '';
+  valor = 0;
+  data = '';
+  observacao = '';
 
   currentPage = 1;
   totalPages = 1;
@@ -59,75 +72,353 @@ export class Despesas implements OnInit {
   despesas: Despesa[] = [];
 
   constructor(
-  private despesaService: DespesaService,
-  private categoriaService: CategoriaService,
-  private toast: ToastService
+    private despesaService: DespesaService,
+    private categoriaService: CategoriaService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
-  this.carregarDespesas();
-  this.carregarCategorias();
+    this.carregarDespesas();
+    this.carregarCategorias();
   }
 
   carregarDespesas(): void {
     this.despesaService.listar().subscribe({
-      next: (despesas) => {
+      next: (despesas: Despesa[]) => {
         this.despesas = despesas;
       },
       error: () => {
-        this.toast.error('Erro ao carregar despesas.');
+        this.toast.error(
+          'Erro ao carregar despesas.'
+        );
+      }
+    });
+  }
+
+  carregarCategorias(): void {
+    this.categoriaService.listar().subscribe({
+      next: (categorias: Categoria[]) => {
+        const categoriasDespesa = categorias
+          .filter(
+            (categoria) =>
+              categoria.ativa &&
+              categoria.tipo === 'despesa'
+          )
+          .map((categoria) => categoria.nome);
+
+        this.categoriasFormulario = categoriasDespesa;
+        this.categorias = [
+          'Todas',
+          ...categoriasDespesa
+        ];
+
+        if (
+          !this.categoriaFormulario &&
+          categoriasDespesa.length > 0
+        ) {
+          this.categoriaFormulario =
+            categoriasDespesa[0];
+        }
+      },
+      error: () => {
+        this.toast.error(
+          'Erro ao carregar categorias de despesas.'
+        );
       }
     });
   }
 
   get despesasFiltradas(): Despesa[] {
-    return this.despesas.filter((despesa) => {
-      const busca = this.search.toLowerCase();
+    const busca = this.search
+      .trim()
+      .toLowerCase();
 
+    return this.despesas.filter((despesa) => {
       const combinaBusca =
-        despesa.descricao.toLowerCase().includes(busca) ||
-        despesa.categoria.toLowerCase().includes(busca);
+        despesa.descricao
+          .toLowerCase()
+          .includes(busca) ||
+        despesa.categoria
+          .toLowerCase()
+          .includes(busca);
 
       const combinaCategoria =
-        this.categoria === 'Todas' || despesa.categoria === this.categoria;
+        this.categoria === 'Todas' ||
+        despesa.categoria === this.categoria;
 
       return combinaBusca && combinaCategoria;
     });
   }
 
-  salvar(): void {
+  get totalGasto(): string {
+    const total = this.despesas.reduce(
+      (soma, despesa) =>
+        soma + despesa.valor,
+      0
+    );
+
+    return this.formatarMoeda(total);
+  }
+
+  get totalMesAtual(): string {
+    const hoje = new Date();
+
+    const total = this.despesas
+      .filter((despesa) => {
+        const dataDespesa =
+          this.converterData(despesa.data);
+
+        return (
+          dataDespesa.getMonth() ===
+            hoje.getMonth() &&
+          dataDespesa.getFullYear() ===
+            hoje.getFullYear()
+        );
+      })
+      .reduce(
+        (soma, despesa) =>
+          soma + despesa.valor,
+        0
+      );
+
+    return this.formatarMoeda(total);
+  }
+
+  get quantidadeDespesas(): string {
+    return this.despesas.length.toString();
+  }
+
+  get tituloModal(): string {
+    return this.despesaSelecionada
+      ? 'Editar Despesa'
+      : 'Nova Despesa';
+  }
+
+  get subtituloModal(): string {
+    return this.despesaSelecionada
+      ? 'Atualize os dados da despesa'
+      : 'Cadastre uma nova saída financeira';
+  }
+
+  abrirNovaDespesa(): void {
+    this.despesaSelecionada = null;
+
+    this.descricao = '';
+    this.categoriaFormulario =
+      this.categoriasFormulario[0] ?? '';
+    this.valor = 0;
+    this.data = '';
+    this.observacao = '';
+
+    this.showModal = true;
+  }
+
+  editarDespesa(despesa: Despesa): void {
+    this.despesaSelecionada = despesa;
+
+    this.descricao = despesa.descricao;
+    this.categoriaFormulario =
+      despesa.categoria;
+    this.valor = despesa.valor;
+    this.data = despesa.data;
+    this.observacao =
+      despesa.observacao ?? '';
+
+    this.showModal = true;
+  }
+
+  salvarDespesa(): void {
+    if (!this.descricao.trim()) {
+      this.toast.warning(
+        'Informe a descrição da despesa.'
+      );
+      return;
+    }
+
+    if (!this.categoriaFormulario) {
+      this.toast.warning(
+        'Selecione uma categoria.'
+      );
+      return;
+    }
+
+    if (this.valor <= 0) {
+      this.toast.warning(
+        'Informe um valor maior que zero.'
+      );
+      return;
+    }
+
+    if (!this.data) {
+      this.toast.warning(
+        'Informe a data da despesa.'
+      );
+      return;
+    }
+
+    if (this.despesaSelecionada) {
+      this.atualizarDespesa();
+      return;
+    }
+
+    this.criarDespesa();
+  }
+
+  private criarDespesa(): void {
+    this.despesaService
+      .criar({
+        descricao: this.descricao.trim(),
+        categoria: this.categoriaFormulario,
+        valor: this.valor,
+        data: this.data,
+        observacao:
+          this.observacao.trim() || undefined
+      })
+      .subscribe({
+        next: () => {
+          this.toast.success(
+            'Despesa cadastrada com sucesso.'
+          );
+
+          this.fecharModal();
+          this.carregarDespesas();
+        },
+        error: () => {
+          this.toast.error(
+            'Erro ao cadastrar despesa.'
+          );
+        }
+      });
+  }
+
+  private atualizarDespesa(): void {
+    if (!this.despesaSelecionada) {
+      return;
+    }
+
+    const despesaAtualizada: Despesa = {
+      ...this.despesaSelecionada,
+      descricao: this.descricao.trim(),
+      categoria: this.categoriaFormulario,
+      valor: this.valor,
+      data: this.data,
+      observacao:
+        this.observacao.trim() || undefined
+    };
+
+    this.despesaService
+      .editar(despesaAtualizada)
+      .subscribe({
+        next: (ok: boolean) => {
+          if (!ok) {
+            this.toast.error(
+              'Despesa não encontrada.'
+            );
+            return;
+          }
+
+          this.toast.success(
+            'Despesa atualizada com sucesso.'
+          );
+
+          this.fecharModal();
+          this.carregarDespesas();
+        },
+        error: () => {
+          this.toast.error(
+            'Erro ao atualizar despesa.'
+          );
+        }
+      });
+  }
+
+  solicitarExclusao(
+    despesa: Despesa
+  ): void {
+    this.despesaSelecionada = despesa;
+    this.showConfirmDialog = true;
+  }
+
+  confirmarExclusao(): void {
+    if (!this.despesaSelecionada) {
+      return;
+    }
+
+    this.despesaService
+      .excluir(this.despesaSelecionada.id)
+      .subscribe({
+        next: (ok: boolean) => {
+          if (!ok) {
+            this.toast.error(
+              'Despesa não encontrada.'
+            );
+            return;
+          }
+
+          this.toast.success(
+            'Despesa excluída com sucesso.'
+          );
+
+          this.showConfirmDialog = false;
+          this.despesaSelecionada = null;
+
+          this.carregarDespesas();
+        },
+        error: () => {
+          this.toast.error(
+            'Erro ao excluir despesa.'
+          );
+        }
+      });
+  }
+
+  cancelarExclusao(): void {
+    this.showConfirmDialog = false;
+    this.despesaSelecionada = null;
+  }
+
+  fecharModal(): void {
     this.showModal = false;
-    this.toast.success('Despesa cadastrada com sucesso.');
-  }
-
-  editar(): void {
-    this.toast.info('Edição de despesa será implementada.');
-  }
-
-  excluir(): void {
-    this.toast.warning('Exclusão de despesa será implementada.');
+    this.despesaSelecionada = null;
   }
 
   mudarPagina(page: number): void {
     this.currentPage = page;
   }
 
-  carregarCategorias(): void {
-  this.categoriaService.listar().subscribe({
-    next: (categorias: Categoria[]) => {
-      const categoriasDespesa = categorias
-        .filter((categoria) =>
-          categoria.ativa &&
-          categoria.tipo === 'despesa'
-        )
-        .map((categoria) => categoria.nome);
+  buscarCategoria(
+    nome: string
+  ): Categoria | undefined {
+    return this.categoriaService
+      .buscarPorNome(nome);
+  }
 
-      this.categoriasFormulario = categoriasDespesa;
-      this.categorias = ['Todas', ...categoriasDespesa];
-    },
-    error: () => {
-      this.toast.error('Erro ao carregar categorias de despesas.');
+  formatarMoeda(valor: number): string {
+    return valor.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+  }
+
+  private converterData(data: string): Date {
+    if (data.includes('/')) {
+      const [dia, mes, ano] =
+        data.split('/').map(Number);
+
+      return new Date(
+        ano,
+        mes - 1,
+        dia
+      );
     }
-  });
-}
+
+    const [ano, mes, dia] =
+      data.split('-').map(Number);
+
+    return new Date(
+      ano,
+      mes - 1,
+      dia
+    );
+  }
 }

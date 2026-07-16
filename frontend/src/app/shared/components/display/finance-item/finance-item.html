@@ -5,9 +5,18 @@
 
   <div class="finance-main">
 
-    <div class="finance-icon">
-      <mat-icon>{{ icon }}</mat-icon>
-    </div>
+    <div
+  class="finance-icon"
+  [style.background-color]="color + '20'">
+
+  <mat-icon
+    [style.color]="color">
+
+    {{ icon }}
+
+  </mat-icon>
+
+</div>
 
     <div class="finance-info">
 

@@ -21,10 +21,18 @@ import { Button } from '../../forms/button/button';
   styleUrl: './finance-item.scss'
 })
 export class FinanceItem {
+
   @Input() title = '';
+
   @Input() category = '';
+
   @Input() date = '';
+
   @Input() value = '';
+
+  @Input() icon = 'category';
+
+  @Input() color = '#3b82f6';
 
   @Input()
   type: 'income' | 'expense' = 'income';
@@ -35,24 +43,20 @@ export class FinanceItem {
   @Output()
   delete = new EventEmitter<void>();
 
-  get icon(): string {
-    return this.type === 'income'
-      ? 'trending_up'
-      : 'trending_down';
-  }
-
   get dataFormatada(): string {
-  if (!this.date) {
-    return '';
+
+    if (!this.date) {
+      return '';
+    }
+
+    if (this.date.includes('/')) {
+      return this.date;
+    }
+
+    const [ano, mes, dia] =
+      this.date.split('-');
+
+    return `${dia}/${mes}/${ano}`;
   }
 
-  if (this.date.includes('/')) {
-    return this.date;
-  }
-
-  const [ano, mes, dia] =
-    this.date.split('-');
-
-  return `${dia}/${mes}/${ano}`;
-}
 }

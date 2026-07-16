@@ -388,6 +388,10 @@ export class Receitas implements OnInit {
     });
   }
 
+  buscarCategoria(nome: string): Categoria | undefined {
+  return this.categoriaService.buscarPorNome(nome);
+  }
+
   private converterData(data: string): Date {
     if (data.includes('/')) {
       const [dia, mes, ano] =

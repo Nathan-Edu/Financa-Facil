@@ -1,7 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
+
 import { MatIconModule } from '@angular/material/icon';
 
 import { Alerta } from '../../../../core/models/alerta.model';
+
 import { Badge } from '../badge/badge';
 import { Button } from '../../forms/button/button';
 
@@ -13,14 +20,26 @@ import { Button } from '../../forms/button/button';
     Button
   ],
   templateUrl: './alert-item.html',
-  styleUrl: './alert-item.scss',
+  styleUrl: './alert-item.scss'
 })
 export class AlertItem {
-  @Input({ required: true }) alerta!: Alerta;
+  @Input({ required: true })
+  alerta!: Alerta;
 
-  @Output() markAsRead = new EventEmitter<Alerta>();
-  @Output() discard = new EventEmitter<Alerta>();
-  @Input() compact = false;
+  @Input()
+  compact = false;
+
+  @Output()
+  markAsRead = new EventEmitter<Alerta>();
+
+  @Output()
+  markAsUnread = new EventEmitter<Alerta>();
+
+  @Output()
+  discard = new EventEmitter<Alerta>();
+
+  @Output()
+  restore = new EventEmitter<Alerta>();
 
   get icon(): string {
     switch (this.alerta.tipo) {
@@ -28,10 +47,10 @@ export class AlertItem {
         return 'calendar_month';
 
       case 'orcamento':
-        return 'attach_money';
+        return 'account_balance_wallet';
 
       case 'meta':
-        return 'check_circle';
+        return 'flag';
 
       default:
         return 'info';
@@ -51,7 +70,10 @@ export class AlertItem {
     }
   }
 
-  get priorityColor(): 'danger' | 'warning' | 'success' {
+  get priorityColor():
+    | 'danger'
+    | 'warning'
+    | 'success' {
     switch (this.alerta.prioridade) {
       case 'alta':
         return 'danger';
@@ -65,7 +87,18 @@ export class AlertItem {
   }
 
   get formattedDate(): string {
-    const [year, month, day] = this.alerta.data.split('-');
-    return `${day}/${month}/${year}`;
+    const data = this.alerta.data;
+
+    if (!data) {
+      return '-';
+    }
+
+    if (data.includes('/')) {
+      return data;
+    }
+
+    const [ano, mes, dia] = data.split('-');
+
+    return `${dia}/${mes}/${ano}`;
   }
 }

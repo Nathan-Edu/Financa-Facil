@@ -80,6 +80,8 @@
 
           <app-finance-item
             [title]="receita.descricao"
+            [icon]="buscarCategoria(receita.categoria)?.icone ?? 'payments'"
+            [color]="buscarCategoria(receita.categoria)?.cor ?? '#3b82f6'"
             [category]="receita.categoria"
             [date]="receita.data"
             [value]="receita.valorFormatado"

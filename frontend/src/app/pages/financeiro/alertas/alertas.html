@@ -3,7 +3,6 @@
   <app-page-header
     title="Alertas"
     subtitle="Acompanhe notificações importantes do sistema">
-
   </app-page-header>
 
   <section class="summary-grid">
@@ -11,7 +10,7 @@
     <app-stat-card
       title="Total"
       [value]="totalAlertas"
-      subtitle="Alertas cadastrados"
+      subtitle="Alertas ativos"
       icon="notifications"
       color="primary">
     </app-stat-card>
@@ -46,46 +45,117 @@
     title="Central de Alertas"
     subtitle="Todos os alertas gerados pelo sistema">
 
-    @if (naoVisualizados !== '0') {
+    <div class="filters-toolbar">
 
-      <div class="info-banner">
+      <div class="filters-search">
 
-        <strong>
-          Você possui {{ naoVisualizados }} alerta(s) não visualizado(s).
-        </strong>
+        <app-search-input
+          label="Buscar"
+          placeholder="Buscar alertas..."
+          [(value)]="search">
+        </app-search-input>
 
-        <span>
-          Recomendamos verificar os alertas de alta prioridade primeiro.
-        </span>
+      </div>
+
+      <div class="filters-button">
+
+        <app-button
+          color="outline"
+          icon="filter_list"
+          (click)="showFilters = !showFilters">
+
+          {{ showFilters ? 'Ocultar filtros' : 'Filtros' }}
+
+        </app-button>
+
+      </div>
+
+    </div>
+
+    @if (showFilters) {
+
+      <div class="advanced-filters">
+
+        <app-select
+          label="Leitura"
+          [options]="leituraOptions"
+          [(value)]="filtroLeitura">
+        </app-select>
+
+        <app-select
+          label="Prioridade"
+          [options]="prioridadeOptions"
+          [(value)]="filtroPrioridade">
+        </app-select>
+
+        <app-select
+          label="Exibição"
+          [options]="exibicaoOptions"
+          [(value)]="filtroExibicao">
+        </app-select>
+
+        <app-button
+          color="outline"
+          icon="restart_alt"
+          (click)="limparFiltros()">
+          Limpar
+        </app-button>
 
       </div>
 
     }
 
-    @if (alertas.length === 0) {
+    @if (
+      filtroExibicao !== 'Descartados' &&
+      naoVisualizados !== '0'
+    ) {
 
-      <div class="empty">
+      <div class="info-banner">
 
-        <mat-icon>notifications_off</mat-icon>
+        <mat-icon>
+          notifications_active
+        </mat-icon>
 
-        <h3>Nenhum alerta encontrado</h3>
+        <div class="info-banner-content">
 
-        <p>
-          Todos os alertas foram resolvidos ou descartados.
-        </p>
+          <strong>
+            {{ naoVisualizados }}
+            alerta(s) pendente(s) de leitura
+          </strong>
+
+          <span>
+            Priorize os alertas de alta prioridade.
+          </span>
+
+        </div>
 
       </div>
+
+    }
+
+    @if (alertasFiltrados.length === 0) {
+
+      <app-empty-state
+        icon="notifications_off"
+        title="Nenhum alerta encontrado"
+        description="Não existem alertas correspondentes aos filtros selecionados.">
+      </app-empty-state>
 
     } @else {
 
       <div class="alert-list">
 
-        @for (alerta of alertas; track alerta.id) {
+        @for (
+          alerta of alertasFiltrados;
+          track alerta.id
+        ) {
 
           <app-alert-item
             [alerta]="alerta"
             (markAsRead)="marcarComoLido($event)"
-            (discard)="descartar($event)">
+            (markAsUnread)="marcarComoNaoLido($event)"
+            (discard)="solicitarDescarte($event)"
+            (restore)="restaurar($event)">
           </app-alert-item>
 
         }
@@ -100,28 +170,19 @@
 
     }
 
-    @if(showConfirmDialog){
-
-<app-confirm-dialog
-
-    title="Descartar alerta"
-
-    message="Deseja realmente descartar este alerta? Esta ação poderá ser desfeita apenas quando houver persistência em banco."
-
-    confirmText="Descartar"
-
-    cancelText="Cancelar"
-
-    (confirm)="confirmarDescarte()"
-
-    (cancel)="cancelarDescarte()">
-
-</app-confirm-dialog>
-
-}
-
-
   </app-card>
 
-</main>
+  @if (showConfirmDialog) {
 
+    <app-confirm-dialog
+      title="Descartar alerta"
+      message="Deseja realmente descartar este alerta? Ele poderá ser restaurado posteriormente."
+      confirmText="Descartar"
+      cancelText="Cancelar"
+      (confirm)="confirmarDescarte()"
+      (cancel)="cancelarDescarte()">
+    </app-confirm-dialog>
+
+  }
+
+</main>

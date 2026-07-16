@@ -7,9 +7,11 @@ import { PageHeader } from '../../shared/components/layout/page-header/page-head
 
 import { DashboardSummary } from './components/dashboard-summary/dashboard-summary';
 import { DashboardTransactions } from './components/dashboard-transactions/dashboard-transactions';
+import { DashboardPayments } from './components/dashboard-payments/dashboard-payments';
 import { DashboardAlerts } from './components/dashboard-alerts/dashboard-alerts';
 import { DashboardQuickActions } from './components/dashboard-quick-actions/dashboard-quick-actions';
 import { DashboardAnalysis } from './components/dashboard-analysis/dashboard-analysis';
+import { DashboardCategories } from './components/dashboard-categories/dashboard-categories';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,9 +19,11 @@ import { DashboardAnalysis } from './components/dashboard-analysis/dashboard-ana
     PageHeader,
     DashboardSummary,
     DashboardTransactions,
+    DashboardPayments,
     DashboardAlerts,
     DashboardQuickActions,
-    DashboardAnalysis
+    DashboardAnalysis,
+    DashboardCategories
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'

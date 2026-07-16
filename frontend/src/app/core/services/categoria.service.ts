@@ -12,7 +12,17 @@ export class CategoriaService {
     return of(CATEGORIAS_MOCK);
   }
 
-  criar(categoria: Omit<Categoria, 'id'>): Observable<Categoria> {
+  buscarPorNome(nome: string): Categoria | undefined {
+    return CATEGORIAS_MOCK.find(
+      (categoria) =>
+        categoria.nome.trim().toLowerCase() ===
+        nome.trim().toLowerCase()
+    );
+  }
+
+  criar(
+    categoria: Omit<Categoria, 'id'>
+  ): Observable<Categoria> {
     const novaCategoria: Categoria = {
       ...categoria,
       id: this.proximoId()
@@ -23,9 +33,12 @@ export class CategoriaService {
     return of(novaCategoria);
   }
 
-  editar(categoriaAtualizada: Categoria): Observable<boolean> {
+  editar(
+    categoriaAtualizada: Categoria
+  ): Observable<boolean> {
     const indice = CATEGORIAS_MOCK.findIndex(
-      (categoria) => categoria.id === categoriaAtualizada.id
+      (categoria) =>
+        categoria.id === categoriaAtualizada.id
     );
 
     if (indice === -1) {
@@ -58,8 +71,12 @@ export class CategoriaService {
       return 1;
     }
 
-    return Math.max(
-      ...CATEGORIAS_MOCK.map((categoria) => categoria.id)
-    ) + 1;
+    return (
+      Math.max(
+        ...CATEGORIAS_MOCK.map(
+          (categoria) => categoria.id
+        )
+      ) + 1
+    );
   }
 }

@@ -16,12 +16,26 @@
 
       <div class="transaction-list">
 
-        @for (receita of receitas; track receita.id) {
+        @for (
+          receita of receitas;
+          track receita.id
+        ) {
 
           <app-transaction-item
             [title]="receita.descricao"
+            [category]="receita.categoria"
             [date]="receita.data"
             [value]="receita.valorFormatado"
+            [icon]="
+              buscarCategoria(
+                receita.categoria
+              )?.icone ?? 'payments'
+            "
+            [color]="
+              buscarCategoria(
+                receita.categoria
+              )?.cor ?? '#22c55e'
+            "
             type="income">
           </app-transaction-item>
 
@@ -49,12 +63,26 @@
 
       <div class="transaction-list">
 
-        @for (despesa of despesas; track despesa.id) {
+        @for (
+          despesa of despesas;
+          track despesa.id
+        ) {
 
           <app-transaction-item
             [title]="despesa.descricao"
+            [category]="despesa.categoria"
             [date]="despesa.data"
             [value]="despesa.valorFormatado"
+            [icon]="
+              buscarCategoria(
+                despesa.categoria
+              )?.icone ?? 'payments'
+            "
+            [color]="
+              buscarCategoria(
+                despesa.categoria
+              )?.cor ?? '#ef4444'
+            "
             type="expense">
           </app-transaction-item>
 
