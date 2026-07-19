@@ -261,4 +261,39 @@
 
 </app-card>
 
+<app-input
+  label="E-mail"
+  type="email"
+  icon="mail"
+  placeholder="Digite seu e-mail"
+  [(value)]="email">
+</app-input>
+
+<app-password-input
+
+    label="Senha"
+
+    placeholder="Digite sua senha"
+
+    [(value)]="senha">
+
+</app-password-input>
+
+<app-checkbox
+  label="Lembrar-me"
+  [(checked)]="lembrar">
+</app-checkbox>
+
+<app-switch
+
+    label="Modo escuro"
+
+    description="Alternar tema do sistema"
+
+    [(checked)]="modoEscuro">
+
+</app-switch>
+
+<app-divider text="ou"></app-divider>
+
 </main>

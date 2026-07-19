@@ -27,6 +27,11 @@ import{ProgressBar} from '../../../shared/components/display/progress-bar/progre
 import { ParcelItem } from '../../../shared/components/display/parcel-item/parcel-item';
 import { Alerta } from '../../../core/models/alerta.model';
 import { Parcela } from '../../../core/models/parcela.model';
+import {Input} from '../../../shared/components/forms/input/input';
+import { PasswordInput } from '../../../shared/components/forms/password-input/password-input';
+import { Checkbox } from '../../../shared/components/forms/checkbox/checkbox';
+import { Switch } from '../../../shared/components/forms/switch/switch';
+import { Divider } from '../../../shared/components/layout/divider/divider';
 
 @Component({
   selector: 'app-playground',
@@ -51,7 +56,12 @@ import { Parcela } from '../../../core/models/parcela.model';
     Textarea,
     DataTable,
     ProgressBar,
-    ParcelItem
+    ParcelItem,
+    Input,
+    PasswordInput,
+    Checkbox,
+    Switch,
+    Divider
   ],
   templateUrl: './playground.html',
   styleUrl: './playground.scss',
@@ -59,6 +69,10 @@ import { Parcela } from '../../../core/models/parcela.model';
 export class Playground {
   showModal = false;
   showConfirm = false;
+  email = '';
+  senha = '';
+  lembrar = false;
+  modoEscuro = false;
   constructor(private toast: ToastService) {}
 
   showSuccess(): void {

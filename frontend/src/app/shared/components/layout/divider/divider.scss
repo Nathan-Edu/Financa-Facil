@@ -1,0 +1,21 @@
+.divider {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.divider-line {
+  height: 1px;
+  flex: 1;
+
+  background: var(--border);
+}
+
+.divider-text {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
