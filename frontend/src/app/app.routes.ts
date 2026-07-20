@@ -18,6 +18,7 @@ import { Categorias } from './pages/financeiro/categorias/categorias';
 
 import { MinhaConta } from './pages/conta/minha-conta/minha-conta';
 import { PerfisFinanceiros } from './pages/conta/perfis-financeiros/perfis-financeiros';
+import { AlterarSenha } from './pages/auth/alterar-senha/alterar-senha';
 
 import { Playground } from './pages/dev/playground/playground';
 
@@ -79,9 +80,14 @@ export const routes: Routes = [
         component: MinhaConta
       },
       {
+        path: 'alterar-senha',
+        component: AlterarSenha
+      },
+      {
         path: 'perfis-financeiros',
         component: PerfisFinanceiros
       },
+
       {
         path: 'playground',
         component: Playground

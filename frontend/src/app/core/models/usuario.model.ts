@@ -3,4 +3,9 @@ export interface Usuario {
   nome: string;
   email: string;
   perfilAtivo: 'pessoal' | 'empresa';
+
+  cpf?: string;
+  cnpj?: string;
+
+  avatar?: string;
 }

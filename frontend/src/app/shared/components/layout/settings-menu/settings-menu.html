@@ -6,75 +6,45 @@
   <mat-icon>settings</mat-icon>
 </button>
 
-  <mat-menu
-    #settingsMenu="matMenu"
-    class="settings-panel">
+<mat-menu
+  #settingsMenu="matMenu"
+  class="settings-panel">
 
   <div class="menu-header">
-    <div class="menu-header-icon">
-      <mat-icon>person</mat-icon>
-    </div>
 
     @if (usuario; as usuarioLogado) {
+
+      <div class="user-avatar">
+        {{ iniciaisUsuario }}
+      </div>
+
       <div class="menu-user">
         <h3>{{ usuarioLogado.nome }}</h3>
         <p>{{ usuarioLogado.email }}</p>
 
-        <span class="user-profile-badge">
+        <span
+          class="user-profile-badge"
+          [class.empresa]="classePerfil === 'empresa'"
+          [class.pessoal]="classePerfil === 'pessoal'">
+
           {{ perfilAtual }}
         </span>
       </div>
+
     } @else {
-      <div>
-        <h3>Configurações</h3>
-        <p>Usuário não identificado</p>
+
+      <div class="menu-header-icon">
+        <mat-icon>person</mat-icon>
       </div>
+
+      <div>
+        <h3>Usuário</h3>
+        <p>Não autenticado</p>
+      </div>
+
     }
+
   </div>
-
-  <button
-    mat-menu-item
-    [matMenuTriggerFor]="profileMenu">
-
-    <mat-icon>person</mat-icon>
-
-    <div class="menu-item-content">
-      <span class="menu-title">
-        Perfil
-      </span>
-
-      <span class="badge">
-        {{ perfilAtual }}
-      </span>
-    </div>
-
-    <mat-icon class="chevron">
-      chevron_right
-    </mat-icon>
-  </button>
-
-  <button
-    mat-menu-item
-    [matMenuTriggerFor]="themeMenu">
-
-    <mat-icon>palette</mat-icon>
-
-    <div class="menu-item-content">
-      <span class="menu-title">
-        Aparência
-      </span>
-
-      <span class="badge">
-        {{ temaAtual }}
-      </span>
-    </div>
-
-    <mat-icon class="chevron">
-      chevron_right
-    </mat-icon>
-  </button>
-
-  <div class="menu-divider"></div>
 
   <button
     mat-menu-item
@@ -96,6 +66,50 @@
 
   <button
     mat-menu-item
+    [matMenuTriggerFor]="profileMenu">
+
+    <mat-icon>account_balance</mat-icon>
+
+    <div class="menu-item-content">
+      <span class="menu-title">
+        Perfil Financeiro
+      </span>
+
+      <span class="badge">
+        {{ perfilAtual }}
+      </span>
+    </div>
+
+    <mat-icon class="chevron">
+      chevron_right
+    </mat-icon>
+  </button>
+
+  <button
+  mat-menu-item
+  [matMenuTriggerFor]="themeMenu">
+
+  <mat-icon>palette</mat-icon>
+
+  <div class="menu-item-content">
+    <span class="menu-title">
+      Aparência
+    </span>
+
+    <span class="badge">
+      {{ temaAtual }}
+    </span>
+  </div>
+
+  <mat-icon class="chevron">
+    chevron_right
+  </mat-icon>
+</button>
+
+  <div class="menu-divider"></div>
+
+  <button
+    mat-menu-item
     class="logout"
     (click)="sair()">
 
@@ -110,8 +124,8 @@
   class="settings-panel">
 
   <div class="submenu-header">
-    <mat-icon>person</mat-icon>
-    <span>Perfil</span>
+    <mat-icon>account_balance</mat-icon>
+    <span>Perfil Financeiro</span>
   </div>
 
   <button

@@ -5,18 +5,22 @@ export interface UsuarioMock extends Usuario {
 }
 
 export const USUARIOS_MOCK: UsuarioMock[] = [
-  {
-    id: 1,
-    nome: 'Administrador',
-    email: 'admin@financafacil.com',
-    senha: '123456',
-    perfilAtivo: 'pessoal'
-  },
-  {
-    id: 2,
-    nome: 'Nathan Eduardo',
-    email: 'nathan@financafacil.com',
-    senha: '123456',
-    perfilAtivo: 'empresa'
-  }
+{
+  id: 1,
+  nome: 'Administrador',
+  email: 'admin@financafacil.com',
+  senha: '123456',
+  perfilAtivo: 'pessoal',
+  cpf: '123.456.789-00',
+  cnpj: ''
+},
+{
+  id: 2,
+  nome: 'Nathan Eduardo',
+  email: 'nathan@financafacil.com',
+  senha: '123456',
+  perfilAtivo: 'empresa',
+  cpf: '',
+  cnpj: '12.345.678/0001-90'
+}
 ];

@@ -75,9 +75,8 @@ export class SettingsMenu implements OnInit {
   }
 
   alterarSenha(): void {
-    console.log(
-      'A página de alteração de senha ainda será implementada.'
-    );
+   this.router.navigate(['/alterar-senha']);
+
   }
 
   sair(): void {
@@ -109,4 +108,30 @@ export class SettingsMenu implements OnInit {
 
     this.alterarTema(temaSalvo);
   }
+  get iniciaisUsuario(): string {
+
+  if (!this.usuario?.nome) {
+    return '?';
+  }
+
+  const nomes = this.usuario.nome.trim().split(' ');
+
+  if (nomes.length === 1) {
+    return nomes[0].charAt(0).toUpperCase();
+  }
+
+  return (
+    nomes[0].charAt(0) +
+    nomes[nomes.length - 1].charAt(0)
+  ).toUpperCase();
+
+}
+
+get classePerfil(): string {
+
+  return this.perfilAtual === 'Empresa'
+    ? 'empresa'
+    : 'pessoal';
+
+}
 }

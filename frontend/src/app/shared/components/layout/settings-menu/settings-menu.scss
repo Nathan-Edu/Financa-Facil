@@ -5,7 +5,7 @@
 .menu-header {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   padding: 16px 18px 14px;
 
   h3 {
@@ -81,50 +81,40 @@
     margin-right:8px;
 }
 
-.menu-item-content{
-
-    flex:1;
-
-    display:flex;
-
-    align-items:center;
-
-    margin-left:12px;
-
+.menu-item-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 12px;
+  min-width: 0;
 }
 
-.menu-title{
 
-    font-weight:600;
-
+.menu-title {
+  flex: 1;
+  font-weight: 600;
+  line-height: 1.15;
+  font-size: 15px;
 }
 
-.badge{
-
-    margin-left:auto;
-
-    margin-right:12px;
-
-    padding:4px 12px;
-
-    border-radius:999px;
-
-    background:rgba(255,255,255,.10);
-
-    color:var(--text);
-
-    font-size:12px;
-
-    font-weight:600;
-
-    white-space:nowrap;
-
+.badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: 8px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.chevron{
-
-    font-size:18px;
-
+.chevron {
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 18px;
 }
 
 .menu-user {
@@ -159,4 +149,68 @@
   color: var(--primary);
   font-size: 11px;
   font-weight: 700;
+}
+
+.user-avatar {
+
+  width: 60px;
+
+  height: 60px;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+      135deg,
+      var(--primary),
+      #60a5fa
+  );
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+  flex-shrink: 0;
+
+}
+
+.user-profile-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  margin-top: 6px;
+
+}
+
+.user-profile-badge.pessoal {
+
+  background: rgba(34,197,94,.18);
+
+  color: #22c55e;
+
+}
+
+.user-profile-badge.empresa {
+
+  background: rgba(59,130,246,.18);
+
+  color: #3b82f6;
+
 }

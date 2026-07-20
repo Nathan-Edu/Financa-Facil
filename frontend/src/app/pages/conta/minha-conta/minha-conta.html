@@ -1,1 +1,165 @@
-<p>minha-conta works!</p>
+<main class="minha-conta-page">
+
+  <app-page-header
+    title="Minha Conta"
+    subtitle="Gerencie seus dados pessoais e seu perfil financeiro">
+  </app-page-header>
+
+  <app-card>
+
+    <div class="profile-summary">
+
+      <div class="profile-avatar">
+        {{ iniciaisUsuario }}
+      </div>
+
+      <div class="profile-info">
+
+        <strong>
+          {{ usuario.nome || 'Usuário' }}
+        </strong>
+
+        <span>
+          {{ usuario.email || 'E-mail não informado' }}
+        </span>
+
+      </div>
+
+      <app-badge
+        [color]="
+          usuario.perfilAtivo === 'pessoal'
+            ? 'primary'
+            : 'success'
+        ">
+
+        {{ perfilFormatado }}
+
+      </app-badge>
+
+    </div>
+
+  </app-card>
+
+  <section class="account-grid">
+
+    <app-card
+      title="Dados Pessoais"
+      subtitle="Informações principais da sua conta">
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label for="nome">
+            Nome completo
+          </label>
+
+          <input
+            id="nome"
+            class="account-input"
+            type="text"
+            autocomplete="name"
+            placeholder="Digite seu nome completo"
+            [(ngModel)]="usuario.nome">
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="email">
+            E-mail
+          </label>
+
+          <input
+            id="email"
+            class="account-input"
+            type="email"
+            autocomplete="email"
+            placeholder="Digite seu e-mail"
+            [(ngModel)]="usuario.email">
+
+        </div>
+
+      </div>
+
+    </app-card>
+
+    <app-card
+      title="Perfil Financeiro"
+      subtitle="Defina o tipo de perfil utilizado no sistema">
+
+      <div class="form-grid">
+
+        <app-select
+          label="Tipo de perfil"
+          [options]="perfilOptions"
+          [value]="usuario.perfilAtivo"
+          (valueChange)="alterarPerfil($event)">
+        </app-select>
+
+        @if (usuario.perfilAtivo === 'pessoal') {
+
+          <div class="form-field">
+
+            <label for="cpf">
+              CPF
+            </label>
+
+            <input
+              id="cpf"
+              class="account-input"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="000.000.000-00"
+              maxlength="14"
+              [(ngModel)]="usuario.cpf">
+
+          </div>
+
+        } @else {
+
+          <div class="form-field">
+
+            <label for="cnpj">
+              CNPJ
+            </label>
+
+            <input
+              id="cnpj"
+              class="account-input"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="00.000.000/0001-00"
+              maxlength="18"
+              [(ngModel)]="usuario.cnpj">
+
+          </div>
+
+        }
+
+      </div>
+
+    </app-card>
+
+  </section>
+
+  <div class="account-actions">
+
+    <app-button
+      color="primary"
+      icon="save"
+      (click)="salvar()">
+
+      {{
+        salvando
+          ? 'Salvando...'
+          : 'Salvar alterações'
+      }}
+
+    </app-button>
+
+  </div>
+
+</main>
