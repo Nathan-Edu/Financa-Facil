@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TipoUsuario {
+  USUARIO
+  ADMINISTRADOR
+}
+
+enum TipoPerfil {
+  PESSOAL
+  EMPRESARIAL
+}
+
+enum TipoCategoria {
+  RECEITA
+  DESPESA
+  AMBOS
+}
+
+enum TipoTransacao {
+  RECEITA
+  DESPESA
+}
+
+enum StatusTransacao {
+  PENDENTE
+  PAGA
+  CANCELADA
+}
+
+enum StatusContaParcelada {
+  ATIVA
+  FINALIZADA
+  CANCELADA
+}
+
+enum StatusParcela {
+  PENDENTE
+  PAGA
+  VENCIDA
+  CANCELADA
+}
+
+model Usuario {
+  id                String                  @id @default(uuid()) @db.Uuid
+  nome              String                  @db.VarChar(120)
+  email             String                  @unique @db.VarChar(160)
+  senhaHash         String                  @map("senha_hash") @db.VarChar(255)
+  tipo              TipoUsuario             @default(USUARIO)
+  ativo             Boolean                 @default(true)
+  tentativasLogin   Int                     @default(0) @map("tentativas_login")
+  bloqueadoAte      DateTime?               @map("bloqueado_ate") @db.Timestamptz(3)
+  ultimoLoginEm     DateTime?               @map("ultimo_login_em") @db.Timestamptz(3)
+  createdAt         DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+  perfis            PerfilFinanceiro[]
+  refreshTokens     RefreshToken[]
+  tokensRedefinicao TokenRedefinicaoSenha[]
+  logs              LogAuditoria[]
+
+  @@map("usuarios")
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  usuarioId  String    @map("usuario_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.VarChar(255)
+  expiraEm   DateTime  @map("expira_em") @db.Timestamptz(3)
+  revogadoEm DateTime? @map("revogado_em") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@map("refresh_tokens")
+}
+
+model TokenRedefinicaoSenha {
+  id          String    @id @default(uuid()) @db.Uuid
+  usuarioId   String    @map("usuario_id") @db.Uuid
+  tokenHash   String    @unique @map("token_hash") @db.VarChar(255)
+  expiraEm    DateTime  @map("expira_em") @db.Timestamptz(3)
+  utilizadoEm DateTime? @map("utilizado_em") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@map("tokens_redefinicao_senha")
+}
+
+model PerfilFinanceiro {
+  id               String           @id @default(uuid()) @db.Uuid
+  usuarioId        String           @map("usuario_id") @db.Uuid
+  nome             String           @db.VarChar(120)
+  tipo             TipoPerfil
+  documento        String           @db.VarChar(14)
+  renda            Decimal          @default(0) @db.Decimal(14, 2)
+  ativo            Boolean          @default(true)
+  selecionado      Boolean          @default(false)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  usuario          Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  categorias       Categoria[]
+  transacoes       Transacao[]
+  contasParceladas ContaParcelada[]
+  alertas          Alerta[]
+  logs             LogAuditoria[]
+
+  @@unique([usuarioId, documento])
+  @@index([usuarioId, ativo])
+  @@map("perfis_financeiros")
+}
+
+model Categoria {
+  id         String           @id @default(uuid()) @db.Uuid
+  perfilId   String           @map("perfil_id") @db.Uuid
+  nome       String           @db.VarChar(80)
+  tipo       TipoCategoria
+  ativa      Boolean          @default(true)
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  perfil     PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
+  transacoes Transacao[]
+  contas     ContaParcelada[]
+
+  @@unique([perfilId, nome, tipo])
+  @@index([perfilId, ativa])
+  @@map("categorias")
+}
+
+model Transacao {
+  id              String           @id @default(uuid()) @db.Uuid
+  perfilId        String           @map("perfil_id") @db.Uuid
+  categoriaId     String           @map("categoria_id") @db.Uuid
+  tipo            TipoTransacao
+  descricao       String           @db.VarChar(160)
+  valor           Decimal          @db.Decimal(14, 2)
+  dataCompetencia DateTime         @map("data_competencia") @db.Date
+  dataVencimento  DateTime?        @map("data_vencimento") @db.Date
+  dataPagamento   DateTime?        @map("data_pagamento") @db.Timestamptz(3)
+  status          StatusTransacao  @default(PENDENTE)
+  observacao      String?          @db.VarChar(500)
+  recorrente      Boolean          @default(false)
+  formaPagamento  String?          @map("forma_pagamento") @db.VarChar(50)
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  perfil          PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
+  categoria       Categoria        @relation(fields: [categoriaId], references: [id])
+
+  @@index([perfilId, dataCompetencia])
+  @@index([perfilId, tipo, status])
+  @@index([categoriaId])
+  @@map("transacoes")
+}
+
+model ContaParcelada {
+  id                 String               @id @default(uuid()) @db.Uuid
+  perfilId           String               @map("perfil_id") @db.Uuid
+  categoriaId        String               @map("categoria_id") @db.Uuid
+  descricao          String               @db.VarChar(160)
+  valorTotal         Decimal              @map("valor_total") @db.Decimal(14, 2)
+  quantidadeParcelas Int                  @map("quantidade_parcelas")
+  dataCompra         DateTime             @map("data_compra") @db.Date
+  status             StatusContaParcelada @default(ATIVA)
+  observacao         String?              @db.VarChar(500)
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  perfil             PerfilFinanceiro     @relation(fields: [perfilId], references: [id], onDelete: Cascade)
+  categoria          Categoria            @relation(fields: [categoriaId], references: [id])
+  parcelas           Parcela[]
+
+  @@index([perfilId, status])
+  @@map("contas_parceladas")
+}
+
+model Parcela {
+  id               String         @id @default(uuid()) @db.Uuid
+  contaParceladaId String         @map("conta_parcelada_id") @db.Uuid
+  numero           Int
+  valor            Decimal        @db.Decimal(14, 2)
+  dataVencimento   DateTime       @map("data_vencimento") @db.Date
+  dataPagamento    DateTime?      @map("data_pagamento") @db.Timestamptz(3)
+  status           StatusParcela  @default(PENDENTE)
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  contaParcelada   ContaParcelada @relation(fields: [contaParceladaId], references: [id], onDelete: Cascade)
+  alertas          Alerta[]
+
+  @@unique([contaParceladaId, numero])
+  @@index([status, dataVencimento])
+  @@map("parcelas")
+}
+
+model Alerta {
+  id         String           @id @default(uuid()) @db.Uuid
+  perfilId   String           @map("perfil_id") @db.Uuid
+  parcelaId  String?          @unique @map("parcela_id") @db.Uuid
+  mensagem   String           @db.VarChar(255)
+  lido       Boolean          @default(false)
+  dataAlerta DateTime         @default(now()) @map("data_alerta") @db.Timestamptz(3)
+  perfil     PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
+  parcela    Parcela?         @relation(fields: [parcelaId], references: [id], onDelete: Cascade)
+
+  @@index([perfilId, lido])
+  @@map("alertas")
+}
+
+model LogAuditoria {
+  id              String            @id @default(uuid()) @db.Uuid
+  usuarioId       String            @map("usuario_id") @db.Uuid
+  perfilId        String?           @map("perfil_id") @db.Uuid
+  acao            String            @db.VarChar(80)
+  entidade        String            @db.VarChar(80)
+  entidadeId      String?           @map("entidade_id") @db.VarChar(80)
+  dadosAnteriores Json?             @map("dados_anteriores")
+  dadosNovos      Json?             @map("dados_novos")
+  ip              String?           @db.VarChar(45)
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  usuario         Usuario           @relation(fields: [usuarioId], references: [id])
+  perfil          PerfilFinanceiro? @relation(fields: [perfilId], references: [id])
+
+  @@index([usuarioId, createdAt])
+  @@index([perfilId, createdAt])
+  @@map("logs_auditoria")
+}
