@@ -1,1 +1,642 @@
-<p>perfis-financeiros works!</p>
+<section class="perfis-page">
+
+  <header class="page-header">
+
+    <div class="page-heading">
+
+      <h1>
+        Gerenciar Perfis
+      </h1>
+
+      <p>
+        Alterne entre contas pessoais e empresariais
+      </p>
+
+    </div>
+
+    <div class="page-header__actions">
+
+      <button
+        class="action-button action-button--primary"
+        type="button"
+        (click)="abrirNovoPerfil()">
+        Novo perfil
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- INDICADORES -->
+  <section class="stats-grid">
+
+    <app-stat-card
+      title="Total"
+      [value]="quantidadePerfis"
+      [subtitle]="resumoTotalPerfis"
+      icon="group"
+      color="primary">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Ativos"
+      [value]="quantidadePerfisAtivos"
+      subtitle="Perfil em uso"
+      icon="check_circle"
+      color="success">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Pessoas"
+      [value]="quantidadePessoais"
+      subtitle="Perfis pessoais"
+      icon="person"
+      color="warning">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Empresas"
+      [value]="quantidadeEmpresas"
+      subtitle="Perfis empresariais"
+      icon="business"
+      color="violet">
+    </app-stat-card>
+
+  </section>
+
+
+  <!-- BUSCA E FILTROS -->
+  <section class="filters-card">
+
+    <div class="search-field">
+
+      <label for="perfil-search">
+        Busca por nome
+      </label>
+
+      <input
+        id="perfil-search"
+        type="search"
+        placeholder="Digite o nome do perfil..."
+        [value]="search"
+        (input)="
+          search = $any($event.target).value;
+          aoAlterarBusca()
+        "
+      />
+
+    </div>
+
+
+    <div class="type-filter">
+
+      <span class="type-filter__label">
+        Filtrar por tipo
+      </span>
+
+      <div class="type-filter__buttons">
+
+        @for (
+          tipoFiltro of tiposFiltro;
+          track tipoFiltro
+        ) {
+
+          <button
+            type="button"
+            class="filter-button"
+            [class.filter-button--active]="
+              filtroTipo === tipoFiltro
+            "
+            (click)="aplicarFiltroTipo(tipoFiltro)"
+          >
+            {{ tipoFiltro }}
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LISTA -->
+  @if (perfisFiltrados.length > 0) {
+
+    <section class="profiles-grid">
+
+      @for (
+        perfil of perfisPaginados;
+        track perfil.id
+      ) {
+
+        <article
+          class="profile-card"
+          [class.profile-card--active]="perfil.ativo"
+        >
+
+          <div class="profile-card__content">
+
+            <div
+              class="profile-card__avatar"
+              [style.background]="perfil.cor"
+            >
+              {{ obterIniciaisPerfil(perfil) }}
+            </div>
+
+
+            <div class="profile-card__information">
+
+              <div class="profile-card__heading">
+
+                <h2>
+                  {{ perfil.nome }}
+                </h2>
+
+                @if (perfil.ativo) {
+
+                  <span class="status-badge">
+                    Ativo
+                  </span>
+
+                }
+
+              </div>
+
+
+              <div class="profile-card__metadata">
+
+                <span
+                  class="profile-card__type"
+                  [class.profile-card__type--company]="
+                    perfil.tipo === 'empresa'
+                  "
+                >
+                  {{ obterTipoPerfil(perfil) }}
+                </span>
+
+                <span class="profile-card__separator">
+                  /
+                </span>
+
+                <span class="profile-card__document">
+                  {{ perfil.documento }}
+                </span>
+
+              </div>
+
+
+              @if (perfil.descricao) {
+
+                <p class="profile-card__description">
+                  {{ perfil.descricao }}
+                </p>
+
+              }
+
+
+              <span class="profile-card__date">
+                Criado em
+                {{ formatarData(perfil.dataCriacao) }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <footer class="profile-card__actions">
+
+            <button
+              type="button"
+              class="
+                profile-action
+                profile-action--edit
+              "
+              (click)="editarPerfil(perfil)"
+            >
+              Editar
+            </button>
+
+
+            <button
+              type="button"
+              class="
+                profile-action
+                profile-action--activate
+              "
+              [class.profile-action--in-use]="
+                perfil.ativo
+              "
+              [disabled]="perfil.ativo"
+              (click)="ativarPerfil(perfil)"
+            >
+              {{ perfil.ativo ? 'Em uso' : 'Ativar' }}
+            </button>
+
+
+            <button
+              type="button"
+              class="
+                profile-action
+                profile-action--delete
+              "
+              (click)="solicitarExclusao(perfil)"
+            >
+              Excluir
+            </button>
+
+          </footer>
+
+        </article>
+
+      }
+
+    </section>
+
+
+    @if (totalPages > 1) {
+
+      <div class="pagination">
+
+        <button
+          type="button"
+          class="pagination__button"
+          [disabled]="currentPage === 1"
+          (click)="mudarPagina(currentPage - 1)"
+        >
+          Anterior
+        </button>
+
+
+        <span class="pagination__information">
+          Página {{ currentPage }} de {{ totalPages }}
+        </span>
+
+
+        <button
+          type="button"
+          class="pagination__button"
+          [disabled]="currentPage === totalPages"
+          (click)="mudarPagina(currentPage + 1)"
+        >
+          Próxima
+        </button>
+
+      </div>
+
+    }
+
+  } @else {
+
+    <section class="empty-state">
+
+      <div class="empty-state__icon">
+        <mat-icon>person_search</mat-icon>
+      </div>
+
+      <h2>Nenhum perfil encontrado</h2>
+
+      <p>
+        Altere os filtros ou cadastre um novo perfil
+        financeiro.
+      </p>
+
+      <button
+        type="button"
+        class="action-button action-button--primary"
+        (click)="abrirNovoPerfil()"
+      >
+        Novo perfil
+      </button>
+
+    </section>
+
+  }
+
+
+  <!-- MODAL DE CADASTRO E EDIÇÃO -->
+  @if (showModal) {
+
+    <div
+      class="modal-backdrop"
+      (click)="fecharModal()"
+    >
+
+      <section
+        class="profile-modal"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="tituloModal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <header class="profile-modal__header">
+
+          <div>
+
+            <h2>
+              {{ tituloModal }}
+            </h2>
+
+            <p>
+              {{ subtituloModal }}
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="profile-modal__close"
+            aria-label="Fechar modal"
+            (click)="fecharModal()"
+          >
+            ×
+          </button>
+
+        </header>
+
+
+        <form
+          class="profile-form"
+          (submit)="
+            $event.preventDefault();
+            salvarPerfil()
+          "
+        >
+
+          <div class="form-field form-field--full">
+
+            <label for="perfil-nome">
+              Nome do perfil
+            </label>
+
+            <input
+              id="perfil-nome"
+              type="text"
+              placeholder="Ex.: Finanças pessoais"
+              [value]="nome"
+              (input)="
+                nome = $any($event.target).value
+              "
+            />
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="perfil-tipo">
+              Tipo
+            </label>
+
+            <select
+              id="perfil-tipo"
+              [value]="tipo"
+              (change)="
+                selecionarTipoFormulario(
+                  $any($event.target).value
+                )
+              "
+            >
+              <option value="pessoal">
+                Pessoal
+              </option>
+
+              <option value="empresa">
+                Empresa
+              </option>
+            </select>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="perfil-documento">
+              {{ obterDocumentoLabel() }}
+            </label>
+
+            <input
+              id="perfil-documento"
+              type="text"
+              [placeholder]="
+                obterDocumentoPlaceholder()
+              "
+              [value]="documento"
+              (input)="
+                documento =
+                  $any($event.target).value
+              "
+            />
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="perfil-cor">
+              Cor do perfil
+            </label>
+
+            <div class="color-field">
+
+              <input
+                id="perfil-cor"
+                type="color"
+                [value]="cor"
+                (input)="
+                  cor = $any($event.target).value
+                "
+              />
+
+              <input
+                type="text"
+                maxlength="7"
+                placeholder="#2563eb"
+                [value]="cor"
+                (input)="
+                  cor = $any($event.target).value
+                "
+              />
+
+            </div>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="perfil-icone">
+              Iniciais
+            </label>
+
+            <input
+              id="perfil-icone"
+              type="text"
+              maxlength="3"
+              placeholder="Ex.: JS"
+              [value]="icone"
+              (input)="
+                icone = $any($event.target)
+                  .value
+                  .toUpperCase()
+              "
+            />
+
+            <small>
+              Caso não informe, serão geradas
+              automaticamente pelo nome.
+            </small>
+
+          </div>
+
+
+          <div class="form-field form-field--full">
+
+            <label for="perfil-descricao">
+              Descrição
+            </label>
+
+            <textarea
+              id="perfil-descricao"
+              rows="4"
+              placeholder="
+                Informe a finalidade deste perfil
+              "
+              [value]="descricao"
+              (input)="
+                descricao =
+                  $any($event.target).value
+              "
+            ></textarea>
+
+          </div>
+
+
+          <label class="switch-field">
+
+            <div class="switch-field__text">
+
+              <strong>
+                Perfil principal
+              </strong>
+
+              <span>
+                Utilizar este perfil como conta ativa
+              </span>
+
+            </div>
+
+            <input
+              type="checkbox"
+              [checked]="ativo"
+              (change)="
+                ativo = $any($event.target).checked
+              "
+            />
+
+            <span class="switch-field__control"></span>
+
+          </label>
+
+
+          <footer class="profile-modal__actions">
+
+            <button
+              type="button"
+              class="
+                action-button
+                action-button--secondary
+              "
+              (click)="fecharModal()"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="
+                action-button
+                action-button--primary
+              "
+            >
+              {{
+                perfilSelecionado
+                  ? 'Salvar alterações'
+                  : 'Cadastrar perfil'
+              }}
+            </button>
+
+          </footer>
+
+        </form>
+
+      </section>
+
+    </div>
+
+  }
+
+
+  <!-- CONFIRMAÇÃO DE EXCLUSÃO -->
+  @if (showConfirmDialog) {
+
+    <div
+      class="modal-backdrop"
+      (click)="cancelarExclusao()"
+    >
+
+      <section
+        class="confirm-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="confirm-dialog__icon">
+          !
+        </div>
+
+        <h2>
+          {{ tituloConfirmacao }}
+        </h2>
+
+        <p>
+          {{ mensagemConfirmacao }}
+        </p>
+
+        <div class="confirm-dialog__actions">
+
+          <button
+            type="button"
+            class="
+              action-button
+              action-button--secondary
+            "
+            (click)="cancelarExclusao()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="
+              action-button
+              action-button--danger
+            "
+            (click)="confirmarExclusao()"
+          >
+            Excluir perfil
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  }
+
+</section>

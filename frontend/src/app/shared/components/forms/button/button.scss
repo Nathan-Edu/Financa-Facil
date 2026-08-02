@@ -1,3 +1,7 @@
+:host {
+  display: inline-flex;
+}
+
 .ff-button {
   border: none;
   border-radius: 8px;
@@ -53,6 +57,7 @@
 
 .primary {
   background: var(--primary);
+  color: #ffffff;
 }
 
 .secondary {
@@ -63,10 +68,12 @@
 
 .success {
   background: var(--success);
+  color: #ffffff;
 }
 
 .danger {
   background: var(--danger);
+  color: #ffffff;
 }
 
 .warning {
@@ -93,9 +100,11 @@
 .loader {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255,255,255,0.35);
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: #ffffff;
   border-radius: 50%;
+
   animation: spin 0.7s linear infinite;
 }
 

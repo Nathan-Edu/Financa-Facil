@@ -91,7 +91,12 @@ export const routes: Routes = [
       {
         path: 'playground',
         component: Playground
+      },
+      {
+       path: 'perfis-financeiros',
+        component: PerfisFinanceiros
       }
+      
     ]
   },
 
