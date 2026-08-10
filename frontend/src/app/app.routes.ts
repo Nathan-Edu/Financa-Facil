@@ -15,6 +15,7 @@ import { Despesas } from './pages/financeiro/despesas/despesas';
 import { Parcelas } from './pages/financeiro/parcelas/parcelas';
 import { Alertas } from './pages/financeiro/alertas/alertas';
 import { Categorias } from './pages/financeiro/categorias/categorias';
+import { Relatorios } from './pages/relatorios/relatorios';
 
 import { MinhaConta } from './pages/conta/minha-conta/minha-conta';
 import { PerfisFinanceiros } from './pages/conta/perfis-financeiros/perfis-financeiros';
@@ -95,8 +96,11 @@ export const routes: Routes = [
       {
        path: 'perfis-financeiros',
         component: PerfisFinanceiros
-      }
-      
+      },
+      {
+        path: 'relatorios',
+        component: Relatorios
+      },
     ]
   },
 

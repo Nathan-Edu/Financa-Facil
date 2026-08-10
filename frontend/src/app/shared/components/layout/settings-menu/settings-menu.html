@@ -27,7 +27,7 @@
           [class.empresa]="classePerfil === 'empresa'"
           [class.pessoal]="classePerfil === 'pessoal'">
 
-          {{ perfilAtual }}
+          {{ nomePerfilAtual }}
         </span>
       </div>
 
@@ -76,8 +76,9 @@
       </span>
 
       <span class="badge">
-        {{ perfilAtual }}
+    {{ nomePerfilAtual }}
       </span>
+
     </div>
 
     <mat-icon class="chevron">
@@ -121,41 +122,97 @@
 
 <mat-menu
   #profileMenu="matMenu"
-  class="settings-panel">
+  class="settings-panel"
+>
 
   <div class="submenu-header">
-    <mat-icon>account_balance</mat-icon>
-    <span>Perfil Financeiro</span>
+
+    <mat-icon>
+      account_balance
+    </mat-icon>
+
+    <span>
+      Perfil Financeiro
+    </span>
+
   </div>
 
+  <div class="menu-divider"></div>
+
+  @for (
+    perfil of perfisFinanceiros;
+    track perfil.id
+  ) {
+
+    <button
+      mat-menu-item
+      (click)="selecionarPerfil(perfil)"
+    >
+
+      <mat-icon
+        [class.profile-selected]="
+          perfil.ativo
+        "
+      >
+        {{
+          perfil.ativo
+            ? 'radio_button_checked'
+            : 'radio_button_unchecked'
+        }}
+      </mat-icon>
+
+      <div class="profile-menu-information">
+
+        <span class="profile-menu-name">
+          {{ perfil.nome }}
+        </span>
+
+        <span class="profile-menu-type">
+          {{
+            perfil.tipo === 'pessoal'
+              ? 'Pessoa Física'
+              : 'Empresa'
+          }}
+        </span>
+
+      </div>
+
+    </button>
+
+  }
+
+  @if (
+    perfisFinanceiros.length === 0
+  ) {
+
+    <div class="profile-menu-empty">
+
+      Nenhum perfil cadastrado.
+
+    </div>
+
+  }
+
+  <div class="menu-divider"></div>
+
   <button
     mat-menu-item
-    (click)="alterarPerfil('pessoal')">
+    class="manage-profiles"
+    (click)="gerenciarPerfis()"
+  >
 
     <mat-icon>
-      {{
-        perfilAtual === 'Pessoal'
-          ? 'radio_button_checked'
-          : 'radio_button_unchecked'
-      }}
+      manage_accounts
     </mat-icon>
 
-    <span>Pessoal</span>
-  </button>
+    <span>
+      Gerenciar Perfis
+    </span>
 
-  <button
-    mat-menu-item
-    (click)="alterarPerfil('empresa')">
-
-    <mat-icon>
-      {{
-        perfilAtual === 'Empresa'
-          ? 'radio_button_checked'
-          : 'radio_button_unchecked'
-      }}
+    <mat-icon class="manage-arrow">
+      arrow_forward
     </mat-icon>
 
-    <span>Empresa</span>
   </button>
 
 </mat-menu>
@@ -228,5 +285,43 @@
 
     <span>Violet</span>
   </button>
+
+  <button
+  mat-menu-item
+  (click)="alterarTema('Orange')"
+>
+
+  <span class="theme-dot orange"></span>
+
+  <mat-icon>
+    {{
+      temaAtual === 'Orange'
+        ? 'radio_button_checked'
+        : 'radio_button_unchecked'
+    }}
+  </mat-icon>
+
+  <span>Orange</span>
+
+</button>
+
+<button
+  mat-menu-item
+  (click)="alterarTema('Black-All')"
+>
+
+  <span class="theme-dot black-all"></span>
+
+  <mat-icon>
+    {{
+      temaAtual === 'Black-All'
+        ? 'radio_button_checked'
+        : 'radio_button_unchecked'
+    }}
+  </mat-icon>
+
+  <span>All Black</span>
+
+</button>
 
 </mat-menu>

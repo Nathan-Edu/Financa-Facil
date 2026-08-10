@@ -133,5 +133,10 @@ export class AlterarSenha {
     this.senhaAtual = '';
     this.novaSenha = '';
     this.confirmarSenha = '';
+
+    this.mostrarSenhaAtual = false;
+    this.mostrarNovaSenha = false;
+    this.mostrarConfirmacaoSenha = false;
   }
+
 }

@@ -1,0 +1,673 @@
+<div class="relatorios-page">
+
+  <!-- =====================================================
+       CABEÇALHO
+  ====================================================== -->
+
+  <app-page-header
+    title="Relatórios Financeiros"
+    subtitle="Analise receitas, despesas e a evolução financeira do perfil selecionado."
+  >
+
+    <app-button
+      icon="download"
+      (click)="exportarRelatorio()"
+    >
+      Exportar
+    </app-button>
+
+  </app-page-header>
+
+
+  <!-- =====================================================
+       PERFIL ATUAL
+  ====================================================== -->
+
+  <div class="profile-indicator">
+
+    <div class="profile-indicator__icon">
+      {{ tipoPerfil === 'empresa' ? 'PJ' : 'PF' }}
+    </div>
+
+    <div class="profile-indicator__content">
+
+      <span>
+        Relatório de
+      </span>
+
+      <strong>
+        {{ nomePerfil }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       INDICADORES
+  ====================================================== -->
+
+  <section class="stats-grid">
+
+    <app-card>
+
+      <div class="stat-card">
+
+        <div class="stat-card__header">
+
+          <span class="stat-card__label">
+            Receitas
+          </span>
+
+          <div
+            class="
+              stat-card__icon
+              stat-card__icon--success
+            "
+          >
+            ↑
+          </div>
+
+        </div>
+
+        <strong
+          class="
+            stat-card__value
+            stat-card__value--success
+          "
+        >
+          {{ formatarMoeda(totalReceitas) }}
+        </strong>
+
+        <span class="stat-card__description">
+          Total de entradas
+        </span>
+
+      </div>
+
+    </app-card>
+
+
+    <app-card>
+
+      <div class="stat-card">
+
+        <div class="stat-card__header">
+
+          <span class="stat-card__label">
+            Despesas
+          </span>
+
+          <div
+            class="
+              stat-card__icon
+              stat-card__icon--danger
+            "
+          >
+            ↓
+          </div>
+
+        </div>
+
+        <strong
+          class="
+            stat-card__value
+            stat-card__value--danger
+          "
+        >
+          {{ formatarMoeda(totalDespesas) }}
+        </strong>
+
+        <span class="stat-card__description">
+          Total de saídas
+        </span>
+
+      </div>
+
+    </app-card>
+
+
+    <app-card>
+
+      <div class="stat-card">
+
+        <div class="stat-card__header">
+
+          <span class="stat-card__label">
+            Saldo
+          </span>
+
+          <div
+            class="
+              stat-card__icon
+              stat-card__icon--primary
+            "
+          >
+            R$
+          </div>
+
+        </div>
+
+        <strong
+          class="
+            stat-card__value
+            stat-card__value--primary
+          "
+        >
+          {{ formatarMoeda(saldo) }}
+        </strong>
+
+        <span class="stat-card__description">
+          Resultado do período
+        </span>
+
+      </div>
+
+    </app-card>
+
+
+    <app-card>
+
+      <div class="stat-card">
+
+        <div class="stat-card__header">
+
+          <span class="stat-card__label">
+            Economia
+          </span>
+
+          <div
+            class="
+              stat-card__icon
+              stat-card__icon--purple
+            "
+          >
+            %
+          </div>
+
+        </div>
+
+        <strong
+          class="
+            stat-card__value
+            stat-card__value--purple
+          "
+        >
+          {{
+            formatarPercentual(
+              percentualEconomia
+            )
+          }}
+        </strong>
+
+        <span class="stat-card__description">
+          Percentual economizado
+        </span>
+
+      </div>
+
+    </app-card>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILTROS
+  ====================================================== -->
+
+  <app-card>
+
+    <div class="filters-header">
+
+      <div>
+
+        <h2>
+          Filtros
+        </h2>
+
+        <p>
+          Refine os dados exibidos no relatório.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="filters-grid">
+
+      <div class="filter-field">
+
+        <label for="periodo">
+          Período
+        </label>
+
+        <select
+          id="periodo"
+          [(ngModel)]="periodoSelecionado"
+        >
+          <option value="todos">
+            Todo o período
+          </option>
+
+          <option value="mes">
+            Mês atual
+          </option>
+
+          <option value="3meses">
+            Últimos 3 meses
+          </option>
+
+          <option value="6meses">
+            Últimos 6 meses
+          </option>
+
+          <option value="ano">
+            Últimos 12 meses
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label for="categoria">
+          Categoria
+        </label>
+
+        <select
+          id="categoria"
+          [(ngModel)]="categoriaSelecionada"
+        >
+
+          <option value="todas">
+            Todas as categorias
+          </option>
+
+          @for (
+            categoria of categorias;
+            track categoria
+          ) {
+
+            <option [value]="categoria">
+              {{ categoria }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label for="tipo">
+          Tipo
+        </label>
+
+        <select
+          id="tipo"
+          [(ngModel)]="tipoSelecionado"
+        >
+
+          <option value="todos">
+            Todos
+          </option>
+
+          <option value="receita">
+            Receitas
+          </option>
+
+          <option value="despesa">
+            Despesas
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-actions">
+
+        <app-button
+          icon="filter_alt"
+          (click)="aplicarFiltros()"
+        >
+          Aplicar
+        </app-button>
+
+        <button
+          type="button"
+          class="clear-filter-button"
+          (click)="limparFiltros()"
+        >
+          Limpar
+        </button>
+
+      </div>
+
+    </div>
+
+  </app-card>
+
+
+  <!-- =====================================================
+       GRÁFICOS
+  ====================================================== -->
+
+  <section class="charts-grid">
+
+    <app-card>
+
+      <div class="chart-header">
+
+        <div>
+          <h2>
+            Receitas x Despesas
+          </h2>
+
+          <p>
+            Comparativo mensal das movimentações.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="chart-container">
+
+  @if (evolucaoMensal.length > 0) {
+
+    <canvas
+        id="graficoReceitasDespesas"
+        baseChart
+        [data]="graficoReceitasDespesas"
+        [options]="opcoesGraficoReceitasDespesas"
+        [type]="'line'">
+    </canvas>
+
+  } @else {
+
+    <div class="chart-empty">
+
+      <span>
+        Nenhuma movimentação encontrada.
+      </span>
+
+    </div>
+
+  }
+
+</div>
+
+    </app-card>
+
+
+    <app-card>
+
+  <div class="chart-header">
+
+    <div>
+      <h2>Despesas por Categoria</h2>
+
+      <p>
+        Distribuição das despesas no período
+      </p>
+    </div>
+
+  </div>
+
+
+  @if (despesasPorCategoria.length > 0) {
+
+    <div class="category-chart-layout">
+
+      <!-- GRÁFICO -->
+
+<div class="doughnut-container">
+
+  <div class="doughnut-canvas">
+
+    <canvas
+        id="graficoDespesasCategoria"
+        baseChart
+        [data]="graficoDespesasCategoria"
+        [options]="opcoesGraficoDespesasCategoria"
+        [type]="'doughnut'">
+    </canvas>
+
+  </div>
+
+  <div class="doughnut-center">
+
+    <span>Total</span>
+
+    <strong>
+      {{ formatarMoeda(totalDespesas) }}
+    </strong>
+
+  </div>
+
+</div>
+      <!-- LEGENDA -->
+
+      <div class="category-legend">
+
+        @for (
+          item of despesasPorCategoria;
+          track item.categoria;
+          let i = $index
+        ) {
+
+          <div class="category-legend__item">
+
+            <div class="category-legend__info">
+
+              <span
+                class="category-legend__dot"
+                [style.background]="corCategoria(i)">
+              </span>
+
+              <div>
+                <strong>
+                  {{ item.categoria }}
+                </strong>
+
+                <span>
+                  {{ formatarMoeda(item.valor) }}
+                </span>
+              </div>
+
+            </div>
+
+            <span class="category-legend__percent">
+              {{ formatarPercentual(item.percentual) }}
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  } @else {
+
+    <div class="empty-state">
+
+      <strong>
+        Nenhuma despesa encontrada
+      </strong>
+
+      <span>
+        Não existem despesas para os filtros selecionados.
+      </span>
+
+    </div>
+
+  }
+
+</app-card>
+
+  </section>
+
+
+  <!-- =====================================================
+       MOVIMENTAÇÕES
+  ====================================================== -->
+
+  <app-card>
+
+    <div class="transactions-header">
+
+      <div>
+
+        <h2>
+          Movimentações
+        </h2>
+
+        <p>
+          Lançamentos encontrados no período selecionado.
+        </p>
+
+      </div>
+
+      <span class="transactions-count">
+        {{ movimentacoesExibidas.length }}
+        registros
+      </span>
+
+    </div>
+
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Data</th>
+
+            <th>Descrição</th>
+
+            <th>Categoria</th>
+
+            <th>Tipo</th>
+
+            <th class="value-column">
+              Valor
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            movimentacao of movimentacoesExibidas;
+            track movimentacao.id
+          ) {
+
+            <tr>
+
+              <td>
+                {{ movimentacao.data }}
+              </td>
+
+              <td class="description-column">
+                {{ movimentacao.descricao }}
+              </td>
+
+              <td>
+                <span class="category-badge">
+                  {{ movimentacao.categoria }}
+                </span>
+              </td>
+
+              <td>
+
+                <span
+                  class="transaction-type"
+                  [class.transaction-type--revenue]="
+                    movimentacao.tipo === 'receita'
+                  "
+                  [class.transaction-type--expense]="
+                    movimentacao.tipo === 'despesa'
+                  "
+                >
+
+                  {{
+                    movimentacao.tipo === 'receita'
+                      ? 'Receita'
+                      : 'Despesa'
+                  }}
+
+                </span>
+
+              </td>
+
+              <td
+                class="value-column"
+                [class.value-revenue]="
+                  movimentacao.tipo === 'receita'
+                "
+                [class.value-expense]="
+                  movimentacao.tipo === 'despesa'
+                "
+              >
+
+                {{
+                  movimentacao.tipo === 'receita'
+                    ? '+ '
+                    : '- '
+                }}
+
+                {{
+                  formatarMoeda(
+                    movimentacao.valor
+                  )
+                }}
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+
+      @if (
+        movimentacoesExibidas.length === 0
+      ) {
+
+        <div class="empty-state">
+
+          <strong>
+            Nenhuma movimentação encontrada
+          </strong>
+
+          <span>
+            Altere os filtros para visualizar outros resultados.
+          </span>
+
+        </div>
+
+      }
+
+    </div>
+
+  </app-card>
+
+</div>

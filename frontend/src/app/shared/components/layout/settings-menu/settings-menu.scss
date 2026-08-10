@@ -214,3 +214,96 @@
   color: #3b82f6;
 
 }
+
+.profile-menu-information {
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+  min-width: 0;
+
+  margin-left: 4px;
+}
+
+.profile-menu-name {
+
+  color: var(--text);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-menu-type {
+
+  margin-top: 2px;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+}
+
+.profile-selected {
+
+  color: var(--success) !important;
+}
+
+.profile-menu-empty {
+
+  padding: 14px 18px;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+}
+
+.manage-profiles {
+
+  color: var(--primary) !important;
+
+  mat-icon {
+    color: var(--primary) !important;
+  }
+}
+
+.manage-arrow {
+
+  margin-left: auto !important;
+
+  font-size: 18px;
+}
+
+.theme-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.dark {
+  background: #0F172A;
+}
+
+.light {
+  background: #E2E8F0;
+}
+
+.green {
+  background: #16A34A;
+}
+
+.violet {
+  background: #A855F7;
+}
+
+.black-all {
+  background: #000000;
+}
+
+.orange {
+  background: #f97316;
+}

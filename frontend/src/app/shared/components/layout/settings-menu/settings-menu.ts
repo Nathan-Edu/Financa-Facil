@@ -1,63 +1,160 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
 
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+import {
+  Router
+} from '@angular/router';
 
-import { AuthService } from '../../../../core/services/auth.service';
-import { Usuario } from '../../../../core/models/usuario.model';
+import {
+  MatIconModule
+} from '@angular/material/icon';
+
+import {
+  MatMenuModule
+} from '@angular/material/menu';
+
+import {
+  MatButtonModule
+} from '@angular/material/button';
+
+import {
+  AuthService
+} from '../../../../core/services/auth.service';
+
+import {
+  PerfilFinanceiroService
+} from '../../../../core/services/perfil-financeiro.service';
+
+import {
+  Usuario
+} from '../../../../core/models/usuario.model';
+
+import {
+  PerfilFinanceiro
+} from '../../../../core/models/perfil-financeiro.model';
 
 @Component({
   selector: 'app-settings-menu',
+
   imports: [
     MatIconModule,
     MatMenuModule,
     MatButtonModule
   ],
+
   templateUrl: './settings-menu.html',
-  styleUrl: './settings-menu.scss',
+  styleUrl: './settings-menu.scss'
 })
 export class SettingsMenu implements OnInit {
+
   usuario: Usuario | null = null;
 
-  perfilAtual = 'Pessoal';
+  perfisFinanceiros: PerfilFinanceiro[] = [];
+
+  perfilFinanceiroAtivo:
+    PerfilFinanceiro | null = null;
+
   temaAtual = 'Dark';
 
   constructor(
-    private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly authService:
+      AuthService,
+
+    private readonly perfilFinanceiroService:
+      PerfilFinanceiroService,
+
+    private readonly router:
+      Router
   ) {}
 
   ngOnInit(): void {
     this.carregarUsuario();
+    this.carregarPerfisFinanceiros();
     this.carregarTemaAtual();
   }
 
-  alterarPerfil(perfil: Usuario['perfilAtivo']): void {
-    this.authService.alterarPerfilAtivo(perfil);
+  carregarPerfisFinanceiros(): void {
 
-    this.perfilAtual =
-      perfil === 'pessoal'
-        ? 'Pessoal'
-        : 'Empresa';
+    this.perfilFinanceiroService
+      .listar()
+      .subscribe({
+        next: (
+          perfis: PerfilFinanceiro[]
+        ) => {
 
-    if (this.usuario) {
-      this.usuario = {
-        ...this.usuario,
-        perfilAtivo: perfil
-      };
-    }
+          this.perfisFinanceiros =
+            perfis;
+
+          this.perfilFinanceiroAtivo =
+            perfis.find(
+              perfil =>
+                perfil.ativo
+            ) ?? null;
+        }
+      });
   }
 
-  alterarTema(tema: string): void {
+  selecionarPerfil(
+    perfil: PerfilFinanceiro
+  ): void {
+
+    if (perfil.ativo) {
+      return;
+    }
+
+    this.perfilFinanceiroService
+      .ativar(perfil.id)
+      .subscribe({
+        next: (sucesso: boolean) => {
+
+          if (!sucesso) {
+            return;
+          }
+
+          /*
+           * Mantemos o perfilAtivo do usuário
+           * sincronizado por enquanto.
+           */
+          this.authService
+            .alterarPerfilAtivo(
+              perfil.tipo
+            );
+
+          if (this.usuario) {
+
+            this.usuario = {
+              ...this.usuario,
+              perfilAtivo: perfil.tipo
+            };
+          }
+
+          this.carregarPerfisFinanceiros();
+        }
+      });
+  }
+
+  gerenciarPerfis(): void {
+
+    this.router.navigate([
+      '/perfis-financeiros'
+    ]);
+  }
+
+  alterarTema(
+    tema: string
+  ): void {
+
     this.temaAtual = tema;
 
     document.body.classList.remove(
       'theme-dark',
       'theme-light',
       'theme-green',
-      'theme-violet'
+      'theme-violet',
+      'theme-orange',
+      'theme-black-all'
     );
 
     document.body.classList.add(
@@ -71,67 +168,91 @@ export class SettingsMenu implements OnInit {
   }
 
   abrirMinhaConta(): void {
-    this.router.navigate(['/minha-conta']);
+
+    this.router.navigate([
+      '/minha-conta'
+    ]);
   }
 
   alterarSenha(): void {
-   this.router.navigate(['/alterar-senha']);
 
+    this.router.navigate([
+      '/alterar-senha'
+    ]);
   }
 
   sair(): void {
+
     this.authService.logout();
-    this.router.navigate(['/login']);
+
+    this.router.navigate([
+      '/login'
+    ]);
   }
 
   private carregarUsuario(): void {
-    this.usuario = this.authService.obterUsuario();
 
-    if (!this.usuario) {
-      return;
-    }
-
-    this.perfilAtual =
-      this.usuario.perfilAtivo === 'pessoal'
-        ? 'Pessoal'
-        : 'Empresa';
+    this.usuario =
+      this.authService.obterUsuario();
   }
 
   private carregarTemaAtual(): void {
-    const temaSalvo = localStorage.getItem(
-      'financa_facil_tema'
-    );
+
+    const temaSalvo =
+      localStorage.getItem(
+        'financa_facil_tema'
+      );
 
     if (!temaSalvo) {
       return;
     }
 
-    this.alterarTema(temaSalvo);
+    this.alterarTema(
+      temaSalvo
+    );
   }
+
   get iniciaisUsuario(): string {
 
-  if (!this.usuario?.nome) {
-    return '?';
+    if (!this.usuario?.nome) {
+      return '?';
+    }
+
+    const nomes =
+      this.usuario.nome
+        .trim()
+        .split(' ');
+
+    if (nomes.length === 1) {
+
+      return nomes[0]
+        .charAt(0)
+        .toUpperCase();
+    }
+
+    return (
+      nomes[0].charAt(0) +
+      nomes[nomes.length - 1]
+        .charAt(0)
+    ).toUpperCase();
   }
 
-  const nomes = this.usuario.nome.trim().split(' ');
+  get nomePerfilAtual(): string {
 
-  if (nomes.length === 1) {
-    return nomes[0].charAt(0).toUpperCase();
+    return (
+      this.perfilFinanceiroAtivo
+        ?.nome ??
+      'Nenhum perfil'
+    );
   }
 
-  return (
-    nomes[0].charAt(0) +
-    nomes[nomes.length - 1].charAt(0)
-  ).toUpperCase();
+  get classePerfil(): string {
 
-}
+    return (
+      this.perfilFinanceiroAtivo
+        ?.tipo ??
+      'pessoal'
+    );
+  }
 
-get classePerfil(): string {
-
-  return this.perfilAtual === 'Empresa'
-    ? 'empresa'
-    : 'pessoal';
-
-}
 }
