@@ -1,0 +1,345 @@
+<main class="categorias-page">
+
+  <app-page-header
+    title="Categorias"
+    subtitle="Gerencie as categorias de receitas e despesas">
+
+    <app-button
+      color="primary"
+      icon="add"
+      (click)="abrirNovaCategoria()">
+      Nova Categoria
+    </app-button>
+
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total"
+      [value]="totalCategorias"
+      subtitle="Categorias cadastradas"
+      icon="category"
+      color="primary">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Receitas"
+      [value]="totalReceitas"
+      subtitle="Categorias de entrada"
+      icon="trending_up"
+      color="success">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Despesas"
+      [value]="totalDespesas"
+      subtitle="Categorias de saída"
+      icon="trending_down"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Ativas"
+      [value]="totalAtivas"
+      subtitle="Disponíveis para utilização"
+      icon="check_circle"
+      color="violet">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Categorias cadastradas"
+    subtitle="Lista de categorias disponíveis no sistema">
+
+    <div class="filters">
+
+      <app-search-input
+        label="Buscar"
+        placeholder="Buscar categoria..."
+        [(value)]="search">
+      </app-search-input>
+
+      <app-select
+        label="Tipo"
+        [options]="tipos"
+        [(value)]="tipoFiltro">
+      </app-select>
+
+    </div>
+
+    @if (categoriasFiltradas.length === 0) {
+
+      <app-empty-state
+        icon="category"
+        title="Nenhuma categoria encontrada"
+        description="Cadastre uma categoria ou ajuste os filtros de busca.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Tipo</th>
+              <th>Cor</th>
+              <th>Orçamento</th>
+              <th class="actions-header">
+                Ações
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (
+              categoria of categoriasFiltradas;
+              track categoria.id
+            ) {
+
+              <tr>
+
+                <td>
+                  <div class="category-info">
+
+                    <div
+                      class="category-icon"
+                      [style.background-color]="categoria.cor">
+
+                      <span class="material-icons">
+                        {{ categoria.icone }}
+                      </span>
+
+                    </div>
+
+                    <strong>
+                      {{ categoria.nome }}
+                    </strong>
+
+                  </div>
+                </td>
+
+                <td>
+                  <app-badge
+                    [color]="tipoColor(categoria.tipo)">
+
+                    {{ tipoLabel(categoria.tipo) }}
+
+                  </app-badge>
+                </td>
+
+                <td>
+                  <div class="color-preview">
+
+                    <span
+                      class="color-dot"
+                      [style.background-color]="categoria.cor">
+                    </span>
+
+                    {{ nomeCor(categoria.cor) }}
+
+                  </div>
+                </td>
+
+                <td>
+
+                  @if (
+                    categoria.tipo === 'despesa'
+                  ) {
+
+                    {{
+                      formatarMoeda(
+                        categoria.orcamentoMensal ?? 0
+                      )
+                    }}
+
+                  } @else {
+
+                    <span class="not-applicable">
+                      Não se aplica
+                    </span>
+
+                  }
+
+                </td>
+
+                <td class="actions">
+
+                  <div class="actions-buttons">
+
+                    <app-button
+                      color="outline"
+                      size="small"
+                      icon="edit"
+                      appearance="icon"
+                      (click)="editarCategoria(categoria)">
+                    </app-button>
+
+                    <app-button
+                      color="danger"
+                      size="small"
+                      icon="delete"
+                      appearance="icon"
+                      (click)="solicitarDesativacao(categoria)">
+                    </app-button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="mudarPagina($event)">
+      </app-pagination>
+
+    }
+
+  </app-card>
+
+  @if (showModal) {
+
+    <app-modal
+      [title]="
+        categoriaSelecionada
+          ? 'Editar Categoria'
+          : 'Nova Categoria'
+      "
+      subtitle="Preencha as informações da categoria"
+      size="medium"
+      (close)="fecharModal()">
+
+      <div modal-body>
+
+        <div class="form-grid">
+
+          <app-search-input
+            label="Nome"
+            placeholder="Nome da categoria"
+            [(value)]="nome">
+          </app-search-input>
+
+          <app-select
+            label="Tipo"
+            [options]="tiposFormulario"
+            [(value)]="tipo">
+          </app-select>
+
+          @if (tipo === 'despesa') {
+
+            <app-currency-input
+              label="Orçamento Mensal"
+              [(value)]="orcamentoMensal">
+            </app-currency-input>
+
+          }
+
+          <app-select
+            label="Ícone"
+            [options]="icones"
+            [(value)]="icone">
+          </app-select>
+
+          <app-select
+            label="Cor"
+            [options]="coresOptions"
+            [(value)]="cor">
+          </app-select>
+
+        </div>
+
+        <div class="category-preview">
+
+          <span>Pré-visualização</span>
+
+          <div
+            class="preview-icon"
+            [style.background-color]="cor">
+
+            <span class="material-icons">
+              {{ icone }}
+            </span>
+
+          </div>
+
+          <strong>
+            {{ nome || 'Nova categoria' }}
+          </strong>
+
+          <app-badge
+            [color]="
+              tipo === 'receita'
+                ? 'success'
+                : 'danger'
+            ">
+
+            {{
+              tipo === 'receita'
+                ? 'Receita'
+                : 'Despesa'
+            }}
+
+          </app-badge>
+
+          @if (tipo === 'despesa') {
+
+            <span class="preview-budget">
+              Orçamento:
+              {{ formatarMoeda(orcamentoMensal) }}
+            </span>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div modal-footer>
+
+        <app-button
+          color="outline"
+          (click)="fecharModal()">
+          Cancelar
+        </app-button>
+
+        <app-button
+          color="primary"
+          (click)="salvarCategoria()">
+          Salvar
+        </app-button>
+
+      </div>
+
+    </app-modal>
+
+  }
+
+  @if (showConfirmDialog) {
+
+    <app-confirm-dialog
+      title="Desativar categoria"
+      message="Deseja realmente desativar esta categoria? Ela não aparecerá mais em novos lançamentos."
+      confirmText="Desativar"
+      cancelText="Cancelar"
+      (confirm)="confirmarDesativacao()"
+      (cancel)="cancelarDesativacao()">
+    </app-confirm-dialog>
+
+  }
+
+</main>

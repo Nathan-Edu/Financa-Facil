@@ -1,35 +1,80 @@
 <header class="navbar">
-  <div class="logo">
+
+  <div
+    class="logo"
+    routerLink="/dashboard">
+
     Finança <span>Fácil</span>
   </div>
 
   <nav class="nav-menu">
-    <a class="nav-item active" routerLink="/">
+
+    <a
+      class="nav-item"
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+
       <mat-icon>home</mat-icon>
-      Dashboard
+      <span>Dashboard</span>
     </a>
 
-    <a class="nav-item" routerLink="/receitas">
+    <a
+      class="nav-item"
+      routerLink="/receitas"
+      routerLinkActive="active">
+
       <mat-icon>trending_up</mat-icon>
-      Receitas
+      <span>Receitas</span>
     </a>
 
-    <a class="nav-item" routerLink="/despesas">
+    <a
+      class="nav-item"
+      routerLink="/despesas"
+      routerLinkActive="active">
+
       <mat-icon>trending_down</mat-icon>
-      Despesas
+      <span>Despesas</span>
     </a>
 
-    <a class="nav-item" routerLink="/parcelas">
+    <a
+      class="nav-item"
+      routerLink="/parcelas"
+      routerLinkActive="active">
+
       <mat-icon>credit_card</mat-icon>
-      Contas Parceladas
+      <span>Contas Parceladas</span>
     </a>
 
-    <a class="nav-item" routerLink="/alertas">
+    <a
+      class="nav-item"
+      routerLink="/alertas"
+      routerLinkActive="active">
+
       <mat-icon>notifications</mat-icon>
-      Alertas
+      <span>Alertas</span>
     </a>
-  </nav>
 
-      <app-settings-menu></app-settings-menu>
-      
+
+
+  <a
+  class="nav-item"
+  routerLink="/relatorios"
+  routerLinkActive="active"
+>
+
+  <mat-icon>bar_chart</mat-icon>
+
+  <span>
+    Relatórios
+  </span>
+
+  </a>
+
+    </nav>
+
+  <div class="nav-actions">
+    <app-settings-menu></app-settings-menu>
+  </div>
+
 </header>

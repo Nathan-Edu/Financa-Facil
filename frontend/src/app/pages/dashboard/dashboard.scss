@@ -1,55 +1,83 @@
-.dashboard {
+.dashboard-page {
   min-height: calc(100vh - 72px);
+
   padding: 36px 7%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
   background: var(--bg);
   color: var(--text);
 }
 
-.cards {
+.dashboard-summary-section {
+  width: 100%;
+  min-width: 0;
+}
+
+.dashboard-main-grid {
+  width: 100%;
+  min-width: 0;
+
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(320px, 0.85fr);
+
+  align-items: start;
   gap: 24px;
-  margin-bottom: 24px;
 }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 22px;
-}
+.dashboard-main-column {
+  min-width: 0;
 
-.transaction {
-  background: var(--card);
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 14px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--text);
+  flex-direction: column;
+  gap: 24px;
+}
 
-  strong {
-    color: var(--text);
-  }
+.dashboard-analysis-area,
+.dashboard-transactions-section,
+.dashboard-categories-section,
+.dashboard-sidebar {
+  width: 100%;
+  min-width: 0;
+}
 
-  p {
-    margin: 5px 0 0;
-    color: var(--text-muted);
-    font-size: 14px;
-  }
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
-  &.expense span {
-    color: #f87171;
-  }
-
-  &.income span {
-    color: #4ade80;
+@media (max-width: 1200px) {
+  .dashboard-main-grid {
+    grid-template-columns:
+      minmax(0, 1.65fr)
+      minmax(300px, 0.9fr);
   }
 }
 
-@media (max-width: 900px) {
-  .cards,
-  .content-grid {
+@media (max-width: 980px) {
+  .dashboard-main-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-main-column,
+  .dashboard-sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-page {
+    padding: 24px 5%;
+    gap: 18px;
+  }
+
+  .dashboard-main-column,
+  .dashboard-sidebar {
+    gap: 18px;
   }
 }

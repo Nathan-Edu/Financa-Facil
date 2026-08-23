@@ -1,5 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
 @Component({
   selector: 'app-select',
   imports: [],
@@ -8,11 +13,25 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class Select {
   @Input() label = '';
-  @Input() options: string[] = [];
   @Input() value = '';
   @Input() required = false;
   @Input() disabled = false;
   @Input() hint = '';
+
+  @Input()
+  set options(options: (string | SelectOption)[]) {
+    this._options = options.map((item) =>
+      typeof item === 'string'
+        ? { label: item, value: item }
+        : item
+    );
+  }
+
+  get options(): SelectOption[] {
+    return this._options;
+  }
+
+  private _options: SelectOption[] = [];
 
   @Output() valueChange = new EventEmitter<string>();
 

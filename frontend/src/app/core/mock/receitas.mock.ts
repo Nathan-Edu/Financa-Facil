@@ -4,8 +4,8 @@ export const RECEITAS_MOCK: Receita[] = [
 
   {
     id: 1,
-    descricao: 'Salário',
-    categoria: 'Trabalho',
+    descricao: 'Trabalho',
+    categoria: 'Salário',
     valor: 5000,
     valorFormatado: 'R$ 5.000,00',
     data: '01/01/2026',

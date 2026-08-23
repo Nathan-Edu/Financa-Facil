@@ -1,163 +1,327 @@
-<button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-btn">
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="settingsMenu"
+  class="settings-btn">
+
   <mat-icon>settings</mat-icon>
 </button>
 
-<mat-menu #settingsMenu="matMenu" class="settings-panel">
+<mat-menu
+  #settingsMenu="matMenu"
+  class="settings-panel">
 
   <div class="menu-header">
-    <div class="menu-header-icon">
-      <mat-icon>settings</mat-icon>
-    </div>
 
-    <div>
-      <h3>Configurações</h3>
-      <p>Personalize sua experiência</p>
-    </div>
+    @if (usuario; as usuarioLogado) {
+
+      <div class="user-avatar">
+        {{ iniciaisUsuario }}
+      </div>
+
+      <div class="menu-user">
+        <h3>{{ usuarioLogado.nome }}</h3>
+        <p>{{ usuarioLogado.email }}</p>
+
+        <span
+          class="user-profile-badge"
+          [class.empresa]="classePerfil === 'empresa'"
+          [class.pessoal]="classePerfil === 'pessoal'">
+
+          {{ nomePerfilAtual }}
+        </span>
+      </div>
+
+    } @else {
+
+      <div class="menu-header-icon">
+        <mat-icon>person</mat-icon>
+      </div>
+
+      <div>
+        <h3>Usuário</h3>
+        <p>Não autenticado</p>
+      </div>
+
+    }
+
   </div>
 
-  <button mat-menu-item [matMenuTriggerFor]="profileMenu">
+  <button
+    mat-menu-item
+    (click)="abrirMinhaConta()">
 
-    <mat-icon>person</mat-icon>
-
-    <div class="menu-item-content">
-
-        <span class="menu-title">
-            Perfil
-        </span>
-
-        <span class="badge">
-            {{ perfilAtual }}
-        </span>
-
-    </div>
-
-    <mat-icon class="chevron">
-        chevron_right
-    </mat-icon>
-
-</button>
-
- <button mat-menu-item [matMenuTriggerFor]="themeMenu">
-
-    <mat-icon>palette</mat-icon>
-
-    <div class="menu-item-content">
-
-        <span class="menu-title">
-            Aparência
-        </span>
-
-        <span class="badge">
-            {{ temaAtual }}
-        </span>
-
-    </div>
-
-    <mat-icon class="chevron">
-        chevron_right
-    </mat-icon>
-
-</button>
-
-  <div class="menu-divider"></div>
-
-  <button mat-menu-item>
     <mat-icon>manage_accounts</mat-icon>
     <span>Minha Conta</span>
   </button>
 
-  <button mat-menu-item>
+  <button
+    mat-menu-item
+    (click)="alterarSenha()">
+
     <mat-icon>lock_reset</mat-icon>
     <span>Alterar Senha</span>
   </button>
 
   <div class="menu-divider"></div>
 
-  <button mat-menu-item class="logout" (click)="sair()">
+  <button
+    mat-menu-item
+    [matMenuTriggerFor]="profileMenu">
+
+    <mat-icon>account_balance</mat-icon>
+
+    <div class="menu-item-content">
+      <span class="menu-title">
+        Perfil Financeiro
+      </span>
+
+      <span class="badge">
+    {{ nomePerfilAtual }}
+      </span>
+
+    </div>
+
+    <mat-icon class="chevron">
+      chevron_right
+    </mat-icon>
+  </button>
+
+  <button
+  mat-menu-item
+  [matMenuTriggerFor]="themeMenu">
+
+  <mat-icon>palette</mat-icon>
+
+  <div class="menu-item-content">
+    <span class="menu-title">
+      Aparência
+    </span>
+
+    <span class="badge">
+      {{ temaAtual }}
+    </span>
+  </div>
+
+  <mat-icon class="chevron">
+    chevron_right
+  </mat-icon>
+</button>
+
+  <div class="menu-divider"></div>
+
+  <button
+    mat-menu-item
+    class="logout"
+    (click)="sair()">
+
     <mat-icon>logout</mat-icon>
     <span>Sair</span>
   </button>
 
 </mat-menu>
 
-<mat-menu #profileMenu="matMenu" class="settings-panel">
+<mat-menu
+  #profileMenu="matMenu"
+  class="settings-panel"
+>
+
   <div class="submenu-header">
-    <mat-icon>person</mat-icon>
-    <span>Perfil</span>
+
+    <mat-icon>
+      account_balance
+    </mat-icon>
+
+    <span>
+      Perfil Financeiro
+    </span>
+
   </div>
 
-  <button mat-menu-item (click)="alterarPerfil('Pessoal')">
+  <div class="menu-divider"></div>
+
+  @for (
+    perfil of perfisFinanceiros;
+    track perfil.id
+  ) {
+
+    <button
+      mat-menu-item
+      (click)="selecionarPerfil(perfil)"
+    >
+
+      <mat-icon
+        [class.profile-selected]="
+          perfil.ativo
+        "
+      >
+        {{
+          perfil.ativo
+            ? 'radio_button_checked'
+            : 'radio_button_unchecked'
+        }}
+      </mat-icon>
+
+      <div class="profile-menu-information">
+
+        <span class="profile-menu-name">
+          {{ perfil.nome }}
+        </span>
+
+        <span class="profile-menu-type">
+          {{
+            perfil.tipo === 'pessoal'
+              ? 'Pessoa Física'
+              : 'Empresa'
+          }}
+        </span>
+
+      </div>
+
+    </button>
+
+  }
+
+  @if (
+    perfisFinanceiros.length === 0
+  ) {
+
+    <div class="profile-menu-empty">
+
+      Nenhum perfil cadastrado.
+
+    </div>
+
+  }
+
+  <div class="menu-divider"></div>
+
+  <button
+    mat-menu-item
+    class="manage-profiles"
+    (click)="gerenciarPerfis()"
+  >
+
     <mat-icon>
-      {{ perfilAtual === 'Pessoal' ? 'radio_button_checked' : 'radio_button_unchecked' }}
+      manage_accounts
     </mat-icon>
-    <span>Pessoal</span>
+
+    <span>
+      Gerenciar Perfis
+    </span>
+
+    <mat-icon class="manage-arrow">
+      arrow_forward
+    </mat-icon>
+
   </button>
 
-  <button mat-menu-item (click)="alterarPerfil('Empresa')">
-    <mat-icon>
-      {{ perfilAtual === 'Empresa' ? 'radio_button_checked' : 'radio_button_unchecked' }}
-    </mat-icon>
-    <span>Empresa</span>
-  </button>
 </mat-menu>
 
-<mat-menu #themeMenu="matMenu" class="settings-panel">
+<mat-menu
+  #themeMenu="matMenu"
+  class="settings-panel">
+
   <div class="submenu-header">
     <mat-icon>palette</mat-icon>
     <span>Aparência</span>
   </div>
 
-  <button mat-menu-item (click)="alterarTema('Dark')">
+  <button
+    mat-menu-item
+    (click)="alterarTema('Dark')">
 
     <mat-icon>
-        {{ temaAtual === 'Dark'
-            ? 'radio_button_checked'
-            : 'radio_button_unchecked' }}
+      {{
+        temaAtual === 'Dark'
+          ? 'radio_button_checked'
+          : 'radio_button_unchecked'
+      }}
     </mat-icon>
 
     <span>Dark</span>
+  </button>
 
-</button>
-
-  <button mat-menu-item (click)="alterarTema('Light')">
+  <button
+    mat-menu-item
+    (click)="alterarTema('Light')">
 
     <mat-icon>
-        {{ temaAtual === 'Light'
-            ? 'radio_button_checked'
-            : 'radio_button_unchecked' }}
+      {{
+        temaAtual === 'Light'
+          ? 'radio_button_checked'
+          : 'radio_button_unchecked'
+      }}
     </mat-icon>
 
     <span>Light</span>
+  </button>
 
-</button>
-
- <button mat-menu-item (click)="alterarTema('Green')">
+  <button
+    mat-menu-item
+    (click)="alterarTema('Green')">
 
     <mat-icon>
-        {{ temaAtual === 'Green'
-            ? 'radio_button_checked'
-            : 'radio_button_unchecked' }}
+      {{
+        temaAtual === 'Green'
+          ? 'radio_button_checked'
+          : 'radio_button_unchecked'
+      }}
     </mat-icon>
 
     <span>Green</span>
+  </button>
 
-</button>
-
-  <button mat-menu-item (click)="alterarTema('Violet')">
+  <button
+    mat-menu-item
+    (click)="alterarTema('Violet')">
 
     <mat-icon>
-        {{ temaAtual === 'Violet'
-            ? 'radio_button_checked'
-            : 'radio_button_unchecked' }}
+      {{
+        temaAtual === 'Violet'
+          ? 'radio_button_checked'
+          : 'radio_button_unchecked'
+      }}
     </mat-icon>
 
     <span>Violet</span>
+  </button>
+
+  <button
+  mat-menu-item
+  (click)="alterarTema('Orange')"
+>
+
+  <span class="theme-dot orange"></span>
+
+  <mat-icon>
+    {{
+      temaAtual === 'Orange'
+        ? 'radio_button_checked'
+        : 'radio_button_unchecked'
+    }}
+  </mat-icon>
+
+  <span>Orange</span>
 
 </button>
 
-<span class="theme-dot dark"></span>
-<span class="theme-dot light"></span>
-<span class="theme-dot green"></span>
-<span class="theme-dot violet"></span>
+<button
+  mat-menu-item
+  (click)="alterarTema('Black-All')"
+>
+
+  <span class="theme-dot black-all"></span>
+
+  <mat-icon>
+    {{
+      temaAtual === 'Black-All'
+        ? 'radio_button_checked'
+        : 'radio_button_unchecked'
+    }}
+  </mat-icon>
+
+  <span>All Black</span>
+
+</button>
 
 </mat-menu>

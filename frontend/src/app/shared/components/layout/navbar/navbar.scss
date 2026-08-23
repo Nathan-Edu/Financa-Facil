@@ -23,7 +23,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 34px;
+  gap: 10px;
 }
 
 .nav-item {
@@ -53,5 +53,20 @@
 
   button {
     color: var(--text);
+  }
+}
+
+  button {
+    color: var(--text);
+  }
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  cursor: pointer;
+
+  span {
+    color: var(--primary);
   }
 }

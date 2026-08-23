@@ -1,0 +1,82 @@
+<app-card
+  title="Gerenciar Categorias"
+  subtitle="Orçamentos configurados por categoria">
+
+  <app-button
+    card-action
+    color="outline"
+    size="small"
+    icon="category"
+    (click)="abrirCategorias()">
+    Gerenciar
+  </app-button>
+
+  @if (categoriasOrcamento.length === 0) {
+
+    <app-empty-state
+      icon="category"
+      title="Nenhum orçamento configurado"
+      description="Configure um orçamento mensal nas categorias de despesa.">
+    </app-empty-state>
+
+  } @else {
+
+    <div class="categories-grid">
+
+      @for (
+        categoria of categoriasOrcamento;
+        track categoria.id
+      ) {
+
+        <button
+          type="button"
+          class="category-item"
+          (click)="abrirCategorias()">
+
+          <div
+            class="category-icon"
+            [style.background-color]="categoria.cor">
+
+            <span class="material-icons">
+              {{ categoria.icone }}
+            </span>
+
+          </div>
+
+          <div class="category-info">
+
+            <strong>
+              {{ categoria.nome }}
+            </strong>
+
+            <span>
+              Orçamento mensal
+            </span>
+
+          </div>
+
+          <div class="category-value">
+
+            <strong>
+              {{
+                formatarMoeda(
+                  categoria.orcamentoMensal ?? 0
+                )
+              }}
+            </strong>
+
+            <span class="material-icons">
+              chevron_right
+            </span>
+
+          </div>
+
+        </button>
+
+      }
+
+    </div>
+
+  }
+
+</app-card>

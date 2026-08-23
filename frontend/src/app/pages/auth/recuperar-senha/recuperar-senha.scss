@@ -1,0 +1,243 @@
+.recuperar-page {
+  min-height: 100vh;
+  padding: 32px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(37, 99, 235, 0.14),
+      transparent 38%
+    ),
+    var(--bg);
+
+  color: var(--text);
+}
+
+.recuperar-card {
+  width: 100%;
+  max-width: 500px;
+
+  display: block;
+}
+
+.recuperar-card ::ng-deep .card {
+  padding: 36px;
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.22);
+}
+
+.recuperar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 38px;
+
+  text-align: center;
+
+  h1 {
+    margin: 4px 0 0;
+
+    color: var(--text);
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  p {
+    max-width: 350px;
+    margin: 0;
+
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+.logo-circle {
+  width: 72px;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary),
+      #2563eb
+    );
+
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+
+  box-shadow:
+    0 12px 28px rgba(37, 99, 235, 0.28);
+}
+
+.recuperar-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.recuperar-form app-button {
+  width: 100%;
+}
+
+.recuperar-form app-button ::ng-deep .ff-button {
+  width: 100%;
+  min-height: 50px;
+
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.success-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  padding: 20px;
+
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 16px;
+
+  background: rgba(34, 197, 94, 0.08);
+
+  text-align: center;
+
+  h2 {
+    margin: 0;
+
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  strong {
+    color: var(--text);
+  }
+}
+
+.success-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(34, 197, 94, 0.16);
+  color: #22c55e;
+
+  font-size: 24px;
+  font-weight: 900;
+}
+
+app-divider {
+  display: block;
+  margin: 24px 0;
+}
+
+.recuperar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    padding: 0;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+    color: var(--primary);
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+      opacity 0.2s,
+      color 0.2s;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 5px;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .recuperar-page {
+    padding: 20px 14px;
+  }
+
+  .recuperar-card {
+    max-width: 100%;
+  }
+
+  .recuperar-card ::ng-deep .card {
+    padding: 28px 22px;
+    border-radius: 18px;
+  }
+
+  .recuperar-header {
+    margin-bottom: 32px;
+
+    h1 {
+      font-size: 26px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .logo-circle {
+    width: 66px;
+    height: 66px;
+
+    font-size: 19px;
+  }
+}

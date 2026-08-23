@@ -1,6 +1,5 @@
 <button
-  class="ff-button"
-  [class]="color + ' ' + size + ' ' + appearance"
+  class="ff-button {{ color }} {{ size }} {{ appearance }}"
   [type]="type"
   [disabled]="disabled || loading"
 >

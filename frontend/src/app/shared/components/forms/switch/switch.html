@@ -1,0 +1,36 @@
+<label
+  class="switch"
+  [class.disabled]="disabled"
+  (click)="toggle()">
+
+  <div class="switch-text">
+
+    <strong>
+
+      {{ label }}
+
+    </strong>
+
+    @if(description){
+
+      <span>
+
+        {{ description }}
+
+      </span>
+
+    }
+
+  </div>
+
+  <div
+    class="switch-control"
+    [class.checked]="checked">
+
+    <div class="switch-thumb">
+
+    </div>
+
+  </div>
+
+</label>

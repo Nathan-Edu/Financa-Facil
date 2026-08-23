@@ -1,0 +1,35 @@
+<section class="summary-grid">
+
+  <app-stat-card
+    title="Saldo Geral"
+    [value]="formatarMoeda(resumo.saldo)"
+    subtitle="Receitas menos despesas"
+    icon="account_balance_wallet"
+    color="primary">
+  </app-stat-card>
+
+  <app-stat-card
+    title="Receitas"
+    [value]="formatarMoeda(resumo.totalReceitas)"
+    subtitle="Total de receitas"
+    icon="trending_up"
+    color="success">
+  </app-stat-card>
+
+  <app-stat-card
+    title="Despesas"
+    [value]="formatarMoeda(resumo.totalDespesas)"
+    subtitle="Total de despesas"
+    icon="trending_down"
+    color="danger">
+  </app-stat-card>
+
+  <app-stat-card
+    title="Contas Parceladas"
+    [value]="formatarMoeda(resumo.totalParceladas)"
+    subtitle="Saldo parcelado em aberto"
+    icon="credit_card"
+    color="violet">
+  </app-stat-card>
+
+</section>

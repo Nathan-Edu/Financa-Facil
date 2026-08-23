@@ -1,0 +1,29 @@
+<label
+  class="checkbox"
+  [class.disabled]="disabled">
+
+  <input
+    type="checkbox"
+    [checked]="checked"
+    [disabled]="disabled"
+    (change)="toggle()">
+
+  <span class="checkmark">
+
+    @if(checked){
+
+      <span class="material-icons">
+        check
+      </span>
+
+    }
+
+  </span>
+
+  <span class="label">
+
+    {{label}}
+
+  </span>
+
+</label>

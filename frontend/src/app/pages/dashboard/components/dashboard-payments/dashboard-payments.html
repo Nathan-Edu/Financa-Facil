@@ -1,0 +1,81 @@
+<app-card
+  title="Próximos Pagamentos"
+  subtitle="Parcelas com vencimento mais próximo">
+
+  <app-button
+    card-action
+    color="outline"
+    size="small"
+    (click)="abrirParceladas()">
+    Ver Todas
+  </app-button>
+
+  @if (proximosPagamentos.length === 0) {
+
+    <app-empty-state
+      icon="event_available"
+      title="Nenhum pagamento próximo"
+      description="Você não possui parcelas pendentes no momento.">
+    </app-empty-state>
+
+  } @else {
+
+    <div class="payments-list">
+
+      @for (
+        parcela of proximosPagamentos;
+        track parcela.id
+      ) {
+
+        <div class="payment-item">
+
+          <div class="payment-icon">
+            <span class="material-icons">
+              payments
+            </span>
+          </div>
+
+          <div class="payment-info">
+
+            <strong>
+              {{ parcela.descricao }}
+            </strong>
+
+            <span>
+              {{ formatarData(parcela.dataVencimento) }}
+            </span>
+
+          </div>
+
+          <div class="payment-value">
+
+            <strong>
+              {{ parcela.valorParcelaFormatado }}
+            </strong>
+
+            <app-badge
+              [color]="
+                parcela.status === 'atrasada'
+                  ? 'danger'
+                  : 'warning'
+              ">
+
+              {{
+                parcela.status === 'atrasada'
+                  ? 'Atrasada'
+                  : 'Pendente'
+              }}
+
+            </app-badge>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</app-card>
