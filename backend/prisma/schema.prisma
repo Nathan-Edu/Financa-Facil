@@ -34,6 +34,12 @@ enum StatusTransacao {
   CANCELADA
 }
 
+enum FrequenciaRecorrencia {
+  SEMANAL
+  MENSAL
+  ANUAL
+}
+
 enum StatusContaParcelada {
   ATIVA
   FINALIZADA
@@ -99,6 +105,9 @@ model PerfilFinanceiro {
   nome             String           @db.VarChar(120)
   tipo             TipoPerfil
   documento        String           @db.VarChar(14)
+  descricao        String?          @db.VarChar(255)
+  cor              String           @default("#2563eb") @db.VarChar(7)
+  icone            String?          @db.VarChar(30)
   renda            Decimal          @default(0) @db.Decimal(14, 2)
   ativo            Boolean          @default(true)
   selecionado      Boolean          @default(false)
@@ -121,6 +130,9 @@ model Categoria {
   perfilId   String           @map("perfil_id") @db.Uuid
   nome       String           @db.VarChar(80)
   tipo       TipoCategoria
+  icone      String           @default("category") @db.VarChar(50)
+  cor        String           @default("#3b82f6") @db.VarChar(7)
+  orcamentoMensal Decimal?    @map("orcamento_mensal") @db.Decimal(14, 2)
   ativa      Boolean          @default(true)
   createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -146,15 +158,23 @@ model Transacao {
   status          StatusTransacao  @default(PENDENTE)
   observacao      String?          @db.VarChar(500)
   recorrente      Boolean          @default(false)
+  frequenciaRecorrencia FrequenciaRecorrencia? @map("frequencia_recorrencia")
+  recorrenteAte   DateTime?        @map("recorrente_ate") @db.Date
+  proximaRecorrencia DateTime?     @map("proxima_recorrencia") @db.Date
+  transacaoOrigemId String?        @map("transacao_origem_id") @db.Uuid
   formaPagamento  String?          @map("forma_pagamento") @db.VarChar(50)
   createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
   perfil          PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
   categoria       Categoria        @relation(fields: [categoriaId], references: [id])
+  transacaoOrigem Transacao?       @relation("OcorrenciasRecorrentes", fields: [transacaoOrigemId], references: [id], onDelete: SetNull)
+  ocorrencias     Transacao[]      @relation("OcorrenciasRecorrentes")
 
   @@index([perfilId, dataCompetencia])
   @@index([perfilId, tipo, status])
   @@index([categoriaId])
+  @@index([recorrente, proximaRecorrencia])
+  @@unique([transacaoOrigemId, dataCompetencia])
   @@map("transacoes")
 }
 
@@ -202,6 +222,7 @@ model Alerta {
   parcelaId  String?          @unique @map("parcela_id") @db.Uuid
   mensagem   String           @db.VarChar(255)
   lido       Boolean          @default(false)
+  descartado Boolean          @default(false)
   dataAlerta DateTime         @default(now()) @map("data_alerta") @db.Timestamptz(3)
   perfil     PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
   parcela    Parcela?         @relation(fields: [parcelaId], references: [id], onDelete: Cascade)

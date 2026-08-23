@@ -1,0 +1,16 @@
+<main class="recuperar-page">
+  <app-card class="recuperar-card">
+    <div class="recuperar-header"><span class="logo-circle">FF</span><h1>Redefinir senha</h1><p>Escolha uma nova senha para sua conta.</p></div>
+    @if (!concluido) {
+      <form class="recuperar-form" (submit)="$event.preventDefault(); salvar()">
+        <app-password-input label="Nova senha" [(value)]="novaSenha" />
+        <app-password-input label="Confirmar nova senha" [(value)]="confirmarSenha" />
+        @if (erro) { <div class="recuperar-error">{{ erro }}</div> }
+        <app-button type="submit" color="primary" [disabled]="carregando">{{ carregando ? 'Salvando...' : 'Redefinir senha' }}</app-button>
+      </form>
+    } @else {
+      <div class="success-message"><h2>Senha atualizada</h2><p>Você já pode entrar com a nova senha.</p></div>
+    }
+    <div class="recuperar-footer"><button type="button" (click)="voltarLogin()">Voltar para o login</button></div>
+  </app-card>
+</main>

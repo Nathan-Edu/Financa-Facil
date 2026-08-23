@@ -4,6 +4,7 @@ import { StatusParcela } from '@prisma/client';
 
 import { AcessoPerfilService } from '../../common/services/acesso-perfil.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AtualizarAlertaDto } from './dto/atualizar-alerta.dto';
 
 @Injectable()
 export class AlertasService {
@@ -22,6 +23,12 @@ export class AlertasService {
     const alerta = await this.prisma.alerta.findFirst({ where: { id, perfil: { usuarioId, ativo: true } } });
     if (!alerta) throw new NotFoundException('Alerta não encontrado');
     return this.prisma.alerta.update({ where: { id }, data: { lido: true } });
+  }
+
+  async atualizar(usuarioId: string, id: string, dto: AtualizarAlertaDto) {
+    const alerta = await this.prisma.alerta.findFirst({ where: { id, perfil: { usuarioId, ativo: true } } });
+    if (!alerta) throw new NotFoundException('Alerta não encontrado');
+    return this.prisma.alerta.update({ where: { id }, data: { lido: dto.lido, descartado: dto.descartado } });
   }
 
   async marcarTodosLidos(usuarioId: string, perfilId: string) {

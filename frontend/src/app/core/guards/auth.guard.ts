@@ -5,6 +5,7 @@ import {
 } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
+import { map } from 'rxjs';
 
 export const authGuard: CanActivateFn = (
   route,
@@ -15,6 +16,12 @@ export const authGuard: CanActivateFn = (
 
   if (authService.estaAutenticado()) {
     return true;
+  }
+
+  if (authService.obterRefreshToken()) {
+    return authService.renovar().pipe(
+      map((ok) => ok ? true : router.createUrlTree(['/login'], { queryParams: { retorno: state.url } }))
+    );
   }
 
   return router.createUrlTree(

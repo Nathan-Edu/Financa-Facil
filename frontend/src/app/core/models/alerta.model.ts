@@ -1,6 +1,6 @@
 export interface Alerta {
 
-  id: number;
+  id: string | number;
 
   titulo: string;
 

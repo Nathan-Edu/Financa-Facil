@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { AcessoPerfilService } from '../../common/services/acesso-perfil.service';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -12,13 +13,21 @@ export class CategoriasService {
     await this.acesso.verificar(usuarioId, dto.perfilId);
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const categoria = await tx.categoria.create({
-          data: { perfilId: dto.perfilId, nome: dto.nome.trim(), tipo: dto.tipo },
-        });
-        await tx.logAuditoria.create({ data: { usuarioId, perfilId: dto.perfilId, acao: 'CRIAR', entidade: 'CATEGORIA', entidadeId: categoria.id } });
+        const nome = dto.nome.trim();
+        const existente = await tx.categoria.findUnique({ where: { perfilId_nome_tipo: { perfilId: dto.perfilId, nome, tipo: dto.tipo } } });
+        if (existente?.ativa) throw new ConflictException('Categoria já cadastrada');
+        const dados = {
+          nome, tipo: dto.tipo, icone: dto.icone, cor: dto.cor,
+          orcamentoMensal: dto.orcamentoMensal === undefined ? undefined : new Prisma.Decimal(dto.orcamentoMensal), ativa: true,
+        };
+        const categoria = existente
+          ? await tx.categoria.update({ where: { id: existente.id }, data: dados })
+          : await tx.categoria.create({ data: { perfilId: dto.perfilId, ...dados } });
+        await tx.logAuditoria.create({ data: { usuarioId, perfilId: dto.perfilId, acao: existente ? 'REATIVAR' : 'CRIAR', entidade: 'CATEGORIA', entidadeId: categoria.id } });
         return categoria;
       });
     } catch (error: unknown) {
+      if (error instanceof ConflictException) throw error;
       if (this.prismaEhDuplicado(error)) throw new ConflictException('Categoria já cadastrada');
       throw error;
     }
@@ -35,7 +44,10 @@ export class CategoriasService {
       return await this.prisma.$transaction(async (tx) => {
         const categoria = await tx.categoria.update({
           where: { id },
-          data: { nome: dto.nome?.trim(), tipo: dto.tipo, ativa: dto.ativa },
+          data: {
+            nome: dto.nome?.trim(), tipo: dto.tipo, ativa: dto.ativa, icone: dto.icone, cor: dto.cor,
+            orcamentoMensal: dto.orcamentoMensal === undefined ? undefined : new Prisma.Decimal(dto.orcamentoMensal),
+          },
         });
         await tx.logAuditoria.create({ data: { usuarioId, perfilId: categoria.perfilId, acao: 'ALTERAR', entidade: 'CATEGORIA', entidadeId: id } });
         return categoria;
@@ -55,9 +67,7 @@ export class CategoriasService {
   }
 
   private async buscarDoUsuario(usuarioId: string, id: string) {
-    const categoria = await this.prisma.categoria.findFirst({
-      where: { id, perfil: { usuarioId, ativo: true } },
-    });
+    const categoria = await this.prisma.categoria.findFirst({ where: { id, perfil: { usuarioId, ativo: true } } });
     if (!categoria) throw new NotFoundException('Categoria não encontrada');
     return categoria;
   }

@@ -12,11 +12,11 @@ export class DashboardService {
     await this.acesso.verificar(usuarioId, perfilId);
     const agora = new Date();
     const inicioMes = new Date(Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth(), 1));
-    const fimMes = new Date(Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth() + 1, 0));
+    const inicioProximoMes = new Date(Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth() + 1, 1));
     const [receitas, despesas, parcelasPagas, receitasHistoricas, despesasHistoricas, parcelasHistoricas, parceladas, recentes, proximaParcela, alertas] = await this.prisma.$transaction([
-      this.prisma.transacao.aggregate({ _sum: { valor: true }, where: { perfilId, tipo: TipoTransacao.RECEITA, status: StatusTransacao.PAGA, dataPagamento: { gte: inicioMes, lte: fimMes } } }),
-      this.prisma.transacao.aggregate({ _sum: { valor: true }, where: { perfilId, tipo: TipoTransacao.DESPESA, status: StatusTransacao.PAGA, dataPagamento: { gte: inicioMes, lte: fimMes } } }),
-      this.prisma.parcela.aggregate({ _sum: { valor: true }, where: { contaParcelada: { perfilId }, status: StatusParcela.PAGA, dataPagamento: { gte: inicioMes, lte: fimMes } } }),
+      this.prisma.transacao.aggregate({ _sum: { valor: true }, where: { perfilId, tipo: TipoTransacao.RECEITA, status: StatusTransacao.PAGA, dataPagamento: { gte: inicioMes, lt: inicioProximoMes } } }),
+      this.prisma.transacao.aggregate({ _sum: { valor: true }, where: { perfilId, tipo: TipoTransacao.DESPESA, status: StatusTransacao.PAGA, dataPagamento: { gte: inicioMes, lt: inicioProximoMes } } }),
+      this.prisma.parcela.aggregate({ _sum: { valor: true }, where: { contaParcelada: { perfilId }, status: StatusParcela.PAGA, dataPagamento: { gte: inicioMes, lt: inicioProximoMes } } }),
       this.prisma.transacao.aggregate({ _sum: { valor: true }, where: { perfilId, tipo: TipoTransacao.RECEITA, status: StatusTransacao.PAGA } }),
       this.prisma.transacao.aggregate({ _sum: { valor: true }, where: { perfilId, tipo: TipoTransacao.DESPESA, status: StatusTransacao.PAGA } }),
       this.prisma.parcela.aggregate({ _sum: { valor: true }, where: { contaParcelada: { perfilId }, status: StatusParcela.PAGA } }),

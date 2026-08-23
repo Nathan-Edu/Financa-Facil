@@ -47,8 +47,13 @@
         [(checked)]="aceitouTermos">
       </app-checkbox>
 
+      @if (erro) {
+        <div class="cadastro-error">{{ erro }}</div>
+      }
+
       <app-button
         type="submit"
+        [disabled]="carregando"
         color="primary">
         {{ carregando ? 'Criando conta...' : 'Criar conta' }}
       </app-button>

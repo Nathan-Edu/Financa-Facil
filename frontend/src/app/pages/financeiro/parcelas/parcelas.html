@@ -82,7 +82,7 @@
       <div class="parcel-list">
 
         @for (
-          parcela of parcelasFiltradas;
+          parcela of parcelasPaginadas;
           track parcela.id
         ) {
 
@@ -142,11 +142,13 @@
           </app-select>
 
           <app-currency-input
+            [disabled]="!!parcelaSelecionada"
             label="Valor Total"
             [(value)]="valorTotal">
           </app-currency-input>
 
           <app-search-input
+            [disabled]="!!parcelaSelecionada"
             label="Quantidade de Parcelas"
             placeholder="Ex: 12"
             [(value)]="totalParcelasInput">
@@ -155,6 +157,7 @@
           @if (parcelaSelecionada) {
 
             <app-search-input
+              [disabled]="true"
               label="Parcelas Pagas"
               placeholder="Ex: 3"
               [(value)]="parcelasPagasInput">
@@ -163,6 +166,7 @@
           }
 
           <app-date-input
+            [disabled]="!!parcelaSelecionada"
             label="Próximo Vencimento"
             [required]="true"
             [(value)]="dataVencimento">

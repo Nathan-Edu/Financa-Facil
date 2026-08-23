@@ -36,11 +36,30 @@ export class RelatoriosService {
     for (const item of transacoes) this.somarMes(evolucao, item.dataPagamento!, item.tipo, item.valor.toNumber());
     for (const item of parcelas) this.somarMes(evolucao, item.dataPagamento!, TipoTransacao.DESPESA, item.valor.toNumber());
     const despesas = despesasTransacoes + despesasParcelas;
+    const movimentacoes = [
+      ...transacoes.map((item) => ({
+        id: item.id,
+        data: item.dataPagamento!.toISOString().slice(0, 10),
+        descricao: item.descricao,
+        categoria: item.categoria.nome,
+        tipo: item.tipo,
+        valor: item.valor.toNumber(),
+      })),
+      ...parcelas.map((item) => ({
+        id: item.id,
+        data: item.dataPagamento!.toISOString().slice(0, 10),
+        descricao: `${item.contaParcelada.descricao} - parcela ${item.numero}`,
+        categoria: item.contaParcelada.categoria.nome,
+        tipo: TipoTransacao.DESPESA,
+        valor: item.valor.toNumber(),
+      })),
+    ].sort((a, b) => b.data.localeCompare(a.data));
     return {
       periodo: { dataInicial: filtro.dataInicial, dataFinal: filtro.dataFinal },
       resumo: { receitas, despesas, saldo: receitas - despesas },
       porCategoria: [...porCategoria.values()].sort((a, b) => b.total - a.total),
       evolucaoMensal: [...evolucao.values()].sort((a, b) => a.mes.localeCompare(b.mes)),
+      movimentacoes,
     };
   }
 

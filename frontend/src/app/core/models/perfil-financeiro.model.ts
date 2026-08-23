@@ -3,7 +3,7 @@ export type TipoPerfilFinanceiro =
   | 'empresa';
 
 export interface PerfilFinanceiro {
-  id: number;
+  id: string | number;
   nome: string;
   tipo: TipoPerfilFinanceiro;
   documento: string;

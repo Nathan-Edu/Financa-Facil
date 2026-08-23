@@ -1,280 +1,51 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
-import {
-  CategoriaRelatorio,
-  EvolucaoMensalRelatorio,
-  MovimentacaoRelatorio,
-  RelatorioFinanceiro,
-  ResumoRelatorio
-} from '../models/relatorio.model';
+import { API_URL } from '../config/api.config';
+import { RelatorioFinanceiro } from '../models/relatorio.model';
+import { PerfilFinanceiroService } from './perfil-financeiro.service';
 
-import {
-  MOVIMENTACOES_RELATORIO_MOCK
-} from '../mock/relatorio.mock';
+interface RelatorioApi {
+  resumo: { receitas: number; despesas: number; saldo: number };
+  porCategoria: { categoria: string; tipo: 'RECEITA' | 'DESPESA'; total: number }[];
+  evolucaoMensal: { mes: string; receitas: number; despesas: number }[];
+  movimentacoes: { id: string; data: string; descricao: string; categoria: string; tipo: 'RECEITA' | 'DESPESA'; valor: number }[];
+}
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class RelatorioService {
+  constructor(private readonly http: HttpClient, private readonly perfis: PerfilFinanceiroService) {}
 
-  /**
-   * Retorna o relatório completo de um perfil financeiro.
-   *
-   * Futuramente este método poderá ser substituído
-   * por uma chamada HTTP para a API.
-   */
-  buscarRelatorio(
-    perfilFinanceiroId: number
-  ): Observable<RelatorioFinanceiro> {
-
-    const movimentacoes =
-      MOVIMENTACOES_RELATORIO_MOCK
-        .filter(
-          movimentacao =>
-            movimentacao.perfilFinanceiroId ===
-            perfilFinanceiroId
-        )
-        .sort(
-          (a, b) =>
-            new Date(b.data).getTime() -
-            new Date(a.data).getTime()
-        );
-
-    const tipoPerfil =
-      movimentacoes[0]?.tipoPerfil ?? 'pessoal';
-
-    const resumo =
-      this.calcularResumo(movimentacoes);
-
-    const evolucaoMensal =
-      this.calcularEvolucaoMensal(
-        movimentacoes
-      );
-
-    const despesasPorCategoria =
-      this.calcularCategorias(
-        movimentacoes,
-        'despesa'
-      );
-
-    const receitasPorCategoria =
-      this.calcularCategorias(
-        movimentacoes,
-        'receita'
-      );
-
-    const relatorio: RelatorioFinanceiro = {
-
-      perfilFinanceiroId,
-
-      tipoPerfil,
-
-      resumo,
-
-      evolucaoMensal,
-
-      despesasPorCategoria,
-
-      receitasPorCategoria,
-
-      movimentacoes
-
-    };
-
-    return of(relatorio);
+  buscarRelatorio(perfilFinanceiroId: string | number, tipoPerfil: 'pessoal' | 'empresa' = 'pessoal'): Observable<RelatorioFinanceiro> {
+    const fim = new Date().toISOString().slice(0, 10);
+    const inicio = '1900-01-01';
+    return this.http.get<RelatorioApi>(`${API_URL}/relatorios/financeiro`, {
+      params: { perfilId: String(perfilFinanceiroId || this.perfis.obterPerfilAtivoId()), dataInicial: inicio, dataFinal: fim }
+    }).pipe(map((api) => {
+      const despesas = api.porCategoria.filter((item) => item.tipo === 'DESPESA');
+      const receitas = api.porCategoria.filter((item) => item.tipo === 'RECEITA');
+      const totalDespesas = despesas.reduce((soma, item) => soma + item.total, 0);
+      const totalReceitas = receitas.reduce((soma, item) => soma + item.total, 0);
+      return {
+        perfilFinanceiroId,
+        tipoPerfil,
+        resumo: {
+          totalReceitas: api.resumo.receitas,
+          totalDespesas: api.resumo.despesas,
+          saldo: api.resumo.saldo,
+          percentualEconomia: api.resumo.receitas > 0 ? (api.resumo.saldo / api.resumo.receitas) * 100 : 0
+        },
+        evolucaoMensal: api.evolucaoMensal.map((item) => ({ ...item, saldo: item.receitas - item.despesas })),
+        despesasPorCategoria: despesas.map((item) => ({ categoria: item.categoria, valor: item.total, percentual: totalDespesas ? item.total / totalDespesas * 100 : 0 })),
+        receitasPorCategoria: receitas.map((item) => ({ categoria: item.categoria, valor: item.total, percentual: totalReceitas ? item.total / totalReceitas * 100 : 0 })),
+        movimentacoes: api.movimentacoes.map((item) => ({
+          ...item,
+          perfilFinanceiroId,
+          tipoPerfil,
+          tipo: item.tipo === 'RECEITA' ? 'receita' : 'despesa'
+        }))
+      };
+    }));
   }
-
-
-  /**
-   * Calcula os quatro indicadores principais.
-   */
-  private calcularResumo(
-    movimentacoes: MovimentacaoRelatorio[]
-  ): ResumoRelatorio {
-
-    const totalReceitas =
-      movimentacoes
-        .filter(
-          movimentacao =>
-            movimentacao.tipo === 'receita'
-        )
-        .reduce(
-          (total, movimentacao) =>
-            total + movimentacao.valor,
-          0
-        );
-
-    const totalDespesas =
-      movimentacoes
-        .filter(
-          movimentacao =>
-            movimentacao.tipo === 'despesa'
-        )
-        .reduce(
-          (total, movimentacao) =>
-            total + movimentacao.valor,
-          0
-        );
-
-    const saldo =
-      totalReceitas - totalDespesas;
-
-    const percentualEconomia =
-      totalReceitas > 0
-        ? (saldo / totalReceitas) * 100
-        : 0;
-
-    return {
-
-      totalReceitas,
-
-      totalDespesas,
-
-      saldo,
-
-      percentualEconomia
-
-    };
-  }
-
-
-  /**
-   * Agrupa receitas e despesas por mês.
-   */
-  private calcularEvolucaoMensal(
-    movimentacoes: MovimentacaoRelatorio[]
-  ): EvolucaoMensalRelatorio[] {
-
-    const meses = new Map<
-      string,
-      EvolucaoMensalRelatorio
-    >();
-
-    movimentacoes.forEach(
-      movimentacao => {
-
-        const data =
-          new Date(
-            `${movimentacao.data}T00:00:00`
-          );
-
-        const chave =
-          `${data.getFullYear()}-${String(
-            data.getMonth() + 1
-          ).padStart(2, '0')}`;
-
-        if (!meses.has(chave)) {
-
-          meses.set(
-            chave,
-            {
-              mes: chave,
-              receitas: 0,
-              despesas: 0,
-              saldo: 0
-            }
-          );
-
-        }
-
-        const mes = meses.get(chave)!;
-
-        if (
-          movimentacao.tipo === 'receita'
-        ) {
-
-          mes.receitas +=
-            movimentacao.valor;
-
-        } else {
-
-          mes.despesas +=
-            movimentacao.valor;
-
-        }
-
-        mes.saldo =
-          mes.receitas -
-          mes.despesas;
-
-      }
-    );
-
-    return Array.from(
-      meses.values()
-    ).sort(
-      (a, b) =>
-        a.mes.localeCompare(b.mes)
-    );
-  }
-
-
-  /**
-   * Agrupa movimentações por categoria.
-   */
-  private calcularCategorias(
-    movimentacoes: MovimentacaoRelatorio[],
-    tipo: 'receita' | 'despesa'
-  ): CategoriaRelatorio[] {
-
-    const categorias =
-      new Map<string, number>();
-
-    movimentacoes
-      .filter(
-        movimentacao =>
-          movimentacao.tipo === tipo
-      )
-      .forEach(
-        movimentacao => {
-
-          const valorAtual =
-            categorias.get(
-              movimentacao.categoria
-            ) ?? 0;
-
-          categorias.set(
-            movimentacao.categoria,
-            valorAtual +
-              movimentacao.valor
-          );
-
-        }
-      );
-
-
-    const total =
-      Array.from(
-        categorias.values()
-      ).reduce(
-        (soma, valor) =>
-          soma + valor,
-        0
-      );
-
-
-    return Array.from(
-      categorias.entries()
-    )
-      .map(
-        ([categoria, valor]) => ({
-
-          categoria,
-
-          valor,
-
-          percentual:
-            total > 0
-              ? (valor / total) * 100
-              : 0
-
-        })
-      )
-      .sort(
-        (a, b) =>
-          b.valor - a.valor
-      );
-  }
-
 }

@@ -70,7 +70,7 @@ export class Parcelas implements OnInit {
   observacao = '';
 
   currentPage = 1;
-  totalPages = 1;
+  readonly itemsPerPage = 8;
 
   statusOptions = [
     'Todos',
@@ -173,6 +173,13 @@ export class Parcelas implements OnInit {
 
     return this.formatarMoeda(total);
   }
+
+  get parcelasPaginadas(): Parcela[] {
+    const inicio = (this.currentPage - 1) * this.itemsPerPage;
+    return this.parcelasFiltradas.slice(inicio, inicio + this.itemsPerPage);
+  }
+
+  get totalPages(): number { return Math.max(1, Math.ceil(this.parcelasFiltradas.length / this.itemsPerPage)); }
 
   get contasAtivas(): string {
     return this.parcelas

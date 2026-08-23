@@ -6,6 +6,7 @@ import { AppModule } from '../src/app.module';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 import { DecimalInterceptor } from '../src/common/interceptors/decimal.interceptor';
 import { AlertasService } from '../src/modules/alertas/alertas.service';
+import { TransacoesService } from '../src/modules/transacoes/transacoes.service';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('Finança Fácil API (e2e)', () => {
@@ -15,6 +16,8 @@ describe('Finança Fácil API (e2e)', () => {
   const email = `e2e-${marcador}@financafacil.local`;
   const emailOutro = `e2e-outro-${marcador}@financafacil.local`;
   let token = '';
+  let refreshInicial = '';
+  let refreshAtual = '';
   let tokenOutro = '';
   let perfilId = '';
   let categoriaId = '';
@@ -25,6 +28,9 @@ describe('Finança Fácil API (e2e)', () => {
   const emTresDias = new Date(hoje);
   emTresDias.setUTCDate(emTresDias.getUTCDate() + 3);
   const vencimento = emTresDias.toISOString().slice(0, 10);
+  const haQuinzeDias = new Date(hoje);
+  haQuinzeDias.setUTCDate(haQuinzeDias.getUTCDate() - 15);
+  const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
 
   beforeAll(async () => {
     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -62,7 +68,15 @@ describe('Finança Fácil API (e2e)', () => {
       nome: 'Usuário E2E', email, senha: 'Teste@123',
     }).expect(201);
     token = cadastro.body.accessToken;
+    refreshInicial = cadastro.body.refreshToken;
     expect(token).toBeTruthy();
+
+    const loginImediato = await request(app.getHttpServer()).post('/api/v1/auth/login').send({
+      email, senha: 'Teste@123',
+    }).expect(200);
+    expect(loginImediato.body.refreshToken).not.toBe(refreshInicial);
+    token = loginImediato.body.accessToken;
+    refreshAtual = loginImediato.body.refreshToken;
 
     const outro = await request(app.getHttpServer()).post('/api/v1/auth/cadastro').send({
       nome: 'Outro E2E', email: emailOutro, senha: 'Teste@123',
@@ -70,13 +84,26 @@ describe('Finança Fácil API (e2e)', () => {
     tokenOutro = outro.body.accessToken;
   });
 
+  it('permite apenas uma rotação concorrente do mesmo refresh token', async () => {
+    const respostas = await Promise.all([
+      request(app.getHttpServer()).post('/api/v1/auth/refresh').send({ refreshToken: refreshAtual }),
+      request(app.getHttpServer()).post('/api/v1/auth/refresh').send({ refreshToken: refreshAtual }),
+    ]);
+    expect(respostas.map((resposta) => resposta.status).sort()).toEqual([200, 401]);
+    const sucesso = respostas.find((resposta) => resposta.status === 200)!;
+    token = sucesso.body.accessToken;
+    refreshAtual = sucesso.body.refreshToken;
+  });
+
   it('cria perfil e impede acesso por outro usuário', async () => {
     const resposta = await request(app.getHttpServer()).post('/api/v1/perfis')
       .set('Authorization', `Bearer ${token}`)
-      .send({ nome: 'Pessoal', tipo: 'PESSOAL', documento: '52998224725', renda: 5000 })
+      .send({ nome: 'Pessoal', tipo: 'PESSOAL', documento: '52998224725', renda: 5000, descricao: 'Perfil E2E', cor: '#123456', icone: 'PE' })
       .expect(201);
     perfilId = resposta.body.id;
     expect(resposta.body.renda).toBe(5000);
+    expect(resposta.body.descricao).toBe('Perfil E2E');
+    expect(resposta.body.cor).toBe('#123456');
 
     await request(app.getHttpServer()).get(`/api/v1/perfis/${perfilId}`)
       .set('Authorization', `Bearer ${tokenOutro}`)
@@ -86,9 +113,10 @@ describe('Finança Fácil API (e2e)', () => {
   it('cria categoria e transação paga', async () => {
     const categoria = await request(app.getHttpServer()).post('/api/v1/categorias')
       .set('Authorization', `Bearer ${token}`)
-      .send({ perfilId, nome: 'Compras E2E', tipo: 'DESPESA' })
+      .send({ perfilId, nome: 'Compras E2E', tipo: 'DESPESA', icone: 'shopping_cart', cor: '#654321', orcamentoMensal: 300 })
       .expect(201);
     categoriaId = categoria.body.id;
+    expect(categoria.body.orcamentoMensal).toBe(300);
 
     const transacao = await request(app.getHttpServer()).post('/api/v1/transacoes')
       .set('Authorization', `Bearer ${token}`)
@@ -112,6 +140,9 @@ describe('Finança Fácil API (e2e)', () => {
     const alertas = await request(app.getHttpServer()).get(`/api/v1/alertas?perfilId=${perfilId}`)
       .set('Authorization', `Bearer ${token}`).expect(200);
     expect(alertas.body.length).toBeGreaterThan(0);
+    await request(app.getHttpServer()).patch(`/api/v1/alertas/${alertas.body[0].id}`)
+      .set('Authorization', `Bearer ${token}`).send({ descartado: true, lido: false }).expect(200)
+      .expect(({ body }) => expect(body.descartado).toBe(true));
 
     await request(app.getHttpServer()).patch(`/api/v1/parcelas/${conta.body.parcelas[0].id}/pagar`)
       .set('Authorization', `Bearer ${token}`).send({ dataPagamento: dataHoje }).expect(200);
@@ -127,6 +158,7 @@ describe('Finança Fácil API (e2e)', () => {
       .get(`/api/v1/relatorios/financeiro?perfilId=${perfilId}&dataInicial=${dataHoje}&dataFinal=${dataHoje}`)
       .set('Authorization', `Bearer ${token}`).expect(200);
     expect(relatorio.body.resumo.despesas).toBeCloseTo(58.34, 2);
+    expect(relatorio.body.movimentacoes).toHaveLength(2);
   });
 
   it('preserva parcela paga ao cancelar o restante da conta', async () => {
@@ -140,6 +172,25 @@ describe('Finança Fácil API (e2e)', () => {
     expect(parcelas.body.filter((item: { status: string }) => item.status === 'CANCELADA')).toHaveLength(2);
   });
 
+  it('gera e recupera ocorrências recorrentes sem duplicar', async () => {
+    await request(app.getHttpServer()).post('/api/v1/transacoes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        perfilId, categoriaId, tipo: 'DESPESA', descricao: 'Recorrente E2E', valor: 10,
+        dataCompetencia: dataHaQuinzeDias, recorrente: true, frequenciaRecorrencia: 'SEMANAL',
+      }).expect(201);
+
+    const primeiraExecucao = await app.get(TransacoesService).processarRecorrencias();
+    const segundaExecucao = await app.get(TransacoesService).processarRecorrencias();
+    expect(primeiraExecucao.geradas).toBe(2);
+    expect(segundaExecucao.geradas).toBe(0);
+
+    await request(app.getHttpServer())
+      .get(`/api/v1/transacoes?perfilId=${perfilId}&tipo=DESPESA&status=PENDENTE&busca=Recorrente%20E2E&limit=100`)
+      .set('Authorization', `Bearer ${token}`).expect(200)
+      .expect(({ body }) => expect(body.meta.total).toBe(3));
+  });
+
   it('protege rotas administrativas por papel', async () => {
     await request(app.getHttpServer()).get('/api/v1/usuarios')
       .set('Authorization', `Bearer ${token}`).expect(403);
@@ -151,8 +202,12 @@ describe('Finança Fácil API (e2e)', () => {
   });
 
   it('recupera a senha com token de desenvolvimento e invalida a antiga', async () => {
+    const primeiro = await request(app.getHttpServer()).post('/api/v1/auth/esqueci-senha').send({ email }).expect(200);
     const esqueci = await request(app.getHttpServer()).post('/api/v1/auth/esqueci-senha').send({ email }).expect(200);
+    expect(primeiro.body.tokenDesenvolvimento).toBeTruthy();
     expect(esqueci.body.tokenDesenvolvimento).toBeTruthy();
+    await request(app.getHttpServer()).post('/api/v1/auth/redefinir-senha')
+      .send({ token: primeiro.body.tokenDesenvolvimento, novaSenha: 'Ignorada@1234' }).expect(400);
     await request(app.getHttpServer()).post('/api/v1/auth/redefinir-senha')
       .send({ token: esqueci.body.tokenDesenvolvimento, novaSenha: 'Nova@1234' }).expect(204);
     await request(app.getHttpServer()).post('/api/v1/auth/login')

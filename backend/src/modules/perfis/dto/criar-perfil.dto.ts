@@ -1,6 +1,6 @@
 import { TipoPerfil } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
+import { IsEnum, IsHexColor, IsNumber, IsOptional, IsString, Length, Matches, Min } from 'class-validator';
 
 export class CriarPerfilDto {
   @IsString()
@@ -12,6 +12,10 @@ export class CriarPerfilDto {
 
   @IsString()
   documento!: string;
+
+  @IsOptional() @IsString() @Length(0, 255) descricao?: string;
+  @IsOptional() @IsHexColor() cor?: string;
+  @IsOptional() @IsString() @Matches(/^[A-Za-z0-9_ -]{1,30}$/) icone?: string;
 
   @IsOptional()
   @Type(() => Number)

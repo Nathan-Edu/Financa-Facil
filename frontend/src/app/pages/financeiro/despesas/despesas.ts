@@ -13,7 +13,8 @@ import { Card } from '../../../shared/components/layout/card/card';
 
 import { Button } from '../../../shared/components/forms/button/button';
 import { SearchInput } from '../../../shared/components/forms/search-input/search-input';
-import { Select } from '../../../shared/components/forms/select/select';
+import { Select, SelectOption } from '../../../shared/components/forms/select/select';
+import { Checkbox } from '../../../shared/components/forms/checkbox/checkbox';
 import { CurrencyInput } from '../../../shared/components/forms/currency-input/currency-input';
 import { DateInput } from '../../../shared/components/forms/date-input/date-input';
 import { Textarea } from '../../../shared/components/forms/textarea/textarea';
@@ -35,6 +36,7 @@ import { Pagination } from '../../../shared/components/tables/pagination/paginat
     Button,
     SearchInput,
     Select,
+    Checkbox,
     CurrencyInput,
     DateInput,
     Textarea,
@@ -62,9 +64,17 @@ export class Despesas implements OnInit {
   valor = 0;
   data = '';
   observacao = '';
+  recorrente = false;
+  frequenciaRecorrencia: NonNullable<Despesa['frequenciaRecorrencia']> = 'mensal';
+  recorrenteAte = '';
+  readonly frequenciasRecorrencia: SelectOption[] = [
+    { label: 'Semanal', value: 'semanal' },
+    { label: 'Mensal', value: 'mensal' },
+    { label: 'Anual', value: 'anual' }
+  ];
 
   currentPage = 1;
-  totalPages = 1;
+  readonly itemsPerPage = 8;
 
   categorias: string[] = ['Todas'];
   categoriasFormulario: string[] = [];
@@ -160,6 +170,13 @@ export class Despesas implements OnInit {
     return this.formatarMoeda(total);
   }
 
+  get despesasPaginadas(): Despesa[] {
+    const inicio = (this.currentPage - 1) * this.itemsPerPage;
+    return this.despesasFiltradas.slice(inicio, inicio + this.itemsPerPage);
+  }
+
+  get totalPages(): number { return Math.max(1, Math.ceil(this.despesasFiltradas.length / this.itemsPerPage)); }
+
   get totalMesAtual(): string {
     const hoje = new Date();
 
@@ -209,6 +226,9 @@ export class Despesas implements OnInit {
     this.valor = 0;
     this.data = '';
     this.observacao = '';
+    this.recorrente = false;
+    this.frequenciaRecorrencia = 'mensal';
+    this.recorrenteAte = '';
 
     this.showModal = true;
   }
@@ -223,6 +243,9 @@ export class Despesas implements OnInit {
     this.data = despesa.data;
     this.observacao =
       despesa.observacao ?? '';
+    this.recorrente = despesa.recorrente ?? false;
+    this.frequenciaRecorrencia = despesa.frequenciaRecorrencia ?? 'mensal';
+    this.recorrenteAte = despesa.recorrenteAte ?? '';
 
     this.showModal = true;
   }
@@ -256,6 +279,11 @@ export class Despesas implements OnInit {
       return;
     }
 
+    if (this.recorrente && this.recorrenteAte && this.recorrenteAte <= this.data) {
+      this.toast.warning('A data final da recorrência deve ser posterior à primeira despesa.');
+      return;
+    }
+
     if (this.despesaSelecionada) {
       this.atualizarDespesa();
       return;
@@ -272,7 +300,10 @@ export class Despesas implements OnInit {
         valor: this.valor,
         data: this.data,
         observacao:
-          this.observacao.trim() || undefined
+          this.observacao.trim() || undefined,
+        recorrente: this.recorrente,
+        frequenciaRecorrencia: this.recorrente ? this.frequenciaRecorrencia : undefined,
+        recorrenteAte: this.recorrente ? this.recorrenteAte || undefined : undefined
       })
       .subscribe({
         next: () => {
@@ -303,7 +334,10 @@ export class Despesas implements OnInit {
       valor: this.valor,
       data: this.data,
       observacao:
-        this.observacao.trim() || undefined
+        this.observacao.trim() || undefined,
+      recorrente: this.recorrente,
+      frequenciaRecorrencia: this.recorrente ? this.frequenciaRecorrencia : undefined,
+      recorrenteAte: this.recorrente ? this.recorrenteAte || undefined : undefined
     };
 
     this.despesaService

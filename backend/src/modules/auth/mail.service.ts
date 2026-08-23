@@ -9,11 +9,13 @@ export class MailService {
   async enviarRedefinicao(email: string, token: string): Promise<boolean> {
     const host = this.config.get<string>('SMTP_HOST');
     if (!host) return false;
+    const port = Number(this.config.get<string>('SMTP_PORT', '587'));
+    const secure = this.config.get<string>('SMTP_SECURE', 'false').toLowerCase() === 'true';
 
     const transport = nodemailer.createTransport({
       host,
-      port: this.config.get<number>('SMTP_PORT', 587),
-      secure: this.config.get<boolean>('SMTP_SECURE', false),
+      port,
+      secure,
       auth: {
         user: this.config.getOrThrow<string>('SMTP_USER'),
         pass: this.config.getOrThrow<string>('SMTP_PASSWORD'),

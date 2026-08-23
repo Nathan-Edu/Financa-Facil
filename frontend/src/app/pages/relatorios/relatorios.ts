@@ -16,7 +16,7 @@ import { Card } from '../../shared/components/layout/card/card';
 import { Button } from '../../shared/components/forms/button/button';
 
 import { RelatorioService } from '../../core/services/relatorio.service';
-import { AuthService } from '../../core/services/auth.service';
+import { PerfilFinanceiroService } from '../../core/services/perfil-financeiro.service';
 
 import {
   CategoriaRelatorio,
@@ -174,7 +174,7 @@ export class Relatorios implements OnInit {
   // PERFIL FINANCEIRO
   // =====================================================
 
-  perfilFinanceiroId = 1;
+  perfilFinanceiroId: string | number = '';
 
   nomePerfil = '';
 
@@ -564,15 +564,13 @@ private atualizarGraficoDespesasCategoria(): void {
 
   constructor(
     private readonly relatorioService: RelatorioService,
-    private readonly authService: AuthService
+    private readonly perfilService: PerfilFinanceiroService
   ) {}
 
 
   ngOnInit(): void {
 
     this.carregarPerfilAtual();
-
-    this.carregarRelatorio();
 
   }
 
@@ -582,38 +580,15 @@ private atualizarGraficoDespesasCategoria(): void {
   // =====================================================
 
   private carregarPerfilAtual(): void {
-
-    const usuario =
-      this.authService.obterUsuario();
-
-    if (!usuario) {
-      return;
-    }
-
-    this.tipoPerfil =
-      usuario.perfilAtivo;
-
-    /*
-     * IDs utilizados atualmente no mock:
-     *
-     * 1 = Perfil Pessoal
-     * 2 = Empresa Alpha
-     */
-
-    if (usuario.perfilAtivo === 'empresa') {
-
-      this.perfilFinanceiroId = 2;
-
-      this.nomePerfil = 'Empresa Alpha';
-
-    } else {
-
-      this.perfilFinanceiroId = 1;
-
-      this.nomePerfil = 'Perfil Pessoal';
-
-    }
-
+    this.perfilService.buscarPerfilAtivo().subscribe({
+      next: (perfil) => {
+        if (!perfil) return;
+        this.perfilFinanceiroId = perfil.id;
+        this.nomePerfil = perfil.nome;
+        this.tipoPerfil = perfil.tipo;
+        this.carregarRelatorio();
+      }
+    });
   }
 
 
@@ -627,7 +602,8 @@ private atualizarGraficoDespesasCategoria(): void {
 
     this.relatorioService
       .buscarRelatorio(
-        this.perfilFinanceiroId
+        this.perfilFinanceiroId,
+        this.tipoPerfil
       )
       .subscribe({
 
@@ -1015,17 +991,7 @@ private recalcularEvolucaoMensal(): void {
     }
 
 
-    /*
-     * Como estamos trabalhando com mock de 2026,
-     * usamos agosto/2026 como período de referência.
-     *
-     * Quando entrar a API, podemos substituir
-     * pela data atual ou pelas datas informadas
-     * pelo usuário.
-     */
-
-    const referencia =
-      new Date('2026-08-09T00:00:00');
+    const referencia = new Date();
 
 
     let meses = 0;

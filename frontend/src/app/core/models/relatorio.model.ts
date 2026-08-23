@@ -7,8 +7,8 @@ export type TipoPerfilRelatorio =
   | 'empresa';
 
 export interface MovimentacaoRelatorio {
-  id: number;
-  perfilFinanceiroId: number;
+  id: string | number;
+  perfilFinanceiroId: string | number;
   tipoPerfil: TipoPerfilRelatorio;
   data: string;
   descricao: string;
@@ -38,7 +38,7 @@ export interface CategoriaRelatorio {
 }
 
 export interface RelatorioFinanceiro {
-  perfilFinanceiroId: number;
+  perfilFinanceiroId: string | number;
   tipoPerfil: TipoPerfilRelatorio;
   resumo: ResumoRelatorio;
   evolucaoMensal: EvolucaoMensalRelatorio[];

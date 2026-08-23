@@ -1,5 +1,5 @@
 export interface Usuario {
-  id: number;
+  id: string | number;
   nome: string;
   email: string;
   perfilAtivo: 'pessoal' | 'empresa';
@@ -8,4 +8,5 @@ export interface Usuario {
   cnpj?: string;
 
   avatar?: string;
+  tipo?: 'USUARIO' | 'ADMINISTRADOR';
 }

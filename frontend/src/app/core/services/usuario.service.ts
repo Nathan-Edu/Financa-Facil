@@ -1,128 +1,45 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 
+import { API_URL } from '../config/api.config';
 import { Usuario } from '../models/usuario.model';
+import { AuthService } from './auth.service';
 
-import {
-  USUARIOS_MOCK,
-  UsuarioMock
-} from '../mock/usuarios.mock';
+interface UsuarioApi { id: string; nome: string; email: string; tipo: 'USUARIO' | 'ADMINISTRADOR'; }
 
-import {
-  AuthService
-} from './auth.service';
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class UsuarioService {
-
-  constructor(
-    private authService: AuthService
-  ) {}
+  constructor(private readonly http: HttpClient, private readonly auth: AuthService) {}
 
   buscarUsuarioAtual(): Observable<Usuario> {
-
-    const usuarioAtual =
-      this.obterUsuarioMock();
-
-    return of(
-      this.removerSenha(usuarioAtual)
+    return this.http.get<UsuarioApi>(`${API_URL}/usuarios/me`).pipe(
+      map((usuario) => this.mapear(usuario)),
+      tap((usuario) => this.auth.atualizarUsuario(usuario))
     );
   }
 
-  editar(
-    usuarioAtualizado: Usuario
-  ): Observable<boolean> {
-
-    const usuarioAtual =
-      this.obterUsuarioMock();
-
-    if (
-      usuarioAtual.id !==
-      usuarioAtualizado.id
-    ) {
-      return of(false);
-    }
-
-    Object.assign(
-      usuarioAtual,
-      usuarioAtualizado
+  editar(usuario: Usuario): Observable<boolean> {
+    return this.http.patch<UsuarioApi>(`${API_URL}/usuarios/me`, { nome: usuario.nome, email: usuario.email }).pipe(
+      map((atualizado) => ({ ...this.mapear(atualizado), perfilAtivo: usuario.perfilAtivo, avatar: usuario.avatar })),
+      tap((atualizado) => this.auth.atualizarUsuario(atualizado)),
+      map(() => true)
     );
-
-    this.atualizarUsuarioAutenticado(
-      usuarioAtual
-    );
-
-    return of(true);
   }
 
-  alterarSenha(
-    senhaAtual: string,
-    novaSenha: string
-  ): Observable<boolean> {
-
-    const usuarioAtual =
-      this.obterUsuarioMock();
-
-    if (
-      usuarioAtual.senha !== senhaAtual
-    ) {
-      return of(false);
-    }
-
-    usuarioAtual.senha = novaSenha;
-
-    return of(true);
+  alterarSenha(senhaAtual: string, novaSenha: string): Observable<boolean> {
+    return this.auth.alterarSenha(senhaAtual, novaSenha);
   }
 
-  private obterUsuarioMock(): UsuarioMock {
-
-    const usuarioLogado =
-      this.authService.obterUsuario();
-
-    if (!usuarioLogado) {
-      throw new Error(
-        'Usuário não autenticado.'
-      );
-    }
-
-    const usuarioMock =
-      USUARIOS_MOCK.find(
-        usuario =>
-          usuario.id === usuarioLogado.id
-      );
-
-    if (!usuarioMock) {
-      throw new Error(
-        'Usuário não encontrado.'
-      );
-    }
-
-    return usuarioMock;
+  private mapear(usuario: UsuarioApi): Usuario {
+    const atual = this.auth.obterUsuario();
+    return {
+      id: usuario.id,
+      nome: usuario.nome,
+      email: usuario.email,
+      tipo: usuario.tipo,
+      perfilAtivo: atual?.perfilAtivo ?? 'pessoal',
+      avatar: atual?.avatar
+    };
   }
-
-  private atualizarUsuarioAutenticado(
-    usuario: UsuarioMock
-  ): void {
-
-    const usuarioSemSenha =
-      this.removerSenha(usuario);
-
-    this.authService
-      .atualizarUsuario(usuarioSemSenha);
-  }
-
-  private removerSenha(
-    usuario: UsuarioMock
-  ): Usuario {
-
-    const {
-      senha,
-      ...dadosUsuario
-    } = usuario;
-
-    return dadosUsuario;
-  }
-
 }

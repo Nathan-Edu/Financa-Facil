@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Usuario } from '@prisma/client';
 import * as argon2 from 'argon2';
-import { createHash, randomBytes } from 'crypto';
+import { createHash, randomBytes, randomUUID } from 'crypto';
 
 import { PrismaService } from '../../prisma/prisma.service';
 import { CadastroDto } from './dto/cadastro.dto';
@@ -69,7 +69,11 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token inválido ou expirado');
     }
 
-    await this.prisma.refreshToken.update({ where: { id: registro.id }, data: { revogadoEm: new Date() } });
+    const revogado = await this.prisma.refreshToken.updateMany({
+      where: { id: registro.id, revogadoEm: null },
+      data: { revogadoEm: new Date() },
+    });
+    if (revogado.count !== 1) throw new UnauthorizedException('Refresh token invÃ¡lido ou expirado');
     return this.criarSessao(registro.usuario);
   }
 
@@ -98,13 +102,20 @@ export class AuthService {
     if (!usuario?.ativo) return { message: mensagem };
 
     const token = randomBytes(32).toString('hex');
-    await this.prisma.tokenRedefinicaoSenha.create({
-      data: {
-        usuarioId: usuario.id,
-        tokenHash: this.hashToken(token),
-        expiraEm: new Date(Date.now() + 30 * 60_000),
-      },
-    });
+    const agora = new Date();
+    await this.prisma.$transaction([
+      this.prisma.tokenRedefinicaoSenha.updateMany({
+        where: { usuarioId: usuario.id, utilizadoEm: null },
+        data: { utilizadoEm: agora },
+      }),
+      this.prisma.tokenRedefinicaoSenha.create({
+        data: {
+          usuarioId: usuario.id,
+          tokenHash: this.hashToken(token),
+          expiraEm: new Date(agora.getTime() + 30 * 60_000),
+        },
+      }),
+    ]);
     const enviado = await this.mail.enviarRedefinicao(email, token);
     return {
       message: mensagem,
@@ -119,10 +130,14 @@ export class AuthService {
     if (!registro || registro.utilizadoEm || registro.expiraEm <= new Date()) {
       throw new BadRequestException('Token inválido ou expirado');
     }
+    const agora = new Date();
     await this.prisma.$transaction([
       this.prisma.usuario.update({ where: { id: registro.usuarioId }, data: { senhaHash: await argon2.hash(novaSenha) } }),
-      this.prisma.tokenRedefinicaoSenha.update({ where: { id: registro.id }, data: { utilizadoEm: new Date() } }),
-      this.prisma.refreshToken.updateMany({ where: { usuarioId: registro.usuarioId, revogadoEm: null }, data: { revogadoEm: new Date() } }),
+      this.prisma.tokenRedefinicaoSenha.updateMany({
+        where: { usuarioId: registro.usuarioId, utilizadoEm: null },
+        data: { utilizadoEm: agora },
+      }),
+      this.prisma.refreshToken.updateMany({ where: { usuarioId: registro.usuarioId, revogadoEm: null }, data: { revogadoEm: agora } }),
     ]);
   }
 
@@ -145,7 +160,7 @@ export class AuthService {
       secret: this.config.getOrThrow<string>('JWT_ACCESS_SECRET'),
       expiresIn: this.config.get<string>('JWT_ACCESS_EXPIRES_IN', '15m') as never,
     });
-    const refreshToken = await this.jwt.signAsync({ sub: usuario.id }, {
+    const refreshToken = await this.jwt.signAsync({ sub: usuario.id, jti: randomUUID() }, {
       secret: this.config.getOrThrow<string>('JWT_REFRESH_SECRET'),
       expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRES_IN', '7d') as never,
     });

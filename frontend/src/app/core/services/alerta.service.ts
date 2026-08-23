@@ -1,138 +1,49 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, map, throwError } from 'rxjs';
 
-import { ALERTAS_MOCK } from '../mock/alertas.mock';
+import { API_URL } from '../config/api.config';
 import { Alerta } from '../models/alerta.model';
+import { PerfilFinanceiroService } from './perfil-financeiro.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+interface AlertaApi {
+  id: string; mensagem: string; lido: boolean; descartado: boolean; dataAlerta: string;
+  parcela?: { status: 'PENDENTE' | 'PAGA' | 'VENCIDA' | 'CANCELADA'; contaParcelada: { descricao: string } };
+}
+
+@Injectable({ providedIn: 'root' })
 export class AlertaService {
+  constructor(private readonly http: HttpClient, private readonly perfis: PerfilFinanceiroService) {}
 
   listar(): Observable<Alerta[]> {
-    return of(ALERTAS_MOCK);
+    return this.http.get<AlertaApi[]>(`${API_URL}/alertas`, { params: { perfilId: this.perfis.obterPerfilAtivoId() } }).pipe(
+      map((alertas) => alertas.map((alerta) => this.mapear(alerta)))
+    );
   }
 
-  criar(alerta: Omit<Alerta, 'id'>): Observable<Alerta> {
+  criar(): Observable<Alerta> { return throwError(() => new Error('Alertas são gerados automaticamente.')); }
+  editar(alerta: Alerta): Observable<boolean> { return this.atualizar(alerta.id, { lido: alerta.visualizado, descartado: alerta.descartado }); }
+  marcarComoLido(id: string | number): Observable<boolean> { return this.atualizar(id, { lido: true }); }
+  marcarComoNaoLido(id: string | number): Observable<boolean> { return this.atualizar(id, { lido: false }); }
+  descartar(id: string | number): Observable<boolean> { return this.atualizar(id, { descartado: true }); }
+  restaurar(id: string | number): Observable<boolean> { return this.atualizar(id, { descartado: false }); }
+  excluir(id: string | number): Observable<boolean> { return this.descartar(id); }
 
-    const novo: Alerta = {
-      ...alerta,
-      id: this.proximoId()
+  private atualizar(id: string | number, dados: { lido?: boolean; descartado?: boolean }): Observable<boolean> {
+    return this.http.patch(`${API_URL}/alertas/${id}`, dados).pipe(map(() => true));
+  }
+
+  private mapear(alerta: AlertaApi): Alerta {
+    const vencido = alerta.parcela?.status === 'VENCIDA';
+    return {
+      id: alerta.id,
+      titulo: vencido ? 'Parcela vencida' : 'Próximo vencimento',
+      descricao: alerta.mensagem,
+      data: alerta.dataAlerta.slice(0, 10),
+      tipo: 'vencimento',
+      prioridade: vencido ? 'alta' : 'media',
+      visualizado: alerta.lido,
+      descartado: alerta.descartado
     };
-
-    ALERTAS_MOCK.push(novo);
-
-    return of(novo);
   }
-
-  editar(alertaAtualizado: Alerta): Observable<boolean> {
-
-    const indice = ALERTAS_MOCK.findIndex(
-      alerta => alerta.id === alertaAtualizado.id
-    );
-
-    if (indice === -1) {
-      return of(false);
-    }
-
-    ALERTAS_MOCK[indice] = {
-      ...alertaAtualizado
-    };
-
-    return of(true);
-
-  }
-
-  marcarComoLido(id: number): Observable<boolean> {
-
-    const alerta = ALERTAS_MOCK.find(
-      alerta => alerta.id === id
-    );
-
-    if (!alerta) {
-      return of(false);
-    }
-
-    alerta.visualizado = true;
-
-    return of(true);
-
-  }
-
-  marcarComoNaoLido(id: number): Observable<boolean> {
-
-    const alerta = ALERTAS_MOCK.find(
-      alerta => alerta.id === id
-    );
-
-    if (!alerta) {
-      return of(false);
-    }
-
-    alerta.visualizado = false;
-
-    return of(true);
-
-  }
-
-  descartar(id: number): Observable<boolean> {
-
-    const alerta = ALERTAS_MOCK.find(
-      alerta => alerta.id === id
-    );
-
-    if (!alerta) {
-      return of(false);
-    }
-
-    alerta.descartado = true;
-
-    return of(true);
-
-  }
-
-  restaurar(id: number): Observable<boolean> {
-
-    const alerta = ALERTAS_MOCK.find(
-      alerta => alerta.id === id
-    );
-
-    if (!alerta) {
-      return of(false);
-    }
-
-    alerta.descartado = false;
-
-    return of(true);
-
-  }
-
-  excluir(id: number): Observable<boolean> {
-
-    const indice = ALERTAS_MOCK.findIndex(
-      alerta => alerta.id === id
-    );
-
-    if (indice === -1) {
-      return of(false);
-    }
-
-    ALERTAS_MOCK.splice(indice, 1);
-
-    return of(true);
-
-  }
-
-  private proximoId(): number {
-
-    if (ALERTAS_MOCK.length === 0) {
-      return 1;
-    }
-
-    return Math.max(
-      ...ALERTAS_MOCK.map(alerta => alerta.id)
-    ) + 1;
-
-  }
-
 }

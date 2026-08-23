@@ -24,8 +24,13 @@
           [(value)]="email">
         </app-input>
 
+        @if (erro) {
+          <div class="recuperar-error">{{ erro }}</div>
+        }
+
         <app-button
           type="submit"
+          [disabled]="carregando"
           color="primary">
           {{ carregando ? 'Enviando...' : 'Enviar link' }}
         </app-button>

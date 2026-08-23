@@ -31,6 +31,7 @@ A documentação Swagger fica em `http://localhost:3000/docs`.
 - Isolamento dos perfis pelo usuário autenticado.
 - CRUD de categorias com desativação lógica.
 - Cadastro, consulta paginada, edição, pagamento e cancelamento de transações.
+- Transações recorrentes semanais, mensais ou anuais, com término opcional, recuperação de períodos e proteção contra duplicidade.
 - Filtros de transações por tipo, status, categoria, período e descrição.
 - Recuperação e alteração de senha, com SMTP opcional.
 - Administração de usuários e autorização por papel.

@@ -74,7 +74,7 @@
       <div class="finance-list">
 
         @for (
-          receita of receitasFiltradas;
+          receita of receitasPaginadas;
           track receita.id
         ) {
 
@@ -138,6 +138,24 @@
             [required]="true"
             [(value)]="data">
           </app-date-input>
+
+          <app-checkbox
+            label="Repetir esta receita automaticamente"
+            [(checked)]="recorrente">
+          </app-checkbox>
+
+          @if (recorrente) {
+            <app-select
+              label="Frequência"
+              [options]="frequenciasRecorrencia"
+              [(value)]="frequenciaRecorrencia">
+            </app-select>
+
+            <app-date-input
+              label="Repetir até (opcional)"
+              [(value)]="recorrenteAte">
+            </app-date-input>
+          }
 
           <app-textarea
             label="Observações"

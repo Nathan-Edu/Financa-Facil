@@ -1,7 +1,8 @@
-import { Controller, Get, Param, ParseUUIDPipe, Patch, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Query, UseGuards } from '@nestjs/common';
 import { UsuarioAtual, UsuarioAutenticado } from '../../common/decorators/usuario-atual.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AlertasService } from './alertas.service';
+import { AtualizarAlertaDto } from './dto/atualizar-alerta.dto';
 
 @Controller('alertas')
 @UseGuards(JwtAuthGuard)
@@ -16,6 +17,11 @@ export class AlertasController {
   @Patch(':id/lido')
   lido(@UsuarioAtual() usuario: UsuarioAutenticado, @Param('id', ParseUUIDPipe) id: string) {
     return this.alertas.marcarLido(usuario.id, id);
+  }
+
+  @Patch(':id')
+  atualizar(@UsuarioAtual() usuario: UsuarioAutenticado, @Param('id', ParseUUIDPipe) id: string, @Body() dto: AtualizarAlertaDto) {
+    return this.alertas.atualizar(usuario.id, id, dto);
   }
 
   @Patch('marcar-todos-lidos')

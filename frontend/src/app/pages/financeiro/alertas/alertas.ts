@@ -41,7 +41,7 @@ import { Button } from '../../../shared/components/forms/button/button';
 })
 export class Alertas implements OnInit {
   currentPage = 1;
-  totalPages = 1;
+  readonly itemsPerPage = 8;
 
   search = '';
   filtroLeitura = 'Todos';
@@ -159,6 +159,13 @@ export class Alertas implements OnInit {
       (alerta) => !alerta.descartado
     );
   }
+
+  get alertasPaginados(): Alerta[] {
+    const inicio = (this.currentPage - 1) * this.itemsPerPage;
+    return this.alertasFiltrados.slice(inicio, inicio + this.itemsPerPage);
+  }
+
+  get totalPages(): number { return Math.max(1, Math.ceil(this.alertasFiltrados.length / this.itemsPerPage)); }
 
   get totalAlertas(): string {
     return this.alertasAtivos

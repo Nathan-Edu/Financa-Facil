@@ -1,5 +1,6 @@
 export interface Parcela {
-  id: number;
+  id: string | number;
+  proximaParcelaId?: string;
   descricao: string;
   categoria: string;
 

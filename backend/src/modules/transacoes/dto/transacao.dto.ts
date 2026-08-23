@@ -1,4 +1,4 @@
-import { StatusTransacao, TipoTransacao } from '@prisma/client';
+import { FrequenciaRecorrencia, StatusTransacao, TipoTransacao } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUUID, Length, Max, Min } from 'class-validator';
 
@@ -38,6 +38,14 @@ export class CriarTransacaoDto {
   recorrente?: boolean;
 
   @IsOptional()
+  @IsEnum(FrequenciaRecorrencia)
+  frequenciaRecorrencia?: FrequenciaRecorrencia;
+
+  @IsOptional()
+  @IsDateString()
+  recorrenteAte?: string | null;
+
+  @IsOptional()
   @IsString()
   @Length(2, 50)
   formaPagamento?: string;
@@ -51,6 +59,8 @@ export class AtualizarTransacaoDto {
   @IsOptional() @IsDateString() dataVencimento?: string;
   @IsOptional() @IsString() @Length(0, 500) observacao?: string;
   @IsOptional() @IsBoolean() recorrente?: boolean;
+  @IsOptional() @IsEnum(FrequenciaRecorrencia) frequenciaRecorrencia?: FrequenciaRecorrencia;
+  @IsOptional() @IsDateString() recorrenteAte?: string | null;
   @IsOptional() @IsString() @Length(2, 50) formaPagamento?: string;
 }
 

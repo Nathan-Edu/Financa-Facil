@@ -80,6 +80,8 @@
 
         color="primary"
 
+        [disabled]="carregando"
+
         (click)="entrar()">
 
           {{ carregando ? 'Entrando...' : 'Entrar' }}

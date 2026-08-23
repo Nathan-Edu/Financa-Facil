@@ -1,164 +1,108 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, map, of, switchMap, tap } from 'rxjs';
 
+import { API_URL } from '../config/api.config';
 import { PerfilFinanceiro } from '../models/perfil-financeiro.model';
-import { PERFIS_FINANCEIROS_MOCK } from '../mock/perfis-financeiros.mock';
 
-@Injectable({
-  providedIn: 'root'
-})
+interface PerfilApi {
+  id: string;
+  nome: string;
+  tipo: 'PESSOAL' | 'EMPRESARIAL';
+  documento: string;
+  descricao?: string;
+  cor: string;
+  icone?: string;
+  ativo: boolean;
+  selecionado: boolean;
+  createdAt: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class PerfilFinanceiroService {
+  private readonly perfilKey = 'financa_facil_perfil_id';
+
+  constructor(private readonly http: HttpClient) {}
 
   listar(): Observable<PerfilFinanceiro[]> {
-    return of(
-      PERFIS_FINANCEIROS_MOCK.map(
-        (perfil) => ({ ...perfil })
-      )
+    return this.http.get<PerfilApi[]>(`${API_URL}/perfis`).pipe(
+      tap((perfis) => {
+        const selecionado = perfis.find((perfil) => perfil.selecionado) ?? perfis[0];
+        if (selecionado) localStorage.setItem(this.perfilKey, selecionado.id);
+        else localStorage.removeItem(this.perfilKey);
+      }),
+      map((perfis) => perfis.map((perfil) => this.mapear(perfil)))
     );
   }
 
-  criar(
-    perfil: Omit<
-      PerfilFinanceiro,
-      'id' | 'dataCriacao'
-    >
-  ): Observable<PerfilFinanceiro> {
-    if (perfil.ativo) {
-      this.desativarTodos();
-    }
+  criar(perfil: Omit<PerfilFinanceiro, 'id' | 'dataCriacao'>): Observable<PerfilFinanceiro> {
+    return this.http.post<PerfilApi>(`${API_URL}/perfis`, {
+      nome: perfil.nome,
+      tipo: perfil.tipo === 'pessoal' ? 'PESSOAL' : 'EMPRESARIAL',
+      documento: perfil.documento,
+      descricao: perfil.descricao,
+      cor: perfil.cor,
+      icone: perfil.icone
+    }).pipe(
+      switchMap((criado) => perfil.ativo
+        ? this.http.patch<PerfilApi>(`${API_URL}/perfis/${criado.id}/ativar`, {}).pipe(map((ativado) => ativado))
+        : of(criado)),
+      tap((criado) => { if (criado.selecionado) localStorage.setItem(this.perfilKey, criado.id); }),
+      map((criado) => this.mapear(criado))
+    );
+  }
 
-    const novoPerfil: PerfilFinanceiro = {
-      ...perfil,
-      id: this.proximoId(),
-      dataCriacao: this.obterDataAtual()
+  editar(perfil: PerfilFinanceiro): Observable<boolean> {
+    return this.http.patch<PerfilApi>(`${API_URL}/perfis/${perfil.id}`, {
+      nome: perfil.nome,
+      tipo: perfil.tipo === 'pessoal' ? 'PESSOAL' : 'EMPRESARIAL',
+      documento: perfil.documento,
+      descricao: perfil.descricao,
+      cor: perfil.cor,
+      icone: perfil.icone
+    }).pipe(
+      switchMap(() => perfil.ativo ? this.ativar(perfil.id) : of(true)),
+      map(() => true)
+    );
+  }
+
+  excluir(id: string | number): Observable<boolean> {
+    return this.http.delete<void>(`${API_URL}/perfis/${id}`).pipe(
+      tap(() => { if (localStorage.getItem(this.perfilKey) === String(id)) localStorage.removeItem(this.perfilKey); }),
+      map(() => true)
+    );
+  }
+
+  ativar(id: string | number): Observable<boolean> {
+    return this.http.patch<PerfilApi>(`${API_URL}/perfis/${id}/ativar`, {}).pipe(
+      tap((perfil) => localStorage.setItem(this.perfilKey, perfil.id)),
+      map(() => true)
+    );
+  }
+
+  buscarPerfilAtivo(): Observable<PerfilFinanceiro | undefined> {
+    return this.listar().pipe(map((perfis) => perfis.find((perfil) => perfil.ativo)));
+  }
+
+  obterPerfilAtivoId(): string {
+    const id = localStorage.getItem(this.perfilKey);
+    if (!id) throw new Error('Selecione ou cadastre um perfil financeiro.');
+    return id;
+  }
+
+  limparPerfilAtivo(): void { localStorage.removeItem(this.perfilKey); }
+
+  private mapear(perfil: PerfilApi): PerfilFinanceiro {
+    return {
+      id: perfil.id,
+      nome: perfil.nome,
+      tipo: perfil.tipo === 'PESSOAL' ? 'pessoal' : 'empresa',
+      documento: perfil.documento,
+      descricao: perfil.descricao,
+      ativo: perfil.selecionado,
+      cor: perfil.cor || '#2563eb',
+      icone: perfil.icone || '',
+      dataCriacao: perfil.createdAt.slice(0, 10)
     };
-
-    PERFIS_FINANCEIROS_MOCK.push(novoPerfil);
-
-    return of({ ...novoPerfil });
-  }
-
-  editar(
-    perfilAtualizado: PerfilFinanceiro
-  ): Observable<boolean> {
-    const indice = PERFIS_FINANCEIROS_MOCK.findIndex(
-      (perfil: PerfilFinanceiro) =>
-        perfil.id === perfilAtualizado.id
-    );
-
-    if (indice === -1) {
-      return of(false);
-    }
-
-    if (perfilAtualizado.ativo) {
-      this.desativarTodos();
-    }
-
-    PERFIS_FINANCEIROS_MOCK[indice] = {
-      ...perfilAtualizado
-    };
-
-    return of(true);
-  }
-
-  excluir(id: number): Observable<boolean> {
-    const indice = PERFIS_FINANCEIROS_MOCK.findIndex(
-      (perfil: PerfilFinanceiro) =>
-        perfil.id === id
-    );
-
-    if (indice === -1) {
-      return of(false);
-    }
-
-    const perfilExcluido =
-      PERFIS_FINANCEIROS_MOCK[indice];
-
-    PERFIS_FINANCEIROS_MOCK.splice(
-      indice,
-      1
-    );
-
-    if (
-      perfilExcluido.ativo &&
-      PERFIS_FINANCEIROS_MOCK.length > 0
-    ) {
-      PERFIS_FINANCEIROS_MOCK[0].ativo = true;
-    }
-
-    return of(true);
-  }
-
-  ativar(id: number): Observable<boolean> {
-    const perfilSelecionado =
-      PERFIS_FINANCEIROS_MOCK.find(
-        (perfil: PerfilFinanceiro) =>
-          perfil.id === id
-      );
-
-    if (!perfilSelecionado) {
-      return of(false);
-    }
-
-    this.desativarTodos();
-    perfilSelecionado.ativo = true;
-
-    return of(true);
-  }
-
-  buscarPerfilAtivo():
-    Observable<PerfilFinanceiro | undefined> {
-    const perfilAtivo =
-      PERFIS_FINANCEIROS_MOCK.find(
-        (perfil: PerfilFinanceiro) =>
-          perfil.ativo
-      );
-
-    return of(
-      perfilAtivo
-        ? { ...perfilAtivo }
-        : undefined
-    );
-  }
-
-  private desativarTodos(): void {
-    PERFIS_FINANCEIROS_MOCK.forEach(
-      (perfil: PerfilFinanceiro) => {
-        perfil.ativo = false;
-      }
-    );
-  }
-
-  private proximoId(): number {
-    if (
-      PERFIS_FINANCEIROS_MOCK.length === 0
-    ) {
-      return 1;
-    }
-
-    return (
-      Math.max(
-        ...PERFIS_FINANCEIROS_MOCK.map(
-          (perfil: PerfilFinanceiro) =>
-            perfil.id
-        )
-      ) + 1
-    );
-  }
-
-  private obterDataAtual(): string {
-    const hoje = new Date();
-
-    const ano = hoje.getFullYear();
-
-    const mes = String(
-      hoje.getMonth() + 1
-    ).padStart(2, '0');
-
-    const dia = String(
-      hoje.getDate()
-    ).padStart(2, '0');
-
-    return `${ano}-${mes}-${dia}`;
   }
 }

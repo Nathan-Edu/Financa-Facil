@@ -1,5 +1,6 @@
 import { TipoCategoria } from '@prisma/client';
-import { IsBoolean, IsEnum, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsEnum, IsHexColor, IsNumber, IsOptional, IsString, IsUUID, Length, Matches, Min } from 'class-validator';
 
 export class CriarCategoriaDto {
   @IsUUID()
@@ -11,6 +12,10 @@ export class CriarCategoriaDto {
 
   @IsEnum(TipoCategoria)
   tipo!: TipoCategoria;
+
+  @IsOptional() @IsString() @Matches(/^[A-Za-z0-9_ -]{1,50}$/) icone?: string;
+  @IsOptional() @IsHexColor() cor?: string;
+  @IsOptional() @Type(() => Number) @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) orcamentoMensal?: number;
 }
 
 export class AtualizarCategoriaDto {
@@ -26,4 +31,8 @@ export class AtualizarCategoriaDto {
   @IsOptional()
   @IsBoolean()
   ativa?: boolean;
+
+  @IsOptional() @IsString() @Matches(/^[A-Za-z0-9_ -]{1,50}$/) icone?: string;
+  @IsOptional() @IsHexColor() cor?: string;
+  @IsOptional() @Type(() => Number) @IsNumber({ maxDecimalPlaces: 2 }) @Min(0) orcamentoMensal?: number;
 }

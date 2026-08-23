@@ -2,6 +2,9 @@
   "name": "financa-facil-backend",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "deepmerge-ts": "^8.0.2"
+  },
   "scripts": {
     "build": "nest build",
     "start": "nest start",

@@ -185,7 +185,7 @@ export class Categorias implements OnInit {
   tipoFiltro = 'Todos';
 
   currentPage = 1;
-  totalPages = 1;
+  readonly itemsPerPage = 8;
 
   showModal = false;
   showConfirmDialog = false;
@@ -275,6 +275,13 @@ export class Categorias implements OnInit {
   get totalCategorias(): string {
     return this.categorias.length.toString();
   }
+
+  get categoriasPaginadas(): Categoria[] {
+    const inicio = (this.currentPage - 1) * this.itemsPerPage;
+    return this.categoriasFiltradas.slice(inicio, inicio + this.itemsPerPage);
+  }
+
+  get totalPages(): number { return Math.max(1, Math.ceil(this.categoriasFiltradas.length / this.itemsPerPage)); }
 
   get totalReceitas(): string {
     return this.categorias

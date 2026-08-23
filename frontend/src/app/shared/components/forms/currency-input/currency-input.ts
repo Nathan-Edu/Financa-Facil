@@ -11,6 +11,7 @@ export class CurrencyInput {
   @Input() label = '';
 
   @Input() value = 0;
+  @Input() disabled = false;
 
   @Output() valueChange = new EventEmitter<number>();
 
