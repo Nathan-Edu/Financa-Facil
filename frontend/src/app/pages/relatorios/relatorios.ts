@@ -15,6 +15,7 @@ import { PageHeader } from '../../shared/components/layout/page-header/page-head
 import { Card } from '../../shared/components/layout/card/card';
 import { Button } from '../../shared/components/forms/button/button';
 
+import {PerfilFinanceiro} from '../../core/models/perfil-financeiro.model';
 import { RelatorioService } from '../../core/services/relatorio.service';
 import { PerfilFinanceiroService } from '../../core/services/perfil-financeiro.service';
 
@@ -105,6 +106,8 @@ export class Relatorios implements OnInit {
 
     x: {
 
+      offset: true,
+
       grid: {
         display: false
       },
@@ -158,6 +161,10 @@ export class Relatorios implements OnInit {
 };
 
   categorias: string[] = [];
+
+  perfisFinanceiros: PerfilFinanceiro[] = [];
+
+  trocandoPerfil = false;
 
   // =====================================================
   // FILTROS
@@ -549,6 +556,10 @@ private atualizarGraficoDespesasCategoria(): void {
 
   movimentacoesExibidas: MovimentacaoRelatorio[] = [];
 
+  paginaAtual = 1;
+
+  readonly itensPorPagina = 10;
+
   evolucaoMensal: EvolucaoMensalRelatorio[] = [];
 
   despesasPorCategoria: CategoriaRelatorio[] = [];
@@ -568,29 +579,119 @@ private atualizarGraficoDespesasCategoria(): void {
   ) {}
 
 
-  ngOnInit(): void {
+    ngOnInit(): void {
 
-    this.carregarPerfilAtual();
+      this.carregarPerfis();
 
-  }
+      this.perfilService
+        .perfilAlterado$
+        .subscribe((perfilId) => {
+
+          if (
+            String(perfilId) ===
+            String(this.perfilFinanceiroId)
+          ) {
+            return;
+          }
+
+          this.carregarPerfis();
+
+        });
+
+    }
 
 
   // =====================================================
   // PERFIL ATUAL
   // =====================================================
 
-  private carregarPerfilAtual(): void {
-    this.perfilService.buscarPerfilAtivo().subscribe({
-      next: (perfil) => {
-        if (!perfil) return;
-        this.perfilFinanceiroId = perfil.id;
-        this.nomePerfil = perfil.nome;
-        this.tipoPerfil = perfil.tipo;
+  private carregarPerfis(): void {
+
+  this.perfilService
+    .listar()
+    .subscribe({
+
+      next: (
+        perfis: PerfilFinanceiro[]
+      ) => {
+
+        this.perfisFinanceiros =
+          perfis;
+
+        const ativo =
+          perfis.find(
+            perfil =>
+              perfil.ativo
+          ) ?? perfis[0];
+
+        if (!ativo) {
+          return;
+        }
+
+        this.definirPerfilAtual(
+          ativo
+        );
+
         this.carregarRelatorio();
+
       }
+
     });
+
+}
+
+trocarPerfil(
+  perfil: PerfilFinanceiro
+): void {
+
+  if (
+    perfil.id ===
+    this.perfilFinanceiroId
+  ) {
+    return;
   }
 
+  this.trocandoPerfil =
+    true;
+
+  this.perfilService
+    .ativar(
+      perfil.id
+    )
+    .subscribe({
+
+      next: () => {
+
+        this.trocandoPerfil =
+          false;
+
+      },
+
+      error: () => {
+
+        this.trocandoPerfil =
+          false;
+
+      }
+
+    });
+
+}
+
+private definirPerfilAtual(
+  perfil: PerfilFinanceiro
+): void {
+
+  this.perfilFinanceiroId =
+    perfil.id;
+
+  this.nomePerfil =
+    perfil.nome;
+
+  this.tipoPerfil =
+    perfil.tipo;
+
+}
 
   // =====================================================
   // CARREGAR RELATÓRIO
@@ -836,6 +937,8 @@ private recalcularDespesasPorCategoria(): void {
 
   this.movimentacoesExibidas = resultado;
 
+  this.paginaAtual = 1;
+
   // Recalcula todo o relatório com base no filtro
   this.recalcularRelatorioFiltrado();
 
@@ -1052,6 +1155,86 @@ private recalcularEvolucaoMensal(): void {
 
   }
 
+  get movimentacoesPaginadas(): MovimentacaoRelatorio[] {
+
+  const inicio =
+    (this.paginaAtual - 1) *
+    this.itensPorPagina;
+
+  const fim =
+    inicio +
+    this.itensPorPagina;
+
+  return this.movimentacoesExibidas.slice(
+    inicio,
+    fim
+  );
+
+}
+
+
+get totalPaginas(): number {
+
+  return Math.max(
+    1,
+    Math.ceil(
+      this.movimentacoesExibidas.length /
+      this.itensPorPagina
+    )
+  );
+
+}
+
+
+mudarPagina(
+  pagina: number
+): void {
+
+  if (
+    pagina < 1 ||
+    pagina > this.totalPaginas
+  ) {
+    return;
+  }
+
+  this.paginaAtual =
+    pagina;
+
+}
+
+
+get paginasVisiveis(): number[] {
+
+  const paginas: number[] = [];
+
+  const inicio =
+    Math.max(
+      1,
+      this.paginaAtual - 2
+    );
+
+  const fim =
+    Math.min(
+      this.totalPaginas,
+      this.paginaAtual + 2
+    );
+
+  for (
+    let pagina = inicio;
+    pagina <= fim;
+    pagina++
+  ) {
+
+    paginas.push(
+      pagina
+    );
+
+  }
+
+  return paginas;
+
+}
+
 
   // =====================================================
   // LIMPAR FILTROS
@@ -1068,6 +1251,8 @@ limparFiltros(): void {
   this.movimentacoesExibidas = [
     ...this.movimentacoes
   ];
+
+  this.paginaAtual = 1;
 
   this.recalcularRelatorioFiltrado();
 
@@ -1745,6 +1930,48 @@ private obterNomeTipo(): string {
   }
 
   
+}
+
+private formatarData(
+    data: Date
+  ): string {
+
+    const ano =
+      data.getFullYear();
+
+    const mes =
+      String(
+        data.getMonth() + 1
+      ).padStart(
+        2,
+        '0'
+      );
+
+    const dia =
+      String(
+        data.getDate()
+      ).padStart(
+        2,
+        '0'
+      );
+
+    return `${ano}-${mes}-${dia}`;
+
+  }
+
+  formatarDataTela(
+  data: string
+): string {
+
+  if (!data) {
+    return '';
+  }
+
+  const [ano, mes, dia] =
+    data.split('-');
+
+  return `${dia}/${mes}/${ano}`;
+
 }
 
 }

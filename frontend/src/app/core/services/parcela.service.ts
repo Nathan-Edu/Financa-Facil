@@ -7,8 +7,25 @@ import { PaginaApi } from '../models/api.model';
 import { Parcela } from '../models/parcela.model';
 import { CategoriaService } from './categoria.service';
 import { PerfilFinanceiroService } from './perfil-financeiro.service';
+import { Despesa } from '../models/despesa.model';
 
-interface ItemParcelaApi { id: string; valor: number; dataVencimento: string; status: 'PENDENTE' | 'PAGA' | 'VENCIDA' | 'CANCELADA'; }
+interface ItemParcelaApi {
+
+  id: string;
+
+  numero: number;
+
+  valor: number;
+
+  dataVencimento: string;
+
+  status:
+    | 'PENDENTE'
+    | 'PAGA'
+    | 'VENCIDA'
+    | 'CANCELADA';
+
+}
 interface ContaApi {
   id: string; descricao: string; valorTotal: number; quantidadeParcelas: number; parcelasPagas: number;
   percentualPago: number; proximoVencimento: string | null; status: 'ATIVA' | 'FINALIZADA' | 'CANCELADA';
@@ -75,7 +92,235 @@ export class ParcelaService {
     };
   }
 
+  private converterData(
+  data: string
+): Date {
+
+  const [
+    ano,
+    mes,
+    dia
+  ] =
+    data
+      .slice(0, 10)
+      .split('-')
+      .map(Number);
+
+  return new Date(
+    ano,
+    mes - 1,
+    dia
+  );
+
+}
+
   private formatarMoeda(valor: number): string {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
+
+listarDespesasPeriodo(
+  dataInicial?: string,
+  dataFinal?: string
+): Observable<Despesa[]> {
+
+  return this.http
+    .get<PaginaApi<ContaApi>>(
+      `${API_URL}/contas-parceladas`,
+      {
+        params: {
+          perfilId:
+            this.perfis.obterPerfilAtivoId(),
+
+          limit:
+            100
+        }
+      }
+    )
+    .pipe(
+
+      map((pagina) => {
+
+        const despesasParceladas:
+          Despesa[] = [];
+
+        const inicio =
+          dataInicial
+            ? this.converterData(
+                dataInicial
+              )
+            : null;
+
+        const fim =
+          dataFinal
+            ? this.converterData(
+                dataFinal
+              )
+            : null;
+
+        if (fim) {
+
+          fim.setHours(
+            23,
+            59,
+            59,
+            999
+          );
+
+        }
+
+        for (
+          const conta
+          of pagina.data
+        ) {
+
+          if (
+            conta.status ===
+            'CANCELADA'
+          ) {
+            continue;
+          }
+
+          for (
+            const parcela
+            of conta.parcelas
+          ) {
+
+            if (
+              parcela.status ===
+              'CANCELADA'
+            ) {
+              continue;
+            }
+
+            const dataParcela =
+              this.converterData(
+                parcela.dataVencimento
+              );
+
+            if (
+              inicio &&
+              dataParcela <
+                inicio
+            ) {
+              continue;
+            }
+
+            if (
+              fim &&
+              dataParcela >
+                fim
+            ) {
+              continue;
+            }
+
+            despesasParceladas.push({
+
+              id:
+                `parcela-${parcela.id}`,
+
+              parcelaId:
+                parcela.id,
+
+              descricao:
+                `${conta.descricao} - Parcela ${parcela.numero}/${conta.quantidadeParcelas}`,
+
+              categoria:
+                conta.categoria.nome,
+
+              valor:
+                parcela.valor,
+
+              valorFormatado:
+                this.formatarMoeda(
+                  parcela.valor
+                ),
+
+              data:
+                parcela.dataVencimento
+                  .slice(
+                    0,
+                    10
+                  ),
+
+              observacao:
+                conta.observacao,
+
+              origem:
+                'parcelada',
+
+              statusParcela:
+                parcela.status
+
+            });
+
+          }
+
+        }
+
+        return despesasParceladas;
+
+      })
+
+    );
+
+}
+listarDespesasMesAtual():
+  Observable<Despesa[]> {
+
+  const hoje =
+    new Date();
+
+  const primeiroDia =
+    new Date(
+      hoje.getFullYear(),
+      hoje.getMonth(),
+      1
+    );
+
+  const ultimoDia =
+    new Date(
+      hoje.getFullYear(),
+      hoje.getMonth() + 1,
+      0
+    );
+
+  const formatarData =
+    (
+      data: Date
+    ): string => {
+
+      const ano =
+        data.getFullYear();
+
+      const mes =
+        String(
+          data.getMonth() + 1
+        ).padStart(
+          2,
+          '0'
+        );
+
+      const dia =
+        String(
+          data.getDate()
+        ).padStart(
+          2,
+          '0'
+        );
+
+      return `${ano}-${mes}-${dia}`;
+
+    };
+
+  return this.listarDespesasPeriodo(
+    formatarData(
+      primeiroDia
+    ),
+
+    formatarData(
+      ultimoDia
+    )
+  );
+
+}
 }

@@ -18,30 +18,62 @@
 
   </app-page-header>
 
+  <section class="profiles-strip">
 
-  <!-- =====================================================
-       PERFIL ATUAL
-  ====================================================== -->
+  @for (
+    perfil of perfisFinanceiros;
+    track perfil.id
+  ) {
 
-  <div class="profile-indicator">
+    <button
+      type="button"
+      class="profile-indicator"
+      [class.profile-indicator--active]="
+        perfil.id === perfilFinanceiroId
+      "
+      [disabled]="trocandoPerfil"
+      (click)="trocarPerfil(perfil)">
 
-    <div class="profile-indicator__icon">
-      {{ tipoPerfil === 'empresa' ? 'PJ' : 'PF' }}
-    </div>
+      <div
+        class="profile-indicator__icon"
+        [style.background-color]="perfil.cor + '25'"
+        [style.color]="perfil.cor">
 
-    <div class="profile-indicator__content">
+        {{
+          perfil.tipo === 'empresa'
+            ? 'PJ'
+            : 'PF'
+        }}
 
-      <span>
-        Relatório de
-      </span>
+      </div>
 
-      <strong>
-        {{ nomePerfil }}
-      </strong>
+      <div class="profile-indicator__content">
 
-    </div>
+        <span>
+          Relatório de
+        </span>
 
-  </div>
+        <strong>
+          {{ perfil.nome }}
+        </strong>
+
+      </div>
+
+      @if (
+        perfil.id ===
+        perfilFinanceiroId
+      ) {
+
+        <span class="profile-active-dot">
+        </span>
+
+      }
+
+    </button>
+
+  }
+
+</section>
 
 
   <!-- =====================================================
@@ -50,164 +82,101 @@
 
   <section class="stats-grid">
 
-    <app-card>
+    <div class="report-stat report-stat--success">
+      <app-card>
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <span class="stat-card__label">
+              Receitas
+            </span>
 
-      <div class="stat-card">
-
-        <div class="stat-card__header">
-
-          <span class="stat-card__label">
-            Receitas
-          </span>
-
-          <div
-            class="
-              stat-card__icon
-              stat-card__icon--success
-            "
-          >
-            ↑
+            <div class="stat-card__icon">
+              ↑
+            </div>
           </div>
 
-        </div>
+          <strong class="stat-card__value">
+            {{ formatarMoeda(totalReceitas) }}
+          </strong>
 
-        <strong
-          class="
-            stat-card__value
-            stat-card__value--success
-          "
-        >
-          {{ formatarMoeda(totalReceitas) }}
-        </strong>
-
-        <span class="stat-card__description">
-          Total de entradas
-        </span>
-
-      </div>
-
-    </app-card>
-
-
-    <app-card>
-
-      <div class="stat-card">
-
-        <div class="stat-card__header">
-
-          <span class="stat-card__label">
-            Despesas
+          <span class="stat-card__description">
+            Total de entradas
           </span>
+        </div>
+      </app-card>
+    </div>
 
-          <div
-            class="
-              stat-card__icon
-              stat-card__icon--danger
-            "
-          >
-            ↓
+    <div class="report-stat report-stat--danger">
+      <app-card>
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <span class="stat-card__label">
+              Despesas
+            </span>
+
+            <div class="stat-card__icon">
+              ↓
+            </div>
           </div>
 
-        </div>
+          <strong class="stat-card__value">
+            {{ formatarMoeda(totalDespesas) }}
+          </strong>
 
-        <strong
-          class="
-            stat-card__value
-            stat-card__value--danger
-          "
-        >
-          {{ formatarMoeda(totalDespesas) }}
-        </strong>
-
-        <span class="stat-card__description">
-          Total de saídas
-        </span>
-
-      </div>
-
-    </app-card>
-
-
-    <app-card>
-
-      <div class="stat-card">
-
-        <div class="stat-card__header">
-
-          <span class="stat-card__label">
-            Saldo
+          <span class="stat-card__description">
+            Total de saídas
           </span>
+        </div>
+      </app-card>
+    </div>
 
-          <div
-            class="
-              stat-card__icon
-              stat-card__icon--primary
-            "
-          >
-            R$
+    <div class="report-stat report-stat--primary">
+      <app-card>
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <span class="stat-card__label">
+              Saldo
+            </span>
+
+            <div class="stat-card__icon">
+              R$
+            </div>
           </div>
 
-        </div>
+          <strong class="stat-card__value">
+            {{ formatarMoeda(saldo) }}
+          </strong>
 
-        <strong
-          class="
-            stat-card__value
-            stat-card__value--primary
-          "
-        >
-          {{ formatarMoeda(saldo) }}
-        </strong>
-
-        <span class="stat-card__description">
-          Resultado do período
-        </span>
-
-      </div>
-
-    </app-card>
-
-
-    <app-card>
-
-      <div class="stat-card">
-
-        <div class="stat-card__header">
-
-          <span class="stat-card__label">
-            Economia
+          <span class="stat-card__description">
+            Resultado do período
           </span>
+        </div>
+      </app-card>
+    </div>
 
-          <div
-            class="
-              stat-card__icon
-              stat-card__icon--purple
-            "
-          >
-            %
+    <div class="report-stat report-stat--purple">
+      <app-card>
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <span class="stat-card__label">
+              Economia
+            </span>
+
+            <div class="stat-card__icon">
+              %
+            </div>
           </div>
 
+          <strong class="stat-card__value">
+            {{ formatarPercentual(percentualEconomia) }}
+          </strong>
+
+          <span class="stat-card__description">
+            Percentual economizado
+          </span>
         </div>
-
-        <strong
-          class="
-            stat-card__value
-            stat-card__value--purple
-          "
-        >
-          {{
-            formatarPercentual(
-              percentualEconomia
-            )
-          }}
-        </strong>
-
-        <span class="stat-card__description">
-          Percentual economizado
-        </span>
-
-      </div>
-
-    </app-card>
+      </app-card>
+    </div>
 
   </section>
 
@@ -573,14 +542,14 @@
         <tbody>
 
           @for (
-            movimentacao of movimentacoesExibidas;
+            movimentacao of movimentacoesPaginadas;
             track movimentacao.id
           ) {
 
             <tr>
 
               <td>
-                {{ movimentacao.data }}
+                {{ formatarDataTela(movimentacao.data) }}
               </td>
 
               <td class="description-column">
@@ -667,6 +636,74 @@
       }
 
     </div>
+
+    @if (
+  movimentacoesExibidas.length > 0
+) {
+
+  <div class="report-pagination">
+
+    <button
+      type="button"
+      class="pagination-button"
+      [disabled]="paginaAtual === 1"
+      (click)="mudarPagina(
+        paginaAtual - 1
+      )">
+
+      ‹
+
+    </button>
+
+
+    @for (
+      pagina of paginasVisiveis;
+      track pagina
+    ) {
+
+      <button
+        type="button"
+        class="pagination-button"
+        [class.pagination-button--active]="
+          pagina === paginaAtual
+        "
+        (click)="mudarPagina(pagina)">
+
+        {{ pagina }}
+
+      </button>
+
+    }
+
+
+    <button
+      type="button"
+      class="pagination-button"
+      [disabled]="
+        paginaAtual ===
+        totalPaginas
+      "
+      (click)="mudarPagina(
+        paginaAtual + 1
+      )">
+
+      ›
+
+    </button>
+
+
+    <span class="pagination-info">
+
+      Página
+      {{ paginaAtual }}
+      de
+      {{ totalPaginas }}
+
+    </span>
+
+  </div>
+
+}
 
   </app-card>
 

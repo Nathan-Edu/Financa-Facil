@@ -41,21 +41,25 @@ export class AlertItem {
   @Output()
   restore = new EventEmitter<Alerta>();
 
-  get icon(): string {
-    switch (this.alerta.tipo) {
-      case 'vencimento':
-        return 'calendar_month';
+get icon(): string {
 
-      case 'orcamento':
-        return 'account_balance_wallet';
+  switch (this.alerta.tipo) {
 
-      case 'meta':
-        return 'flag';
+    case 'vencimento':
+      return 'calendar_month';
 
-      default:
-        return 'info';
-    }
+    case 'orcamento':
+      return 'account_balance_wallet';
+
+    case 'informativo':
+      return 'info';
+
+    default:
+      return 'info';
+
   }
+
+}
 
   get priorityLabel(): string {
     switch (this.alerta.prioridade) {

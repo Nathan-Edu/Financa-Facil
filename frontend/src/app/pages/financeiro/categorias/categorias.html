@@ -18,7 +18,7 @@
     <app-stat-card
       title="Total"
       [value]="totalCategorias"
-      subtitle="Categorias cadastradas"
+      subtitle="Categorias encontradas"
       icon="category"
       color="primary">
     </app-stat-card>
@@ -53,21 +53,55 @@
     title="Categorias cadastradas"
     subtitle="Lista de categorias disponíveis no sistema">
 
-    <div class="filters">
+    <div class="filters-toolbar">
 
-      <app-search-input
-        label="Buscar"
-        placeholder="Buscar categoria..."
-        [(value)]="search">
-      </app-search-input>
+      <div class="filters-search">
 
-      <app-select
-        label="Tipo"
-        [options]="tipos"
-        [(value)]="tipoFiltro">
-      </app-select>
+        <app-search-input
+          label="Buscar"
+          placeholder="Buscar categoria..."
+          [(value)]="search"
+          (valueChange)="aoAlterarFiltros()">
+        </app-search-input>
+
+      </div>
+
+      <div class="filters-button">
+
+        <app-button
+          color="outline"
+          icon="filter_list"
+          (click)="showFilters = !showFilters">
+
+          {{ showFilters ? 'Ocultar filtros' : 'Filtros' }}
+
+        </app-button>
+
+      </div>
 
     </div>
+
+    @if (showFilters) {
+
+      <div class="advanced-filters">
+
+        <app-select
+          label="Tipo"
+          [options]="tipos"
+          [(value)]="tipoFiltro"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        <app-button
+          color="outline"
+          icon="restart_alt"
+          (click)="limparFiltros()">
+          Limpar
+        </app-button>
+
+      </div>
+
+    }
 
     @if (categoriasFiltradas.length === 0) {
 
@@ -84,15 +118,18 @@
         <table>
 
           <thead>
+
             <tr>
               <th>Categoria</th>
               <th>Tipo</th>
               <th>Cor</th>
               <th>Orçamento</th>
+
               <th class="actions-header">
                 Ações
               </th>
             </tr>
+
           </thead>
 
           <tbody>
@@ -105,6 +142,7 @@
               <tr>
 
                 <td>
+
                   <div class="category-info">
 
                     <div
@@ -122,18 +160,22 @@
                     </strong>
 
                   </div>
+
                 </td>
 
                 <td>
+
                   <app-badge
                     [color]="tipoColor(categoria.tipo)">
 
                     {{ tipoLabel(categoria.tipo) }}
 
                   </app-badge>
+
                 </td>
 
                 <td>
+
                   <div class="color-preview">
 
                     <span
@@ -141,22 +183,91 @@
                       [style.background-color]="categoria.cor">
                     </span>
 
-                    {{ nomeCor(categoria.cor) }}
+                    {{ categoria.cor }}
 
                   </div>
+
                 </td>
 
                 <td>
 
-                  @if (
-                    categoria.tipo === 'despesa'
-                  ) {
+                  @if (categoria.tipo === 'despesa') {
 
-                    {{
-                      formatarMoeda(
-                        categoria.orcamentoMensal ?? 0
-                      )
-                    }}
+                    @if (
+                      (categoria.orcamentoMensal ?? 0) > 0
+                    ) {
+
+                      <div class="budget-info">
+
+                        <div class="budget-values">
+
+                          <strong>
+                            {{
+                              formatarMoeda(
+                                categoria.gastoMes ?? 0
+                              )
+                            }}
+                          </strong>
+
+                          <span>
+                            /
+                            {{
+                              formatarMoeda(
+                                categoria.orcamentoMensal ?? 0
+                              )
+                            }}
+                          </span>
+
+                        </div>
+
+                        <div class="budget-progress">
+
+                          <div
+                            class="budget-progress-bar"
+                            [class.normal]="categoria.statusOrcamento === 'NORMAL'"
+                            [class.atencao]="categoria.statusOrcamento === 'ATENCAO'"
+                            [class.excedido]="categoria.statusOrcamento === 'EXCEDIDO'"
+                            [style.width.%]="percentualBarra(categoria.percentual)">
+                          </div>
+
+                        </div>
+
+                        <div class="budget-footer">
+
+                          <span>
+                            {{ categoria.percentual ?? 0 }}% utilizado
+                          </span>
+
+                          <span
+                            class="budget-status"
+                            [class.normal]="categoria.statusOrcamento === 'NORMAL'"
+                            [class.atencao]="categoria.statusOrcamento === 'ATENCAO'"
+                            [class.excedido]="categoria.statusOrcamento === 'EXCEDIDO'">
+
+                            {{ statusOrcamentoLabel(categoria) }}
+
+                          </span>
+
+                        </div>
+
+                        <small class="budget-remaining">
+                          Restante:
+                          {{
+                            formatarMoeda(
+                              categoria.restante ?? 0
+                            )
+                          }}
+                        </small>
+
+                      </div>
+
+                    } @else {
+
+                      <span class="not-applicable">
+                        Sem orçamento
+                      </span>
+
+                    }
 
                   } @else {
 
@@ -255,17 +366,40 @@
             [(value)]="icone">
           </app-select>
 
-          <app-select
-            label="Cor"
-            [options]="coresOptions"
-            [(value)]="cor">
-          </app-select>
+          <div class="color-form-field">
+
+            <label for="categoria-cor">
+              Cor
+            </label>
+
+            <div class="color-field">
+
+              <input
+                id="categoria-cor"
+                type="color"
+                [value]="cor"
+                (input)="cor = $any($event.target).value"
+              />
+
+              <input
+                type="text"
+                maxlength="7"
+                placeholder="#3b82f6"
+                [value]="cor"
+                (input)="cor = $any($event.target).value"
+              />
+
+            </div>
+
+          </div>
 
         </div>
 
         <div class="category-preview">
 
-          <span>Pré-visualização</span>
+          <span>
+            Pré-visualização
+          </span>
 
           <div
             class="preview-icon"

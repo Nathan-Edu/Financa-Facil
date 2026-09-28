@@ -81,3 +81,169 @@
     gap: 18px;
   }
 }
+
+// =====================================================
+// FILTRO DE PERÍODO
+// =====================================================
+
+.dashboard-filter {
+
+  width: 100%;
+
+  min-width: 0;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 16px;
+
+  padding: 18px 20px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  background: var(--surface);
+
+}
+
+
+.dashboard-filter-main {
+
+  width: 220px;
+
+  min-width: 180px;
+
+}
+
+
+.dashboard-custom-period {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+
+}
+
+
+.dashboard-date-field {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+}
+
+
+.dashboard-date-field label {
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: var(--text-muted);
+
+}
+
+
+.dashboard-date-field input {
+
+  height: 42px;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 9px;
+
+  outline: none;
+
+  background: var(--surface);
+
+  color: var(--text);
+
+  font: inherit;
+
+}
+
+
+.dashboard-date-field input:focus {
+
+  border-color: var(--primary);
+
+}
+
+
+.dashboard-filter-button {
+
+  height: 42px;
+
+  padding: 0 20px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  background: var(--primary);
+
+  color: white;
+
+}
+
+
+// =====================================================
+// RESPONSIVO
+// =====================================================
+
+@media (max-width: 700px) {
+
+  .dashboard-filter {
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+  }
+
+
+  .dashboard-filter-main {
+
+    width: 100%;
+
+  }
+
+
+  .dashboard-custom-period {
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+  }
+
+
+  .dashboard-date-field {
+
+    width: 100%;
+
+  }
+
+
+  .dashboard-filter-button {
+
+    width: 100%;
+
+  }
+
+}

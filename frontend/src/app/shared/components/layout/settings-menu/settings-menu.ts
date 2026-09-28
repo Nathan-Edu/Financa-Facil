@@ -1,6 +1,7 @@
 import {
   Component,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 
 import {
@@ -18,6 +19,11 @@ import {
 import {
   MatButtonModule
 } from '@angular/material/button';
+
+import {
+  Subject,
+  takeUntil
+} from 'rxjs';
 
 import {
   AuthService
@@ -45,18 +51,32 @@ import {
   ],
 
   templateUrl: './settings-menu.html',
+
   styleUrl: './settings-menu.scss'
 })
-export class SettingsMenu implements OnInit {
+export class SettingsMenu
+  implements
+    OnInit,
+    OnDestroy {
 
-  usuario: Usuario | null = null;
+  usuario:
+    Usuario | null =
+    null;
 
-  perfisFinanceiros: PerfilFinanceiro[] = [];
+  perfisFinanceiros:
+    PerfilFinanceiro[] = [];
 
   perfilFinanceiroAtivo:
-    PerfilFinanceiro | null = null;
+    PerfilFinanceiro | null =
+    null;
 
-  temaAtual = 'Dark';
+  temaAtual =
+    'Dark';
+
+
+  private readonly destroy$ =
+    new Subject<void>();
+
 
   constructor(
     private readonly authService:
@@ -69,19 +89,75 @@ export class SettingsMenu implements OnInit {
       Router
   ) {}
 
-  ngOnInit(): void {
+
+  ngOnInit():
+    void {
+
     this.carregarUsuario();
+
     this.carregarPerfisFinanceiros();
+
     this.carregarTemaAtual();
+
+
+    // Mudança do perfil ativo
+    this.perfilFinanceiroService
+      .perfilAlterado$
+      .pipe(
+        takeUntil(
+          this.destroy$
+        )
+      )
+      .subscribe(
+        () => {
+
+          this.carregarPerfisFinanceiros();
+
+        }
+      );
+
+
+    // Criação / edição / exclusão
+    this.perfilFinanceiroService
+      .perfisAtualizados$
+      .pipe(
+        takeUntil(
+          this.destroy$
+        )
+      )
+      .subscribe(
+        () => {
+
+          this.carregarPerfisFinanceiros();
+
+        }
+      );
+
   }
 
-  carregarPerfisFinanceiros(): void {
+
+  ngOnDestroy():
+    void {
+
+    this.destroy$
+      .next();
+
+    this.destroy$
+      .complete();
+
+  }
+
+
+  carregarPerfisFinanceiros():
+    void {
 
     this.perfilFinanceiroService
       .listar()
       .subscribe({
+
         next: (
-          perfis: PerfilFinanceiro[]
+          perfis:
+            PerfilFinanceiro[]
         ) => {
 
           this.perfisFinanceiros =
@@ -91,62 +167,103 @@ export class SettingsMenu implements OnInit {
             perfis.find(
               perfil =>
                 perfil.ativo
-            ) ?? null;
+            ) ??
+            null;
+
         }
+
       });
+
   }
 
+
   selecionarPerfil(
-    perfil: PerfilFinanceiro
+    perfil:
+      PerfilFinanceiro
   ): void {
 
-    if (perfil.ativo) {
+    if (
+      perfil.ativo
+    ) {
+
       return;
+
     }
 
     this.perfilFinanceiroService
-      .ativar(perfil.id)
+      .ativar(
+        perfil.id
+      )
       .subscribe({
-        next: (sucesso: boolean) => {
 
-          if (!sucesso) {
+        next: (
+          sucesso:
+            boolean
+        ) => {
+
+          if (
+            !sucesso
+          ) {
+
             return;
+
           }
 
-          /*
-           * Mantemos o perfilAtivo do usuário
-           * sincronizado por enquanto.
-           */
+
           this.authService
             .alterarPerfilAtivo(
               perfil.tipo
             );
 
-          if (this.usuario) {
+
+          if (
+            this.usuario
+          ) {
 
             this.usuario = {
+
               ...this.usuario,
-              perfilAtivo: perfil.tipo
+
+              perfilAtivo:
+                perfil.tipo
+
             };
+
           }
 
-          this.carregarPerfisFinanceiros();
+          /*
+           * Não precisa mais chamar
+           * carregarPerfisFinanceiros()
+           * aqui.
+           *
+           * O evento global do service
+           * já fará isso.
+           */
+
         }
+
       });
+
   }
 
-  gerenciarPerfis(): void {
+
+  gerenciarPerfis():
+    void {
 
     this.router.navigate([
       '/perfis-financeiros'
     ]);
+
   }
 
+
   alterarTema(
-    tema: string
+    tema:
+      string
   ): void {
 
-    this.temaAtual = tema;
+    this.temaAtual =
+      tema;
 
     document.body.classList.remove(
       'theme-dark',
@@ -162,97 +279,172 @@ export class SettingsMenu implements OnInit {
     );
 
     localStorage.setItem(
-      'financa_facil_tema',
+      this.obterChaveTema(),
       tema
     );
+
   }
 
-  abrirMinhaConta(): void {
+
+  abrirMinhaConta():
+    void {
 
     this.router.navigate([
       '/minha-conta'
     ]);
+
   }
 
-  alterarSenha(): void {
+
+  alterarSenha():
+    void {
 
     this.router.navigate([
       '/alterar-senha'
     ]);
+
   }
 
-  sair(): void {
 
-    this.authService.logout();
+  sair():
+    void {
+
+    this.authService
+      .logout();
 
     this.router.navigate([
       '/login'
     ]);
+
   }
 
-  private carregarUsuario(): void {
+
+  private carregarUsuario():
+    void {
 
     this.usuario =
-      this.authService.obterUsuario();
+      this.authService
+        .obterUsuario();
+
   }
 
-  private carregarTemaAtual(): void {
+
+  private carregarTemaAtual():
+    void {
 
     const temaSalvo =
       localStorage.getItem(
-        'financa_facil_tema'
+        this.obterChaveTema()
       );
 
-    if (!temaSalvo) {
+
+    if (
+      !temaSalvo
+    ) {
+
+      this.alterarTema(
+        'Dark'
+      );
+
       return;
+
     }
+
 
     this.alterarTema(
       temaSalvo
     );
+
   }
 
-  get iniciaisUsuario(): string {
 
-    if (!this.usuario?.nome) {
-      return '?';
+  private obterChaveTema():
+    string {
+
+    const usuario =
+      this.authService
+        .obterUsuario();
+
+
+    if (
+      !usuario
+    ) {
+
+      return 'financa_facil_tema';
+
     }
+
+
+    return `financa_facil_tema_${usuario.id}`;
+
+  }
+
+
+  get iniciaisUsuario():
+    string {
+
+    if (
+      !this.usuario?.nome
+    ) {
+
+      return '?';
+
+    }
+
 
     const nomes =
       this.usuario.nome
         .trim()
         .split(' ');
 
-    if (nomes.length === 1) {
+
+    if (
+      nomes.length ===
+      1
+    ) {
 
       return nomes[0]
         .charAt(0)
         .toUpperCase();
+
     }
 
+
     return (
-      nomes[0].charAt(0) +
-      nomes[nomes.length - 1]
+      nomes[0]
+        .charAt(0) +
+      nomes[
+        nomes.length -
+        1
+      ]
         .charAt(0)
-    ).toUpperCase();
+    )
+      .toUpperCase();
+
   }
 
-  get nomePerfilAtual(): string {
+
+  get nomePerfilAtual():
+    string {
 
     return (
       this.perfilFinanceiroAtivo
         ?.nome ??
       'Nenhum perfil'
     );
+
   }
 
-  get classePerfil(): string {
+
+  get classePerfil():
+    string {
 
     return (
       this.perfilFinanceiroAtivo
         ?.tipo ??
       'pessoal'
     );
+
   }
 
 }

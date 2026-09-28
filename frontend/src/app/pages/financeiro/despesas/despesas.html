@@ -34,7 +34,7 @@
     <app-stat-card
       title="Despesas"
       [value]="quantidadeDespesas"
-      subtitle="Registros cadastrados"
+      subtitle="Registros encontrados"
       icon="trending_down"
       color="violet">
     </app-stat-card>
@@ -45,21 +45,80 @@
     title="Suas Despesas"
     subtitle="Lista de despesas cadastradas no sistema">
 
-    <div class="filters">
+    <div class="filters-toolbar">
 
-      <app-search-input
-        label="Buscar"
-        placeholder="Buscar despesas..."
-        [(value)]="search">
-      </app-search-input>
+      <div class="filters-search">
 
-      <app-select
-        label="Categoria"
-        [options]="categorias"
-        [(value)]="categoria">
-      </app-select>
+        <app-search-input
+          label="Buscar"
+          placeholder="Buscar despesas..."
+          [(value)]="search"
+          (valueChange)="aoAlterarFiltros()">
+        </app-search-input>
+
+      </div>
+
+      <div class="filters-button">
+
+        <app-button
+          color="outline"
+          icon="filter_list"
+          (click)="showFilters = !showFilters">
+
+          {{ showFilters ? 'Ocultar filtros' : 'Filtros' }}
+
+        </app-button>
+
+      </div>
 
     </div>
+
+    @if (showFilters) {
+
+      <div
+        class="advanced-filters"
+        [class.personalizado]="filtroPeriodo === 'Personalizado'">
+
+        <app-select
+          label="Categoria"
+          [options]="categorias"
+          [(value)]="categoria"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        <app-select
+          label="Período"
+          [options]="periodoOptions"
+          [(value)]="filtroPeriodo"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        @if (filtroPeriodo === 'Personalizado') {
+
+          <app-date-input
+            label="Data inicial"
+            [(value)]="dataInicialFiltro"
+            (valueChange)="aoAlterarFiltros()">
+          </app-date-input>
+
+          <app-date-input
+            label="Data final"
+            [(value)]="dataFinalFiltro"
+            (valueChange)="aoAlterarFiltros()">
+          </app-date-input>
+
+        }
+
+        <app-button
+          color="outline"
+          icon="restart_alt"
+          (click)="limparFiltros()">
+          Limpar
+        </app-button>
+
+      </div>
+
+    }
 
     @if (despesasFiltradas.length === 0) {
 
@@ -83,17 +142,31 @@
             [category]="despesa.categoria"
             [date]="despesa.data"
             [value]="despesa.valorFormatado"
+
+            [extraBadge]="
+              despesa.origem === 'parcelada'
+                ? 'Parcelado'
+                : ''
+            "
+
+            [showActions]="
+              despesa.origem !== 'parcelada'
+            "
+
             [icon]="
               buscarCategoria(
                 despesa.categoria
               )?.icone ?? 'payments'
             "
+
             [color]="
               buscarCategoria(
                 despesa.categoria
               )?.cor ?? '#ef4444'
             "
+
             type="expense"
+
             (edit)="editarDespesa(despesa)"
             (delete)="solicitarExclusao(despesa)">
           </app-finance-item>
@@ -153,6 +226,7 @@
           </app-checkbox>
 
           @if (recorrente) {
+
             <app-select
               label="Frequência"
               [options]="frequenciasRecorrencia"
@@ -163,6 +237,7 @@
               label="Repetir até (opcional)"
               [(value)]="recorrenteAte">
             </app-date-input>
+
           }
 
           <app-textarea

@@ -10,5 +10,5 @@ export class Footer {
   anoAtual = new Date().getFullYear();
 
   versao = '1.0.0';
-  ambiente: 'QAS' | 'PRD' = 'QAS';
+  ambiente: 'PRD' | 'PRD' = 'PRD';
 }

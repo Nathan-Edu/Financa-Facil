@@ -10,24 +10,67 @@
   color: var(--text);
 }
 
+   //PERFIL ATUAL
 
-/* ==========================================================
-   PERFIL ATUAL
-========================================================== */
+.profiles-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+
+  width: 100%;
+
+  overflow-x: auto;
+
+  padding-bottom: 2px;
+}
 
 .profile-indicator {
+  position: relative;
+
   display: flex;
   align-items: center;
   gap: 14px;
 
-  width: fit-content;
+  min-width: 190px;
 
-  padding: 10px 16px;
+  padding: 12px 16px;
 
   border: 1px solid var(--border);
   border-radius: 14px;
 
   background: var(--surface);
+  color: inherit;
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+}
+
+.profile-indicator--active {
+  border-color: var(--primary);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--primary) 10%,
+      var(--surface)
+    );
 }
 
 .profile-indicator__icon {
@@ -38,16 +81,9 @@
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   border-radius: 10px;
-
-  background:
-    color-mix(
-      in srgb,
-      var(--primary) 15%,
-      transparent
-    );
-
-  color: var(--primary);
 
   font-size: 12px;
   font-weight: 800;
@@ -56,7 +92,10 @@
 .profile-indicator__content {
   display: flex;
   flex-direction: column;
+
   gap: 2px;
+
+  min-width: 0;
 
   span {
     color: var(--text-muted);
@@ -64,11 +103,37 @@
   }
 
   strong {
+    overflow: hidden;
+
     color: var(--text);
+
     font-size: 14px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
+.profile-active-dot {
+  width: 9px;
+  height: 9px;
+
+  margin-left: auto;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--success);
+
+  box-shadow:
+    0 0 0 4px
+    color-mix(
+      in srgb,
+      var(--success) 15%,
+      transparent
+    );
+}
 
 /* ==========================================================
    INDICADORES
@@ -82,6 +147,86 @@
 
   gap: 18px;
 }
+
+/* ==========================================================
+   CARDS DE RESUMO
+========================================================== */
+
+.report-stat {
+  height: 100%;
+}
+
+.report-stat app-card {
+  display: block;
+  height: 100%;
+}
+
+.report-stat ::ng-deep .ff-card {
+  height: 100%;
+
+  border: 0;
+
+  color: #ffffff;
+}
+
+.report-stat ::ng-deep .ff-card-content {
+  height: 100%;
+}
+
+.report-stat--success ::ng-deep .ff-card {
+  background:
+    linear-gradient(
+      135deg,
+      #16a34a,
+      #15803d
+    );
+}
+
+.report-stat--danger ::ng-deep .ff-card {
+  background:
+    linear-gradient(
+      135deg,
+      #dc2626,
+      #b91c1c
+    );
+}
+
+.report-stat--primary ::ng-deep .ff-card {
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #4f46e5
+    );
+}
+
+.report-stat--purple ::ng-deep .ff-card {
+  background:
+    linear-gradient(
+      135deg,
+      #9333ea,
+      #7e22ce
+    );
+}
+
+.report-stat .stat-card__label,
+.report-stat .stat-card__value,
+.report-stat .stat-card__description {
+  color: #ffffff;
+}
+
+.report-stat .stat-card__icon {
+  color: #ffffff;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.16
+    );
+}
+
 
 .stat-card {
   min-height: 125px;
@@ -354,6 +499,13 @@
     minmax(320px, 0.7fr);
 
   gap: 18px;
+
+  align-items: stretch;
+}
+
+.charts-grid app-card {
+  display: block;
+  height: 100%;
 }
 
 .chart-placeholder {
@@ -745,7 +897,8 @@ table {
   position: relative;
 
   width: 100%;
-  height: 320px;
+  height: 100%;
+  min-height: 460px;
 
   margin-top: 20px;
 
@@ -866,54 +1019,6 @@ table {
   white-space: nowrap;
 }
 
-/* ==========================
-   CONTEÚDO CENTRAL
-========================== */
-
-.doughnut-center {
-  position: absolute;
-
-  top: 50%;
-  left: 50%;
-
-  transform: translate(-50%, -50%);
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  width: 120px;
-
-  text-align: center;
-
-  pointer-events: none;
-}
-
-.doughnut-center span {
-  color: var(--text-muted);
-
-  font-size: 11px;
-  font-weight: 600;
-
-  text-transform: uppercase;
-
-  letter-spacing: 0.06em;
-}
-
-.doughnut-center strong {
-  margin-top: 5px;
-
-  color: var(--text);
-
-  font-size: 16px;
-  font-weight: 800;
-
-  white-space: nowrap;
-}
-
-
 /* ==========================================================
    LEGENDA
 ========================================================== */
@@ -1030,3 +1135,80 @@ table {
   font-size: 11px;
   font-weight: 700;
 }
+
+.report-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin-top: 18px;
+
+  flex-wrap: wrap;
+}
+
+.pagination-button {
+  min-width: 36px;
+  height: 36px;
+
+  padding: 0 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: var(--text);
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color:
+      var(--primary);
+
+    color:
+      var(--primary);
+
+    background:
+      color-mix(
+        in srgb,
+        var(--primary) 8%,
+        transparent
+      );
+  }
+
+  &:disabled {
+    opacity: 0.4;
+
+    cursor:
+      not-allowed;
+  }
+}
+
+.pagination-button--active {
+  border-color:
+    var(--primary);
+
+  background:
+    var(--primary);
+
+  color:
+    #ffffff;
+}
+
+.pagination-info {
+  margin-left: 6px;
+
+  color:
+    var(--text-muted);
+
+  font-size: 12px;
+}
+

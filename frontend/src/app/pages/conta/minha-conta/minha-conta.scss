@@ -3,7 +3,7 @@
 }
 
 .minha-conta-page {
-  width: min(100%, 1400px);
+  width: min(100%, 1000px);
   margin: 0 auto;
   padding: 32px 24px 48px;
 
@@ -21,13 +21,22 @@
 
 .profile-avatar {
   display: grid;
+
   width: 48px;
   height: 48px;
+
   flex-shrink: 0;
+
   place-items: center;
 
   border-radius: 50%;
-  background: var(--primary-color, #3b82f6);
+
+  background:
+    var(
+      --primary-color,
+      #3b82f6
+    );
+
   color: #ffffff;
 
   font-size: 1rem;
@@ -36,59 +45,75 @@
 
 .profile-info {
   display: flex;
+
   min-width: 0;
+
   flex: 1;
   flex-direction: column;
+
   gap: 2px;
 
   strong {
     overflow: hidden;
-    color: var(--text-primary, #f8fafc);
+
+    color:
+      var(
+        --text-primary,
+        #f8fafc
+      );
+
     font-size: 0.95rem;
+
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   span {
     overflow: hidden;
-    color: var(--text-secondary, #94a3b8);
+
+    color:
+      var(
+        --text-secondary,
+        #94a3b8
+      );
+
     font-size: 0.78rem;
+
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 }
 
-.account-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  align-items: stretch;
-
-  app-card {
-    display: block;
-    height: 100%;
-  }
-}
-
-.account-grid > app-card {
-  height: 100%;
-}
-
 .form-grid {
   display: grid;
-  grid-template-rows: repeat(2, minmax(0, auto));
-  gap: 14px;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
 }
 
 .form-field {
   display: flex;
+
   width: 100%;
+
   flex-direction: column;
+
   gap: 6px;
 
   label {
     display: block;
-    color: var(--text-primary, #f8fafc);
+
+    color:
+      var(
+        --text-primary,
+        #f8fafc
+      );
+
     font-size: 0.8rem;
     font-weight: 600;
   }
@@ -96,19 +121,39 @@
 
 .account-input {
   display: block;
+
   width: 100%;
   min-width: 0;
   min-height: 42px;
+
   box-sizing: border-box;
+
   padding: 0 14px;
 
-  border: 1px solid var(--border-color, #475569);
+  border:
+    1px solid
+    var(
+      --border-color,
+      #475569
+    );
+
   border-radius: 10px;
+
   outline: none;
 
   appearance: none;
-  background-color: var(--surface-color, #1e293b);
-  color: var(--text-primary, #f8fafc);
+
+  background-color:
+    var(
+      --surface-color,
+      #1e293b
+    );
+
+  color:
+    var(
+      --text-primary,
+      #f8fafc
+    );
 
   font-family: inherit;
   font-size: 0.82rem;
@@ -120,81 +165,102 @@
     background-color 0.2s ease;
 
   &::placeholder {
-    color: var(--text-secondary, #94a3b8);
+
+    color:
+      var(
+        --text-secondary,
+        #94a3b8
+      );
+
     opacity: 1;
+
   }
 
   &:hover {
-    border-color: var(--primary-color, #3b82f6);
+
+    border-color:
+      var(
+        --primary-color,
+        #3b82f6
+      );
+
   }
 
   &:focus {
-    border-color: var(--primary-color, #3b82f6);
+
+    border-color:
+      var(
+        --primary-color,
+        #3b82f6
+      );
 
     box-shadow:
       0 0 0 3px
       color-mix(
         in srgb,
-        var(--primary-color, #3b82f6) 12%,
+        var(
+          --primary-color,
+          #3b82f6
+        ) 12%,
         transparent
       );
+
   }
 }
 
 .account-actions {
   display: flex;
   justify-content: flex-end;
-  padding-top: 0;
 }
 
-@media (max-width: 900px) {
+@media (
+  max-width: 700px
+) {
+
   .minha-conta-page {
-    padding: 24px 18px 36px;
+
+    padding:
+      24px
+      18px
+      36px;
+
   }
 
-  .account-grid {
-    grid-template-columns: 1fr;
+  .form-grid {
+
+    grid-template-columns:
+      1fr;
+
   }
+
 }
 
-@media (max-width: 600px) {
+@media (
+  max-width: 600px
+) {
+
   .minha-conta-page {
-    padding: 20px 14px 32px;
+
+    padding:
+      20px
+      14px
+      32px;
+
     gap: 16px;
-  }
 
-  .profile-summary {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .profile-info {
-    flex-basis: calc(100% - 62px);
-  }
-
-  .profile-summary app-badge {
-    margin-left: 62px;
   }
 
   .account-actions {
-    justify-content: stretch;
+
+    justify-content:
+      stretch;
 
     app-button {
+
       width: 100%;
+
     }
+
   }
 
-
-}
-
-.account-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  align-items: stretch;
-}
-
-.account-grid app-card {
-  display: block;
-  height: 100%;
 }

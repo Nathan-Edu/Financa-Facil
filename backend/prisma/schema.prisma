@@ -53,6 +53,18 @@ enum StatusParcela {
   CANCELADA
 }
 
+enum TipoAlerta {
+  VENCIMENTO
+  ORCAMENTO
+  INFORMATIVO
+}
+
+enum PrioridadeAlerta {
+  BAIXA
+  MEDIA
+  ALTA
+}
+
 model Usuario {
   id                String                  @id @default(uuid()) @db.Uuid
   nome              String                  @db.VarChar(120)
@@ -126,19 +138,22 @@ model PerfilFinanceiro {
 }
 
 model Categoria {
-  id         String           @id @default(uuid()) @db.Uuid
-  perfilId   String           @map("perfil_id") @db.Uuid
-  nome       String           @db.VarChar(80)
-  tipo       TipoCategoria
-  icone      String           @default("category") @db.VarChar(50)
-  cor        String           @default("#3b82f6") @db.VarChar(7)
-  orcamentoMensal Decimal?    @map("orcamento_mensal") @db.Decimal(14, 2)
-  ativa      Boolean          @default(true)
-  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  perfil     PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
-  transacoes Transacao[]
-  contas     ContaParcelada[]
+  id               String           @id @default(uuid()) @db.Uuid
+  perfilId         String           @map("perfil_id") @db.Uuid
+  nome             String           @db.VarChar(80)
+  tipo             TipoCategoria
+  icone            String           @default("category") @db.VarChar(50)
+  cor              String           @default("#3b82f6") @db.VarChar(7)
+  orcamentoMensal  Decimal?         @map("orcamento_mensal") @db.Decimal(14, 2)
+  ativa            Boolean          @default(true)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  perfil           PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
+
+  transacoes       Transacao[]
+  contas           ContaParcelada[]
+  alertas          Alerta[]
 
   @@unique([perfilId, nome, tipo])
   @@index([perfilId, ativa])
@@ -217,17 +232,31 @@ model Parcela {
 }
 
 model Alerta {
-  id         String           @id @default(uuid()) @db.Uuid
-  perfilId   String           @map("perfil_id") @db.Uuid
-  parcelaId  String?          @unique @map("parcela_id") @db.Uuid
-  mensagem   String           @db.VarChar(255)
-  lido       Boolean          @default(false)
-  descartado Boolean          @default(false)
-  dataAlerta DateTime         @default(now()) @map("data_alerta") @db.Timestamptz(3)
-  perfil     PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
-  parcela    Parcela?         @relation(fields: [parcelaId], references: [id], onDelete: Cascade)
+  id          String           @id @default(uuid()) @db.Uuid
+  perfilId    String           @map("perfil_id") @db.Uuid
+  parcelaId   String?          @unique @map("parcela_id") @db.Uuid
+  categoriaId String?          @map("categoria_id") @db.Uuid
+
+  chave       String?          @unique @db.VarChar(180)
+
+  tipo        TipoAlerta       @default(VENCIMENTO)
+  prioridade  PrioridadeAlerta @default(MEDIA)
+
+  titulo      String           @default("Alerta") @db.VarChar(120)
+  mensagem    String           @db.VarChar(255)
+
+  lido        Boolean          @default(false)
+  descartado  Boolean          @default(false)
+
+  dataAlerta  DateTime         @default(now()) @map("data_alerta") @db.Timestamptz(3)
+
+  perfil      PerfilFinanceiro @relation(fields: [perfilId], references: [id], onDelete: Cascade)
+  parcela     Parcela?         @relation(fields: [parcelaId], references: [id], onDelete: Cascade)
+  categoria   Categoria?       @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
 
   @@index([perfilId, lido])
+  @@index([categoriaId])
+  @@index([tipo])
   @@map("alertas")
 }
 

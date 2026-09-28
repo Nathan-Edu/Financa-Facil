@@ -4,6 +4,17 @@
     title="Últimas Receitas"
     subtitle="Entradas financeiras recentes">
 
+    <app-button
+      card-action
+      color="outline"
+      size="small"
+      (click)="abrirReceitas()">
+
+      Ver Todas
+
+    </app-button>
+
+
     @if (receitas.length === 0) {
 
       <app-empty-state
@@ -26,16 +37,19 @@
             [category]="receita.categoria"
             [date]="receita.data"
             [value]="receita.valorFormatado"
+
             [icon]="
               buscarCategoria(
                 receita.categoria
               )?.icone ?? 'payments'
             "
+
             [color]="
               buscarCategoria(
                 receita.categoria
               )?.cor ?? '#22c55e'
             "
+
             type="income">
           </app-transaction-item>
 
@@ -47,9 +61,21 @@
 
   </app-card>
 
+
   <app-card
     title="Últimas Despesas"
     subtitle="Saídas financeiras recentes">
+
+    <app-button
+      card-action
+      color="outline"
+      size="small"
+      (click)="abrirDespesas()">
+
+      Ver Todas
+
+    </app-button>
+
 
     @if (despesas.length === 0) {
 
@@ -73,16 +99,19 @@
             [category]="despesa.categoria"
             [date]="despesa.data"
             [value]="despesa.valorFormatado"
+
             [icon]="
               buscarCategoria(
                 despesa.categoria
               )?.icone ?? 'payments'
             "
+
             [color]="
               buscarCategoria(
                 despesa.categoria
               )?.cor ?? '#ef4444'
             "
+
             type="expense">
           </app-transaction-item>
 

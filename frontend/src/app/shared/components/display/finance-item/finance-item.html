@@ -6,17 +6,17 @@
   <div class="finance-main">
 
     <div
-  class="finance-icon"
-  [style.background-color]="color + '20'">
+      class="finance-icon"
+      [style.background-color]="color + '20'">
 
-  <mat-icon
-    [style.color]="color">
+      <mat-icon
+        [style.color]="color">
 
-    {{ icon }}
+        {{ icon }}
 
-  </mat-icon>
+      </mat-icon>
 
-</div>
+    </div>
 
     <div class="finance-info">
 
@@ -32,8 +32,18 @@
               ? 'success'
               : 'danger'
           ">
+
           {{ category }}
+
         </app-badge>
+
+        @if (extraBadge) {
+
+          <app-badge color="warning">
+            {{ extraBadge }}
+          </app-badge>
+
+        }
 
         <span class="finance-date">
           {{ dataFormatada }}
@@ -48,31 +58,37 @@
   <div class="finance-right">
 
     <strong class="finance-value">
+
       {{ type === 'income' ? '+' : '-' }}
       {{ value }}
+
     </strong>
 
-    <div class="finance-actions">
+    @if (showActions) {
 
-      <app-button
-        color="outline"
-        size="small"
-        icon="edit"
-        appearance="icon"
-        aria-label="Editar"
-        (click)="edit.emit()">
-      </app-button>
+      <div class="finance-actions">
 
-      <app-button
-        color="danger"
-        size="small"
-        icon="delete"
-        appearance="icon"
-        aria-label="Excluir"
-        (click)="delete.emit()">
-      </app-button>
+        <app-button
+          color="outline"
+          size="small"
+          icon="edit"
+          appearance="icon"
+          aria-label="Editar"
+          (click)="edit.emit()">
+        </app-button>
 
-    </div>
+        <app-button
+          color="danger"
+          size="small"
+          icon="delete"
+          appearance="icon"
+          aria-label="Excluir"
+          (click)="delete.emit()">
+        </app-button>
+
+      </div>
+
+    }
 
   </div>
 

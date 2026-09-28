@@ -1,35 +1,95 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
 
-import { Parcela } from '../../../core/models/parcela.model';
-import { Categoria } from '../../../core/models/categoria.model';
+import {
+  Parcela
+} from '../../../core/models/parcela.model';
 
-import { ParcelaService } from '../../../core/services/parcela.service';
-import { CategoriaService } from '../../../core/services/categoria.service';
+import {
+  Categoria
+} from '../../../core/models/categoria.model';
 
-import { ToastService } from '../../../shared/components/feedback/toast/toast.service';
+import {
+  ParcelaService
+} from '../../../core/services/parcela.service';
 
-import { PageHeader } from '../../../shared/components/layout/page-header/page-header';
-import { Card } from '../../../shared/components/layout/card/card';
+import {
+  CategoriaService
+} from '../../../core/services/categoria.service';
 
-import { Button } from '../../../shared/components/forms/button/button';
-import { SearchInput } from '../../../shared/components/forms/search-input/search-input';
-import { Select } from '../../../shared/components/forms/select/select';
-import { CurrencyInput } from '../../../shared/components/forms/currency-input/currency-input';
-import { DateInput } from '../../../shared/components/forms/date-input/date-input';
-import { Textarea } from '../../../shared/components/forms/textarea/textarea';
+import {
+  PerfilFinanceiroService
+} from '../../../core/services/perfil-financeiro.service';
 
-import { StatCard } from '../../../shared/components/display/stat-card/stat-card';
-import { ParcelItem } from '../../../shared/components/display/parcel-item/parcel-item';
-import { Badge } from '../../../shared/components/display/badge/badge';
+import {
+  ToastService
+} from '../../../shared/components/feedback/toast/toast.service';
 
-import { Modal } from '../../../shared/components/feedback/modal/modal';
-import { ConfirmDialog } from '../../../shared/components/feedback/confirm-dialog/confirm-dialog';
-import { EmptyState } from '../../../shared/components/feedback/empty-state/empty-state';
+import {
+  PageHeader
+} from '../../../shared/components/layout/page-header/page-header';
 
-import { Pagination } from '../../../shared/components/tables/pagination/pagination';
+import {
+  Card
+} from '../../../shared/components/layout/card/card';
+
+import {
+  Button
+} from '../../../shared/components/forms/button/button';
+
+import {
+  SearchInput
+} from '../../../shared/components/forms/search-input/search-input';
+
+import {
+  Select
+} from '../../../shared/components/forms/select/select';
+
+import {
+  CurrencyInput
+} from '../../../shared/components/forms/currency-input/currency-input';
+
+import {
+  DateInput
+} from '../../../shared/components/forms/date-input/date-input';
+
+import {
+  Textarea
+} from '../../../shared/components/forms/textarea/textarea';
+
+import {
+  StatCard
+} from '../../../shared/components/display/stat-card/stat-card';
+
+import {
+  ParcelItem
+} from '../../../shared/components/display/parcel-item/parcel-item';
+
+import {
+  Badge
+} from '../../../shared/components/display/badge/badge';
+
+import {
+  Modal
+} from '../../../shared/components/feedback/modal/modal';
+
+import {
+  ConfirmDialog
+} from '../../../shared/components/feedback/confirm-dialog/confirm-dialog';
+
+import {
+  EmptyState
+} from '../../../shared/components/feedback/empty-state/empty-state';
+
+import {
+  Pagination
+} from '../../../shared/components/tables/pagination/pagination';
 
 @Component({
   selector: 'app-parceladas',
+
   imports: [
     PageHeader,
     Card,
@@ -47,30 +107,34 @@ import { Pagination } from '../../../shared/components/tables/pagination/paginat
     EmptyState,
     Pagination
   ],
+
   templateUrl: './parcelas.html',
   styleUrl: './parcelas.scss'
 })
 export class Parcelas implements OnInit {
+
   showModal = false;
+
   showParcelasModal = false;
+
   showConfirmPagamento = false;
+
   showConfirmExclusao = false;
 
-  parcelaSelecionada: Parcela | null = null;
+  showFilters = false;
+
+  parcelaSelecionada:
+    Parcela | null = null;
+
+  // =====================================================
+  // FILTROS
+  // =====================================================
 
   search = '';
+
+  categoria = 'Todas';
+
   status = 'Todos';
-
-  descricao = '';
-  categoriaFormulario = '';
-  valorTotal = 0;
-  totalParcelasInput = '1';
-  parcelasPagasInput = '0';
-  dataVencimento = '';
-  observacao = '';
-
-  currentPage = 1;
-  readonly itemsPerPage = 8;
 
   statusOptions = [
     'Todos',
@@ -79,552 +143,1176 @@ export class Parcelas implements OnInit {
     'Atrasada'
   ];
 
-  categoriasFormulario: string[] = [];
-  parcelas: Parcela[] = [];
+  // =====================================================
+  // FORMULÁRIO
+  // =====================================================
+
+  descricao = '';
+
+  categoriaFormulario = '';
+
+  valorTotal = 0;
+
+  totalParcelasInput = '1';
+
+  parcelasPagasInput = '0';
+
+  dataVencimento = '';
+
+  observacao = '';
+
+  // =====================================================
+  // PAGINAÇÃO
+  // =====================================================
+
+  currentPage = 1;
+
+  readonly itemsPerPage = 8;
+
+  // =====================================================
+  // DADOS
+  // =====================================================
+
+  categorias:
+    string[] = [
+      'Todas'
+    ];
+
+  categoriasFormulario:
+    string[] = [];
+
+  parcelas:
+    Parcela[] = [];
 
   constructor(
-    private parcelaService: ParcelaService,
-    private categoriaService: CategoriaService,
-    private toast: ToastService
+    private parcelaService:
+      ParcelaService,
+
+    private categoriaService:
+      CategoriaService,
+
+    private perfilService:
+      PerfilFinanceiroService,
+
+    private toast:
+      ToastService
   ) {}
 
   ngOnInit(): void {
+
     this.carregarParcelas();
+
     this.carregarCategorias();
+
+    this.perfilService
+      .perfilAlterado$
+      .subscribe(
+        () => {
+
+          this.currentPage =
+            1;
+
+          this.carregarParcelas();
+
+          this.carregarCategorias();
+
+        }
+      );
+
   }
 
+  // =====================================================
+  // CARREGAMENTO
+  // =====================================================
+
   carregarParcelas(): void {
-    this.parcelaService.listar().subscribe({
-      next: (parcelas: Parcela[]) => {
-        this.parcelas = parcelas;
-      },
-      error: () => {
-        this.toast.error(
-          'Erro ao carregar contas parceladas.'
-        );
-      }
-    });
+
+    this.parcelaService
+      .listar()
+      .subscribe({
+
+        next:
+          (
+            parcelas:
+              Parcela[]
+          ) => {
+
+            this.parcelas =
+              parcelas;
+
+            this.currentPage =
+              1;
+
+          },
+
+        error:
+          () => {
+
+            this.toast.error(
+              'Erro ao carregar contas parceladas.'
+            );
+
+          }
+
+      });
+
   }
 
   carregarCategorias(): void {
-    this.categoriaService.listar().subscribe({
-      next: (categorias: Categoria[]) => {
-        this.categoriasFormulario = categorias
-          .filter(
-            (categoria) =>
-              categoria.ativa &&
-              categoria.tipo === 'despesa'
-          )
-          .map((categoria) => categoria.nome);
 
-        if (
-          !this.categoriaFormulario &&
-          this.categoriasFormulario.length > 0
-        ) {
-          this.categoriaFormulario =
-            this.categoriasFormulario[0];
+    this.categoriaService
+      .listar()
+      .subscribe({
+
+        next:
+          (
+            categorias:
+              Categoria[]
+          ) => {
+
+            const categoriasDespesa =
+              categorias
+                .filter(
+                  categoria =>
+                    categoria.ativa &&
+                    categoria.tipo ===
+                      'despesa'
+                )
+                .map(
+                  categoria =>
+                    categoria.nome
+                );
+
+            this.categoriasFormulario =
+              categoriasDespesa;
+
+            this.categorias = [
+              'Todas',
+              ...categoriasDespesa
+            ];
+
+            if (
+              !this.categoriaFormulario &&
+              categoriasDespesa.length >
+                0
+            ) {
+
+              this.categoriaFormulario =
+                categoriasDespesa[0];
+
+            }
+
+          },
+
+        error:
+          () => {
+
+            this.toast.error(
+              'Erro ao carregar categorias.'
+            );
+
+          }
+
+      });
+
+  }
+
+  // =====================================================
+  // FILTROS
+  // =====================================================
+
+  get parcelasFiltradas():
+    Parcela[] {
+
+    const busca =
+      this.search
+        .trim()
+        .toLowerCase();
+
+    return this.parcelas
+      .filter(
+        parcela => {
+
+          const combinaBusca =
+            parcela.descricao
+              .toLowerCase()
+              .includes(
+                busca
+              ) ||
+            parcela.categoria
+              .toLowerCase()
+              .includes(
+                busca
+              );
+
+          const combinaCategoria =
+            this.categoria ===
+              'Todas' ||
+            parcela.categoria ===
+              this.categoria;
+
+          const combinaStatus =
+            this.status ===
+              'Todos' ||
+            this.formatarStatus(
+              parcela.status
+            ) ===
+              this.status;
+
+          return (
+            combinaBusca &&
+            combinaCategoria &&
+            combinaStatus
+          );
+
         }
-      },
-      error: () => {
-        this.toast.error(
-          'Erro ao carregar categorias.'
-        );
-      }
-    });
-  }
-
-  get parcelasFiltradas(): Parcela[] {
-    const busca = this.search
-      .trim()
-      .toLowerCase();
-
-    return this.parcelas.filter((parcela) => {
-      const combinaBusca =
-        parcela.descricao
-          .toLowerCase()
-          .includes(busca) ||
-        parcela.categoria
-          .toLowerCase()
-          .includes(busca);
-
-      const combinaStatus =
-        this.status === 'Todos' ||
-        this.formatarStatus(parcela.status) ===
-          this.status;
-
-      return combinaBusca && combinaStatus;
-    });
-  }
-
-  get totalAberto(): string {
-    const total = this.parcelas
-      .filter(
-        (parcela) =>
-          parcela.status !== 'finalizada'
-      )
-      .reduce((soma, parcela) => {
-        const restantes =
-          parcela.totalParcelas -
-          parcela.parcelasPagas;
-
-        return soma +
-          restantes * parcela.valorParcela;
-      }, 0);
-
-    return this.formatarMoeda(total);
-  }
-
-  get parcelasPaginadas(): Parcela[] {
-    const inicio = (this.currentPage - 1) * this.itemsPerPage;
-    return this.parcelasFiltradas.slice(inicio, inicio + this.itemsPerPage);
-  }
-
-  get totalPages(): number { return Math.max(1, Math.ceil(this.parcelasFiltradas.length / this.itemsPerPage)); }
-
-  get contasAtivas(): string {
-    return this.parcelas
-      .filter(
-        (parcela) =>
-          parcela.status === 'ativa'
-      )
-      .length
-      .toString();
-  }
-
-  get contasFinalizadas(): string {
-    return this.parcelas
-      .filter(
-        (parcela) =>
-          parcela.status === 'finalizada'
-      )
-      .length
-      .toString();
-  }
-
-  get proximoVencimento(): string {
-    const contasEmAberto = this.parcelas
-      .filter(
-        (parcela) =>
-          parcela.status !== 'finalizada' &&
-          parcela.dataVencimento !== 'Finalizada'
-      )
-      .sort(
-        (a, b) =>
-          this.converterData(
-            a.dataVencimento
-          ).getTime() -
-          this.converterData(
-            b.dataVencimento
-          ).getTime()
       );
 
-    if (contasEmAberto.length === 0) {
+  }
+
+  aoAlterarFiltros(): void {
+
+    this.currentPage =
+      1;
+
+  }
+
+  limparFiltros(): void {
+
+    this.search =
+      '';
+
+    this.categoria =
+      'Todas';
+
+    this.status =
+      'Todos';
+
+    this.currentPage =
+      1;
+
+  }
+
+  // =====================================================
+  // CARDS
+  // =====================================================
+
+  get totalAberto(): string {
+
+    const total =
+      this.parcelasFiltradas
+        .filter(
+          parcela =>
+            parcela.status !==
+            'finalizada'
+        )
+        .reduce(
+          (
+            soma,
+            parcela
+          ) => {
+
+            const restantes =
+              parcela.totalParcelas -
+              parcela.parcelasPagas;
+
+            return (
+              soma +
+              restantes *
+                parcela.valorParcela
+            );
+
+          },
+          0
+        );
+
+    return this.formatarMoeda(
+      total
+    );
+
+  }
+
+  get contasAtivas():
+    string {
+
+    return this.parcelasFiltradas
+      .filter(
+        parcela =>
+          parcela.status ===
+          'ativa'
+      )
+      .length
+      .toString();
+
+  }
+
+  get contasFinalizadas():
+    string {
+
+    return this.parcelasFiltradas
+      .filter(
+        parcela =>
+          parcela.status ===
+          'finalizada'
+      )
+      .length
+      .toString();
+
+  }
+
+  get proximoVencimento():
+    string {
+
+    const contasEmAberto =
+      this.parcelasFiltradas
+        .filter(
+          parcela =>
+            parcela.status !==
+              'finalizada' &&
+            parcela.dataVencimento !==
+              'Finalizada'
+        )
+        .sort(
+          (
+            a,
+            b
+          ) =>
+            this.converterData(
+              a.dataVencimento
+            ).getTime() -
+            this.converterData(
+              b.dataVencimento
+            ).getTime()
+        );
+
+    if (
+      contasEmAberto.length ===
+      0
+    ) {
+
       return '-';
+
     }
 
     return this.formatarData(
-      contasEmAberto[0].dataVencimento
+      contasEmAberto[0]
+        .dataVencimento
     );
+
   }
 
-  get tituloModal(): string {
+  // =====================================================
+  // PAGINAÇÃO
+  // =====================================================
+
+  get parcelasPaginadas():
+    Parcela[] {
+
+    const inicio =
+      (
+        this.currentPage -
+        1
+      ) *
+      this.itemsPerPage;
+
+    return this.parcelasFiltradas
+      .slice(
+        inicio,
+        inicio +
+          this.itemsPerPage
+      );
+
+  }
+
+  get totalPages():
+    number {
+
+    return Math.max(
+      1,
+      Math.ceil(
+        this.parcelasFiltradas
+          .length /
+        this.itemsPerPage
+      )
+    );
+
+  }
+
+  mudarPagina(
+    page:
+      number
+  ): void {
+
+    this.currentPage =
+      page;
+
+  }
+
+  // =====================================================
+  // MODAL
+  // =====================================================
+
+  get tituloModal():
+    string {
+
     return this.parcelaSelecionada
       ? 'Editar Conta Parcelada'
       : 'Nova Conta Parcelada';
+
   }
 
-  get subtituloModal(): string {
+  get subtituloModal():
+    string {
+
     return this.parcelaSelecionada
       ? 'Atualize os dados da conta parcelada'
       : 'Cadastre uma nova compra parcelada';
+
   }
 
-  get historicoParcelas(): number[] {
-    if (!this.parcelaSelecionada) {
+  get historicoParcelas():
+    number[] {
+
+    if (
+      !this.parcelaSelecionada
+    ) {
+
       return [];
+
     }
 
     return Array.from(
       {
         length:
-          this.parcelaSelecionada.totalParcelas
+          this.parcelaSelecionada
+            .totalParcelas
       },
-      (_, index) => index + 1
+      (
+        _,
+        index
+      ) =>
+        index + 1
     );
+
   }
 
-  abrirNovaParcela(): void {
-    this.parcelaSelecionada = null;
+  abrirNovaParcela():
+    void {
 
-    this.descricao = '';
+    this.parcelaSelecionada =
+      null;
+
+    this.descricao =
+      '';
+
     this.categoriaFormulario =
-      this.categoriasFormulario[0] ?? '';
-    this.valorTotal = 0;
-    this.totalParcelasInput = '1';
-    this.parcelasPagasInput = '0';
-    this.dataVencimento = '';
-    this.observacao = '';
+      this.categoriasFormulario[0] ??
+      '';
 
-    this.showModal = true;
+    this.valorTotal =
+      0;
+
+    this.totalParcelasInput =
+      '1';
+
+    this.parcelasPagasInput =
+      '0';
+
+    this.dataVencimento =
+      '';
+
+    this.observacao =
+      '';
+
+    this.showModal =
+      true;
+
   }
 
-  editar(parcela: Parcela): void {
-    this.parcelaSelecionada = parcela;
+  editar(
+    parcela:
+      Parcela
+  ): void {
 
-    this.descricao = parcela.descricao;
+    this.parcelaSelecionada =
+      parcela;
+
+    this.descricao =
+      parcela.descricao;
+
     this.categoriaFormulario =
       parcela.categoria;
-    this.valorTotal = parcela.valorTotal;
+
+    this.valorTotal =
+      parcela.valorTotal;
+
     this.totalParcelasInput =
-      parcela.totalParcelas.toString();
+      parcela.totalParcelas
+        .toString();
+
     this.parcelasPagasInput =
-      parcela.parcelasPagas.toString();
+      parcela.parcelasPagas
+        .toString();
+
     this.dataVencimento =
-      parcela.status === 'finalizada'
+      parcela.status ===
+        'finalizada'
         ? ''
         : parcela.dataVencimento;
-    this.observacao =
-      parcela.observacao ?? '';
 
-    this.showModal = true;
+    this.observacao =
+      parcela.observacao ??
+      '';
+
+    this.showModal =
+      true;
+
   }
 
+  fecharModal():
+    void {
+
+    this.showModal =
+      false;
+
+    this.parcelaSelecionada =
+      null;
+
+  }
+
+  // =====================================================
+  // SALVAR
+  // =====================================================
+
   salvar(): void {
+
     const totalParcelas =
-      Number(this.totalParcelasInput);
+      Number(
+        this.totalParcelasInput
+      );
 
     const parcelasPagas =
-      Number(this.parcelasPagasInput);
+      Number(
+        this.parcelasPagasInput
+      );
 
-    if (!this.descricao.trim()) {
+    if (
+      !this.descricao
+        .trim()
+    ) {
+
       this.toast.warning(
         'Informe a descrição da conta.'
       );
+
       return;
+
     }
 
-    if (!this.categoriaFormulario) {
+    if (
+      !this.categoriaFormulario
+    ) {
+
       this.toast.warning(
         'Selecione uma categoria.'
       );
+
       return;
+
     }
 
-    if (this.valorTotal <= 0) {
+    if (
+      this.valorTotal <=
+      0
+    ) {
+
       this.toast.warning(
         'Informe um valor total maior que zero.'
       );
+
       return;
+
     }
 
     if (
-      !Number.isInteger(totalParcelas) ||
-      totalParcelas <= 0
+      !Number.isInteger(
+        totalParcelas
+      ) ||
+      totalParcelas <=
+        0
     ) {
+
       this.toast.warning(
         'Informe uma quantidade válida de parcelas.'
       );
+
       return;
+
     }
 
     if (
-      !Number.isInteger(parcelasPagas) ||
-      parcelasPagas < 0 ||
-      parcelasPagas > totalParcelas
+      !Number.isInteger(
+        parcelasPagas
+      ) ||
+      parcelasPagas <
+        0 ||
+      parcelasPagas >
+        totalParcelas
     ) {
+
       this.toast.warning(
         'Informe uma quantidade válida de parcelas pagas.'
       );
+
       return;
+
     }
 
-    if (!this.dataVencimento) {
+    if (
+      !this.dataVencimento
+    ) {
+
       this.toast.warning(
         'Informe o próximo vencimento.'
       );
+
       return;
+
     }
 
-    if (this.parcelaSelecionada) {
+    if (
+      this.parcelaSelecionada
+    ) {
+
       this.atualizarParcela();
+
       return;
+
     }
 
     this.criarParcela();
+
   }
 
-  private criarParcela(): void {
+  private criarParcela():
+    void {
+
     this.parcelaService
       .criar({
-        descricao: this.descricao.trim(),
-        categoria: this.categoriaFormulario,
-        valorTotal: this.valorTotal,
-        parcelasPagas: 0,
+
+        descricao:
+          this.descricao
+            .trim(),
+
+        categoria:
+          this.categoriaFormulario,
+
+        valorTotal:
+          this.valorTotal,
+
+        parcelasPagas:
+          0,
+
         totalParcelas:
-          Number(this.totalParcelasInput),
-        dataVencimento: this.dataVencimento,
+          Number(
+            this.totalParcelasInput
+          ),
+
+        dataVencimento:
+          this.dataVencimento,
+
         observacao:
-          this.observacao.trim() || undefined
+          this.observacao
+            .trim() ||
+          undefined
+
       })
       .subscribe({
+
         next: () => {
+
           this.toast.success(
             'Conta parcelada cadastrada com sucesso.'
           );
 
           this.fecharModal();
+
           this.carregarParcelas();
+
         },
+
         error: () => {
+
           this.toast.error(
             'Erro ao cadastrar conta parcelada.'
           );
+
         }
+
       });
+
   }
 
-  private atualizarParcela(): void {
-    if (!this.parcelaSelecionada) {
+  private atualizarParcela():
+    void {
+
+    if (
+      !this.parcelaSelecionada
+    ) {
+
       return;
+
     }
 
     const totalParcelas =
-      Number(this.totalParcelasInput);
+      Number(
+        this.totalParcelasInput
+      );
 
-    const parcelasPagas = Math.min(
-      Number(this.parcelasPagasInput),
-      totalParcelas
-    );
+    const parcelasPagas =
+      Math.min(
+        Number(
+          this.parcelasPagasInput
+        ),
+        totalParcelas
+      );
 
-    const parcelaAtualizada: Parcela = {
+    const parcelaAtualizada:
+      Parcela = {
+
       ...this.parcelaSelecionada,
-      descricao: this.descricao.trim(),
-      categoria: this.categoriaFormulario,
-      valorTotal: this.valorTotal,
+
+      descricao:
+        this.descricao
+          .trim(),
+
+      categoria:
+        this.categoriaFormulario,
+
+      valorTotal:
+        this.valorTotal,
+
       totalParcelas,
+
       parcelasPagas,
+
       dataVencimento:
         this.dataVencimento,
+
       observacao:
-        this.observacao.trim() || undefined
+        this.observacao
+          .trim() ||
+        undefined
+
     };
 
     this.parcelaService
-      .editar(parcelaAtualizada)
+      .editar(
+        parcelaAtualizada
+      )
       .subscribe({
-        next: (ok: boolean) => {
-          if (!ok) {
-            this.toast.error(
-              'Conta parcelada não encontrada.'
+
+        next:
+          (
+            ok:
+              boolean
+          ) => {
+
+            if (
+              !ok
+            ) {
+
+              this.toast.error(
+                'Conta parcelada não encontrada.'
+              );
+
+              return;
+
+            }
+
+            this.toast.success(
+              'Conta parcelada atualizada com sucesso.'
             );
-            return;
-          }
 
-          this.toast.success(
-            'Conta parcelada atualizada com sucesso.'
-          );
+            this.fecharModal();
 
-          this.fecharModal();
-          this.carregarParcelas();
-        },
+            this.carregarParcelas();
+
+          },
+
         error: () => {
+
           this.toast.error(
             'Erro ao atualizar conta parcelada.'
           );
+
         }
+
       });
+
   }
+
+  // =====================================================
+  // PAGAMENTO
+  // =====================================================
 
   solicitarPagamento(
-    parcela: Parcela
+    parcela:
+      Parcela
   ): void {
-    this.parcelaSelecionada = parcela;
-    this.showConfirmPagamento = true;
+
+    this.parcelaSelecionada =
+      parcela;
+
+    this.showConfirmPagamento =
+      true;
+
   }
 
-  confirmarPagamento(): void {
-    if (!this.parcelaSelecionada) {
+  confirmarPagamento():
+    void {
+
+    if (
+      !this.parcelaSelecionada
+    ) {
+
       return;
+
     }
 
     this.parcelaService
-      .pagar(this.parcelaSelecionada.id)
+      .pagar(
+        this.parcelaSelecionada.id
+      )
       .subscribe({
-        next: (ok: boolean) => {
-          if (!ok) {
-            this.toast.warning(
-              'Esta conta já está finalizada.'
+
+        next:
+          (
+            ok:
+              boolean
+          ) => {
+
+            if (
+              !ok
+            ) {
+
+              this.toast.warning(
+                'Esta conta já está finalizada.'
+              );
+
+              return;
+
+            }
+
+            this.toast.success(
+              'Pagamento registrado com sucesso.'
             );
-            return;
-          }
 
-          this.toast.success(
-            'Pagamento registrado com sucesso.'
-          );
+            this.showConfirmPagamento =
+              false;
 
-          this.showConfirmPagamento = false;
-          this.parcelaSelecionada = null;
+            this.parcelaSelecionada =
+              null;
 
-          this.carregarParcelas();
-        },
+            this.carregarParcelas();
+
+          },
+
         error: () => {
+
           this.toast.error(
             'Erro ao registrar pagamento.'
           );
+
         }
+
       });
+
   }
 
-  cancelarPagamento(): void {
-    this.showConfirmPagamento = false;
-    this.parcelaSelecionada = null;
+  cancelarPagamento():
+    void {
+
+    this.showConfirmPagamento =
+      false;
+
+    this.parcelaSelecionada =
+      null;
+
   }
+
+  // =====================================================
+  // EXCLUSÃO
+  // =====================================================
 
   solicitarExclusao(
-    parcela: Parcela
+    parcela:
+      Parcela
   ): void {
-    this.parcelaSelecionada = parcela;
-    this.showConfirmExclusao = true;
+
+    this.parcelaSelecionada =
+      parcela;
+
+    this.showConfirmExclusao =
+      true;
+
   }
 
-  confirmarExclusao(): void {
-    if (!this.parcelaSelecionada) {
+  confirmarExclusao():
+    void {
+
+    if (
+      !this.parcelaSelecionada
+    ) {
+
       return;
+
     }
 
     this.parcelaService
-      .excluir(this.parcelaSelecionada.id)
+      .excluir(
+        this.parcelaSelecionada.id
+      )
       .subscribe({
-        next: (ok: boolean) => {
-          if (!ok) {
-            this.toast.error(
-              'Conta parcelada não encontrada.'
+
+        next:
+          (
+            ok:
+              boolean
+          ) => {
+
+            if (
+              !ok
+            ) {
+
+              this.toast.error(
+                'Conta parcelada não encontrada.'
+              );
+
+              return;
+
+            }
+
+            this.toast.success(
+              'Conta parcelada excluída com sucesso.'
             );
-            return;
-          }
 
-          this.toast.success(
-            'Conta parcelada excluída com sucesso.'
-          );
+            this.showConfirmExclusao =
+              false;
 
-          this.showConfirmExclusao = false;
-          this.parcelaSelecionada = null;
+            this.parcelaSelecionada =
+              null;
 
-          this.carregarParcelas();
-        },
+            this.carregarParcelas();
+
+          },
+
         error: () => {
+
           this.toast.error(
             'Erro ao excluir conta parcelada.'
           );
+
         }
+
       });
+
   }
 
-  cancelarExclusao(): void {
-    this.showConfirmExclusao = false;
-    this.parcelaSelecionada = null;
+  cancelarExclusao():
+    void {
+
+    this.showConfirmExclusao =
+      false;
+
+    this.parcelaSelecionada =
+      null;
+
   }
 
-  verParcelas(parcela: Parcela): void {
-    this.parcelaSelecionada = parcela;
-    this.showParcelasModal = true;
+  // =====================================================
+  // HISTÓRICO
+  // =====================================================
+
+  verParcelas(
+    parcela:
+      Parcela
+  ): void {
+
+    this.parcelaSelecionada =
+      parcela;
+
+    this.showParcelasModal =
+      true;
+
   }
 
-  fecharParcelasModal(): void {
-    this.showParcelasModal = false;
-    this.parcelaSelecionada = null;
+  fecharParcelasModal():
+    void {
+
+    this.showParcelasModal =
+      false;
+
+    this.parcelaSelecionada =
+      null;
+
   }
 
-  fecharModal(): void {
-    this.showModal = false;
-    this.parcelaSelecionada = null;
-  }
+  parcelaEstaPaga(
+    numero:
+      number
+  ): boolean {
 
-  parcelaEstaPaga(numero: number): boolean {
     return (
       numero <=
       (
         this.parcelaSelecionada
-          ?.parcelasPagas ?? 0
+          ?.parcelasPagas ??
+        0
       )
     );
+
   }
 
+  // =====================================================
+  // UTILITÁRIOS
+  // =====================================================
+
   buscarCategoria(
-    nome: string
+    nome:
+      string
   ): Categoria | undefined {
+
     return this.categoriaService
-      .buscarPorNome(nome);
+      .buscarPorNome(
+        nome
+      );
+
   }
 
   formatarStatus(
-    status: Parcela['status']
+    status:
+      Parcela['status']
   ): string {
-    switch (status) {
+
+    switch (
+      status
+    ) {
+
       case 'finalizada':
+
         return 'Finalizada';
 
       case 'atrasada':
+
         return 'Atrasada';
 
       default:
+
         return 'Ativa';
+
     }
+
   }
 
-  formatarMoeda(valor: number): string {
+  formatarMoeda(
+    valor:
+      number
+  ): string {
+
     return valor.toLocaleString(
       'pt-BR',
       {
-        style: 'currency',
-        currency: 'BRL'
+        style:
+          'currency',
+
+        currency:
+          'BRL'
       }
     );
+
   }
 
-  formatarData(data: string): string {
+  formatarData(
+    data:
+      string
+  ): string {
+
     if (
       !data ||
-      data === 'Finalizada'
+      data ===
+        'Finalizada'
     ) {
-      return data || '-';
+
+      return data ||
+        '-';
+
     }
 
-    if (data.includes('/')) {
+    if (
+      data.includes('/')
+    ) {
+
       return data;
+
     }
 
-    const [ano, mes, dia] =
+    const [
+      ano,
+      mes,
+      dia
+    ] =
       data.split('-');
 
     return `${dia}/${mes}/${ano}`;
-  }
 
-  mudarPagina(page: number): void {
-    this.currentPage = page;
   }
 
   private converterData(
-    data: string
+    data:
+      string
   ): Date {
-    if (data.includes('/')) {
-      const [dia, mes, ano] =
-        data.split('/').map(Number);
+
+    if (
+      data.includes('/')
+    ) {
+
+      const [
+        dia,
+        mes,
+        ano
+      ] =
+        data
+          .split('/')
+          .map(
+            Number
+          );
 
       return new Date(
         ano,
         mes - 1,
         dia
       );
+
     }
 
-    const [ano, mes, dia] =
-      data.split('-').map(Number);
+    const [
+      ano,
+      mes,
+      dia
+    ] =
+      data
+        .split('-')
+        .map(
+          Number
+        );
 
     return new Date(
       ano,
       mes - 1,
       dia
     );
+
   }
+
 }

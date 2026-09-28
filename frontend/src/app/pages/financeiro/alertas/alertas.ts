@@ -20,6 +20,7 @@ import { ConfirmDialog } from '../../../shared/components/feedback/confirm-dialo
 
 import { Pagination } from '../../../shared/components/tables/pagination/pagination';
 import { Button } from '../../../shared/components/forms/button/button';
+import {PerfilFinanceiroService} from '../../../core/services/perfil-financeiro.service';
 
 @Component({
   selector: 'app-alertas',
@@ -74,14 +75,34 @@ export class Alertas implements OnInit {
     'Todos'
   ];
 
-  constructor(
-    private alertaService: AlertaService,
-    private toast: ToastService
-  ) {}
+constructor(
 
-  ngOnInit(): void {
-    this.carregarAlertas();
-  }
+  private alertaService:
+    AlertaService,
+
+  private perfilService:
+    PerfilFinanceiroService,
+
+  private toast:
+    ToastService
+
+) {}
+
+ngOnInit(): void {
+
+  this.carregarAlertas();
+
+  this.perfilService
+    .perfilAlterado$
+    .subscribe(() => {
+
+      this.currentPage = 1;
+
+      this.carregarAlertas();
+
+    });
+
+}
 
   carregarAlertas(): void {
     this.alertaService.listar().subscribe({

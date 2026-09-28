@@ -12,11 +12,13 @@ import { Button } from '../../forms/button/button';
 
 @Component({
   selector: 'app-finance-item',
+
   imports: [
     MatIconModule,
     Badge,
     Button
   ],
+
   templateUrl: './finance-item.html',
   styleUrl: './finance-item.scss'
 })
@@ -37,11 +39,18 @@ export class FinanceItem {
   @Input()
   type: 'income' | 'expense' = 'income';
 
+  @Input()
+  showActions = true;
+
+  @Input()
+  extraBadge = '';
+
   @Output()
   edit = new EventEmitter<void>();
 
   @Output()
   delete = new EventEmitter<void>();
+
 
   get dataFormatada(): string {
 

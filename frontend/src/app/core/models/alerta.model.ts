@@ -11,7 +11,6 @@ export interface Alerta {
   tipo:
     | 'vencimento'
     | 'orcamento'
-    | 'meta'
     | 'informativo';
 
   prioridade:

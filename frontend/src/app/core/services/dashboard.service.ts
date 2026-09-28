@@ -1,119 +1,388 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
-import { Observable, combineLatest, map } from 'rxjs';
 
-import { ReceitaService } from './receita.service';
-import { DespesaService } from './despesa.service';
-import { ParcelaService } from './parcela.service';
-import { AlertaService } from './alerta.service';
-import { CategoriaService } from './categoria.service';
+import {
+  Observable,
+  combineLatest,
+  map
+} from 'rxjs';
 
-import { DashboardResumo } from '../models/dashboard.model';
+import { API_URL } from '../config/api.config';
+
+import {
+  DashboardResumo
+} from '../models/dashboard.model';
+
+import {
+  ReceitaService
+} from './receita.service';
+
+import {
+  DespesaService
+} from './despesa.service';
+
+import {
+  ParcelaService
+} from './parcela.service';
+
+import {
+  AlertaService
+} from './alerta.service';
+
+import {
+  CategoriaService
+} from './categoria.service';
+
+import {
+  PerfilFinanceiroService
+} from './perfil-financeiro.service';
+
+interface DashboardApi {
+
+  periodo?: {
+    inicio: string;
+    fim: string;
+  } | null;
+
+  saldo: number;
+
+  totalReceitas: number;
+
+  totalDespesas: number;
+
+  despesasNormais?: number;
+
+  valorParcelasPeriodo?: number;
+
+  totalParceladas: number;
+
+  quantidadeParceladas?: number;
+
+  proximoVencimento?: unknown;
+
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
+
   constructor(
-    private receitaService: ReceitaService,
-    private despesaService: DespesaService,
-    private parcelaService: ParcelaService,
-    private alertaService: AlertaService,
-    private categoriaService: CategoriaService
+    private readonly http: HttpClient,
+    private readonly perfis: PerfilFinanceiroService,
+    private readonly receitaService: ReceitaService,
+    private readonly despesaService: DespesaService,
+    private readonly parcelaService: ParcelaService,
+    private readonly alertaService: AlertaService,
+    private readonly categoriaService: CategoriaService
   ) {}
 
-  resumo(): Observable<DashboardResumo> {
+  resumo(
+    inicio?: string,
+    fim?: string,
+    todoPeriodo = false
+  ): Observable<DashboardResumo> {
+
+    const perfilId =
+      this.perfis.obterPerfilAtivoId();
+
+    let params =
+      new HttpParams()
+        .set(
+          'perfilId',
+          perfilId
+        );
+
+    if (
+      todoPeriodo
+    ) {
+
+      params =
+        params.set(
+          'todoPeriodo',
+          'true'
+        );
+
+    }
+
+    if (
+      inicio
+    ) {
+
+      params =
+        params.set(
+          'inicio',
+          inicio
+        );
+
+    }
+
+    if (
+      fim
+    ) {
+
+      params =
+        params.set(
+          'fim',
+          fim
+        );
+
+    }
+
     return combineLatest({
-      receitas: this.receitaService.listar(),
-      despesas: this.despesaService.listar(),
-      parcelas: this.parcelaService.listar(),
-      alertas: this.alertaService.listar(),
-      categorias: this.categoriaService.listar()
+
+      dashboard:
+        this.http.get<DashboardApi>(
+          `${API_URL}/dashboard/resumo`,
+          {
+            params
+          }
+        ),
+
+      receitas:
+        this.receitaService.listar(),
+
+      despesas:
+        this.despesaService.listar(),
+
+      parcelas:
+        this.parcelaService.listar(),
+
+      alertas:
+        this.alertaService.listar(),
+
+      categorias:
+        this.categoriaService.listar()
+
     }).pipe(
+
       map(({
+        dashboard,
         receitas,
         despesas,
         parcelas,
         alertas,
         categorias
       }): DashboardResumo => {
-        const totalReceitas = receitas.reduce(
-          (soma, receita) => soma + receita.valor,
-          0
-        );
 
-        const totalDespesas = despesas.reduce(
-          (soma, despesa) => soma + despesa.valor,
-          0
-        );
+        const ultimasReceitas =
+          receitas
+            .filter(
+              (receita) =>
+                todoPeriodo ||
+                this.estaNoPeriodo(
+                  receita.data,
+                  inicio,
+                  fim
+                )
+            )
+            .sort(
+              (a, b) =>
+                this.converterData(
+                  b.data
+                ).getTime() -
+                this.converterData(
+                  a.data
+                ).getTime()
+            )
+            .slice(
+              0,
+              5
+            );
 
-        const totalParceladas = parcelas
-          .filter((parcela) => parcela.status !== 'finalizada')
-          .reduce((soma, parcela) => {
-            const parcelasRestantes =
-              parcela.totalParcelas - parcela.parcelasPagas;
+        const ultimasDespesas =
+          despesas
+            .filter(
+              (despesa) =>
+                todoPeriodo ||
+                this.estaNoPeriodo(
+                  despesa.data,
+                  inicio,
+                  fim
+                )
+            )
+            .sort(
+              (a, b) =>
+                this.converterData(
+                  b.data
+                ).getTime() -
+                this.converterData(
+                  a.data
+                ).getTime()
+            )
+            .slice(
+              0,
+              5
+            );
 
-            return soma +
-              parcelasRestantes * parcela.valorParcela;
-          }, 0);
+        const parcelasAtivas =
+          parcelas.filter(
+            (parcela) =>
+              parcela.status === 'ativa'
+          );
 
-        const saldo = totalReceitas - totalDespesas;
+        const alertasPendentes =
+          alertas
+            .filter(
+              (alerta) =>
+                !alerta.visualizado &&
+                !alerta.descartado
+            )
+            .slice(
+              0,
+              3
+            );
 
-        const ultimasReceitas = [...receitas]
-          .sort(
-            (a, b) =>
-              this.converterData(b.data).getTime() -
-              this.converterData(a.data).getTime()
-          )
-          .slice(0, 5);
-
-        const ultimasDespesas = [...despesas]
-          .sort(
-            (a, b) =>
-              this.converterData(b.data).getTime() -
-              this.converterData(a.data).getTime()
-          )
-          .slice(0, 5);
-
-        const parcelasAtivas = parcelas.filter(
-          (parcela) => parcela.status === 'ativa'
-        );
-
-        const alertasPendentes = alertas
-          .filter(
-            (alerta) =>
-              !alerta.visualizado &&
-              !alerta.descartado
-          )
-          .slice(0, 3);
-
-        const categoriasAtivas = categorias.filter(
-          (categoria) => categoria.ativa
-        );
+        const categoriasAtivas =
+          categorias.filter(
+            (categoria) =>
+              categoria.ativa
+          );
 
         return {
-          saldo,
-          totalReceitas,
-          totalDespesas,
-          totalParceladas,
+
+          periodo:
+            dashboard.periodo ?? undefined,
+
+          saldo:
+            dashboard.saldo,
+
+          totalReceitas:
+            dashboard.totalReceitas,
+
+          totalDespesas:
+            dashboard.totalDespesas,
+
+          despesasNormais:
+            dashboard.despesasNormais,
+
+          valorParcelasPeriodo:
+            dashboard.valorParcelasPeriodo,
+
+          totalParceladas:
+            dashboard.totalParceladas,
+
+          quantidadeParceladas:
+            dashboard.quantidadeParceladas,
+
           ultimasReceitas,
+
           ultimasDespesas,
+
           parcelasAtivas,
-          alertas: alertasPendentes,
-          categorias: categoriasAtivas
+
+          alertas:
+            alertasPendentes,
+
+          categorias:
+            categoriasAtivas
+
         };
+
       })
+
     );
+
   }
 
-  private converterData(data: string): Date {
-    if (data.includes('/')) {
-      const [dia, mes, ano] = data.split('/').map(Number);
+  private estaNoPeriodo(
+    data: string,
+    inicio?: string,
+    fim?: string
+  ): boolean {
 
-      return new Date(ano, mes - 1, dia);
+    if (
+      !inicio ||
+      !fim
+    ) {
+
+      return true;
+
     }
 
-    const [ano, mes, dia] = data.split('-').map(Number);
+    const dataRegistro =
+      this.converterData(
+        data
+      );
 
-    return new Date(ano, mes - 1, dia);
+    const dataInicio =
+      this.converterData(
+        inicio
+      );
+
+    const dataFim =
+      this.converterData(
+        fim
+      );
+
+    dataInicio.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    dataFim.setHours(
+      23,
+      59,
+      59,
+      999
+    );
+
+    return (
+      dataRegistro >=
+        dataInicio &&
+      dataRegistro <=
+        dataFim
+    );
+
   }
+
+  private converterData(
+    data: string
+  ): Date {
+
+    if (
+      data.includes('/')
+    ) {
+
+      const [
+        dia,
+        mes,
+        ano
+      ] =
+        data
+          .split('/')
+          .map(Number);
+
+      return new Date(
+        ano,
+        mes - 1,
+        dia
+      );
+
+    }
+
+    const [
+      ano,
+      mes,
+      dia
+    ] =
+      data
+        .slice(
+          0,
+          10
+        )
+        .split('-')
+        .map(Number);
+
+    return new Date(
+      ano,
+      mes - 1,
+      dia
+    );
+
+  }
+
 }

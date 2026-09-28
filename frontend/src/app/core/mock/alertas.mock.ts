@@ -29,7 +29,7 @@ export const ALERTAS_MOCK: Alerta[] = [
     titulo:'Meta de economia atingida!',
     descricao:'Parabéns! Você economizou R$ 500 este mês.',
     data:'2024-02-08',
-    tipo:'meta',
+    tipo:'informativo',
     prioridade:'baixa',
     visualizado:true,
     descartado:false

@@ -6,10 +6,15 @@ import { AcessoPerfilService } from '../../common/services/acesso-perfil.service
 import { PrismaService } from '../../prisma/prisma.service';
 import { AtualizarTransacaoDto, CriarTransacaoDto, FiltroTransacoesDto } from './dto/transacao.dto';
 import { adicionarPeriodo, deslocarVencimento } from './recorrencia.utils';
+import { AlertasService } from '../alertas/alertas.service';
 
 @Injectable()
 export class TransacoesService {
-  constructor(private readonly prisma: PrismaService, private readonly acesso: AcessoPerfilService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly acesso: AcessoPerfilService,
+    private readonly alertas: AlertasService,
+  ) {}
 
   async criar(usuarioId: string, dto: CriarTransacaoDto) {
     await this.acesso.verificar(usuarioId, dto.perfilId);
@@ -88,36 +93,72 @@ export class TransacoesService {
     return transacao;
   }
 
-  async atualizar(usuarioId: string, id: string, dto: AtualizarTransacaoDto) {
+  async atualizar(
+    usuarioId: string,
+    id: string,
+    dto: AtualizarTransacaoDto,
+  ) {
     const atual = await this.buscar(usuarioId, id);
-    if (atual.status === StatusTransacao.CANCELADA) throw new BadRequestException('Transação cancelada não pode ser editada');
-    if (dto.categoriaId) await this.validarCategoria(atual.perfilId, dto.categoriaId, atual.tipo);
 
-    const dataCompetencia = dto.dataCompetencia ? this.dataCivil(dto.dataCompetencia) : atual.dataCompetencia;
-    const alterouRecorrencia = dto.recorrente !== undefined
-      || dto.frequenciaRecorrencia !== undefined
-      || dto.recorrenteAte !== undefined
-      || dto.dataCompetencia !== undefined;
-    const recorrencia = alterouRecorrencia
-      ? this.configurarRecorrencia(
-        dto.recorrente ?? atual.recorrente,
-        dto.frequenciaRecorrencia ?? atual.frequenciaRecorrencia ?? undefined,
-        dto.recorrenteAte === undefined
-          ? atual.recorrenteAte
-          : dto.recorrenteAte ? this.dataCivil(dto.recorrenteAte) : null,
-        dataCompetencia,
-      )
-      : null;
+    if (atual.status === StatusTransacao.CANCELADA) {
+      throw new BadRequestException(
+        'Transação cancelada não pode ser editada',
+      );
+    }
 
-    return this.prisma.$transaction(async (tx) => {
-      const transacao = await tx.transacao.update({
+    if (dto.categoriaId) {
+      await this.validarCategoria(
+        atual.perfilId,
+        dto.categoriaId,
+        atual.tipo,
+      );
+    }
+
+    const dataCompetencia =
+      dto.dataCompetencia
+        ? this.dataCivil(dto.dataCompetencia)
+        : atual.dataCompetencia;
+
+    const alterouRecorrencia =
+      dto.recorrente !== undefined ||
+      dto.frequenciaRecorrencia !== undefined ||
+      dto.recorrenteAte !== undefined ||
+      dto.dataCompetencia !== undefined;
+
+    const recorrencia =
+      alterouRecorrencia
+        ? this.configurarRecorrencia(
+            dto.recorrente ?? atual.recorrente,
+            dto.frequenciaRecorrencia ??
+              atual.frequenciaRecorrencia ??
+              undefined,
+            dto.recorrenteAte === undefined
+              ? atual.recorrenteAte
+              : dto.recorrenteAte
+                ? this.dataCivil(dto.recorrenteAte)
+                : null,
+            dataCompetencia,
+          )
+        : null;
+
+    const transacao = await this.prisma.$transaction(async (tx) => {
+      const atualizada = await tx.transacao.update({
         where: { id },
         data: {
           categoriaId: dto.categoriaId,
           descricao: dto.descricao?.trim(),
-          valor: dto.valor === undefined ? undefined : new Prisma.Decimal(dto.valor),
-          dataCompetencia: dto.dataCompetencia ? this.dataCivil(dto.dataCompetencia) : undefined,
-          dataVencimento: dto.dataVencimento ? this.dataCivil(dto.dataVencimento) : undefined,
+          valor:
+            dto.valor === undefined
+              ? undefined
+              : new Prisma.Decimal(dto.valor),
+          dataCompetencia:
+            dto.dataCompetencia
+              ? this.dataCivil(dto.dataCompetencia)
+              : undefined,
+          dataVencimento:
+            dto.dataVencimento
+              ? this.dataCivil(dto.dataVencimento)
+              : undefined,
           observacao: dto.observacao?.trim(),
           recorrente: dto.recorrente,
           frequenciaRecorrencia: recorrencia?.frequencia,
@@ -127,47 +168,144 @@ export class TransacoesService {
         },
         include: { categoria: true },
       });
+
       await tx.logAuditoria.create({
-        data: { usuarioId, perfilId: atual.perfilId, acao: 'ALTERAR', entidade: 'TRANSACAO', entidadeId: id },
+        data: {
+          usuarioId,
+          perfilId: atual.perfilId,
+          acao: 'ALTERAR',
+          entidade: 'TRANSACAO',
+          entidadeId: id,
+        },
       });
-      return transacao;
+
+      return atualizada;
     });
+
+    if (
+      transacao.status === StatusTransacao.PAGA &&
+      transacao.recorrente &&
+      transacao.proximaRecorrencia
+    ) {
+      await this.processarRecorrencias(
+        new Date(),
+        transacao.id,
+      );
+    }
+
+    if (
+      transacao.status === StatusTransacao.PAGA &&
+      transacao.tipo === TipoTransacao.DESPESA
+    ) {
+      await this.alertas.processarOrcamentos(
+        transacao.perfilId,
+      );
+    }
+
+    return this.buscar(
+      usuarioId,
+      transacao.id,
+    );
   }
 
   async pagar(usuarioId: string, id: string) {
     const atual = await this.buscar(usuarioId, id);
-    if (atual.status !== StatusTransacao.PENDENTE) throw new BadRequestException('Somente transações pendentes podem ser pagas');
-    return this.prisma.$transaction(async (tx) => {
-      const transacao = await tx.transacao.update({
+
+    if (atual.status !== StatusTransacao.PENDENTE) {
+      throw new BadRequestException(
+        'Somente transações pendentes podem ser pagas',
+      );
+    }
+
+    const transacao = await this.prisma.$transaction(async (tx) => {
+      const paga = await tx.transacao.update({
         where: { id },
-        data: { status: StatusTransacao.PAGA, dataPagamento: new Date() },
+        data: {
+          status: StatusTransacao.PAGA,
+          dataPagamento: new Date(),
+        },
         include: { categoria: true },
       });
+
       await tx.logAuditoria.create({
-        data: { usuarioId, perfilId: atual.perfilId, acao: 'PAGAR', entidade: 'TRANSACAO', entidadeId: id },
+        data: {
+          usuarioId,
+          perfilId: atual.perfilId,
+          acao: 'PAGAR',
+          entidade: 'TRANSACAO',
+          entidadeId: id,
+        },
       });
-      return transacao;
+
+      return paga;
     });
+
+    if (
+      transacao.recorrente &&
+      transacao.proximaRecorrencia
+    ) {
+      await this.processarRecorrencias(
+        new Date(),
+        transacao.id,
+      );
+    }
+
+    if (
+      transacao.tipo === TipoTransacao.DESPESA
+    ) {
+      await this.alertas.processarOrcamentos(
+        transacao.perfilId,
+      );
+    }
+
+    return this.buscar(
+      usuarioId,
+      transacao.id,
+    );
   }
 
-  async excluir(usuarioId: string, id: string): Promise<void> {
+  async excluir(
+    usuarioId: string,
+    id: string,
+  ): Promise<void> {
     const atual = await this.buscar(usuarioId, id);
+
     await this.prisma.$transaction([
       this.prisma.transacao.update({
         where: { id },
-        data: { status: StatusTransacao.CANCELADA, recorrente: false, proximaRecorrencia: null },
+        data: {
+          status: StatusTransacao.CANCELADA,
+          recorrente: false,
+          proximaRecorrencia: null,
+        },
       }),
       this.prisma.logAuditoria.create({
-        data: { usuarioId, perfilId: atual.perfilId, acao: 'CANCELAR', entidade: 'TRANSACAO', entidadeId: id },
+        data: {
+          usuarioId,
+          perfilId: atual.perfilId,
+          acao: 'CANCELAR',
+          entidade: 'TRANSACAO',
+          entidadeId: id,
+        },
       }),
     ]);
+
+    if (atual.tipo === TipoTransacao.DESPESA) {
+      await this.alertas.processarOrcamentos(
+        atual.perfilId,
+      );
+    }
   }
 
   @Cron('0 2 * * *', { timeZone: 'America/Sao_Paulo' })
-  async processarRecorrencias(ate = new Date()): Promise<{ geradas: number }> {
+  async processarRecorrencias(
+    ate = new Date(),
+    modeloId?: string,
+  ): Promise<{ geradas: number }> {
     const limite = new Date(Date.UTC(ate.getUTCFullYear(), ate.getUTCMonth(), ate.getUTCDate()));
     const modelos = await this.prisma.transacao.findMany({
       where: {
+        id: modeloId,
         recorrente: true,
         proximaRecorrencia: { lte: limite },
         status: { not: StatusTransacao.CANCELADA },
