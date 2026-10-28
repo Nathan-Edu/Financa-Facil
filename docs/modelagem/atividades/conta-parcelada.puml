@@ -1,26 +1,28 @@
 @startuml
-title Pagamento de Parcela
+
+title ACT05 - Registrar Pagamento de Parcela
 
 start
 
-:Usuário acessa contas parceladas;
-:Seleciona conta;
-:Seleciona parcela em aberto;
+:Usuário acessa as contas parceladas;
+:Usuário seleciona uma conta;
+:Usuário seleciona uma parcela em aberto;
 
 repeat
-  :Confirma pagamento;
+  :Usuário confirma o pagamento;
 
-  if (Parcela está pendente?) then (Sim)
-    :Sistema registra pagamento;
-    :Sistema atualiza status da parcela;
-    :Sistema atualiza saldo financeiro;
-    :Sistema exibe confirmação;
+  if (Parcela está pendente ou vencida?) then (Sim)
+    :Sistema registra o pagamento;
+    :Sistema atualiza o status da parcela para paga;
+    :Sistema atualiza os cálculos financeiros;
+    :Sistema exibe mensagem de confirmação;
   else (Não)
-    :Sistema informa que a parcela já foi paga;
+    :Sistema informa que a parcela não pode ser paga novamente;
   endif
 
-repeat while (Parcela está pendente?) is (Não)
+repeat while (Parcela está pendente ou vencida?) is (Não)
 -> Sim;
 
 stop
+
 @enduml
