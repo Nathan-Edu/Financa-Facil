@@ -1,0 +1,33 @@
+<div class="date-input">
+
+  @if(label){
+
+    <label>
+
+      {{ label }}
+
+      @if(required){
+
+        <span>*</span>
+
+      }
+
+    </label>
+
+  }
+
+  <input
+
+    type="date"
+
+    [value]="value"
+
+    [disabled]="disabled"
+
+    [placeholder]="placeholder"
+
+    (input)="valueChange.emit(($any($event.target)).value)">
+
+    
+
+</div>

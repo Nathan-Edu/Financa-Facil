@@ -1,0 +1,21 @@
+<div class="ff-card">
+  @if (title || subtitle) {
+    <div class="ff-card-header">
+      <div>
+        @if (title) {
+          <h2>{{ title }}</h2>
+        }
+
+        @if (subtitle) {
+          <p>{{ subtitle }}</p>
+        }
+      </div>
+
+      <ng-content select="[card-action]"></ng-content>
+    </div>
+  }
+
+  <div class="ff-card-content">
+    <ng-content></ng-content>
+  </div>
+</div>

@@ -1,0 +1,286 @@
+<main class="despesas-page">
+
+  <app-page-header
+    title="Despesas"
+    subtitle="Gerencie todos os seus gastos financeiros">
+
+    <app-button
+      color="danger"
+      icon="add"
+      (click)="abrirNovaDespesa()">
+      Nova Despesa
+    </app-button>
+
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total Gasto"
+      [value]="totalGasto"
+      subtitle="Somatório das despesas"
+      icon="payments"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Mês Atual"
+      [value]="totalMesAtual"
+      subtitle="Despesas do mês corrente"
+      icon="calendar_month"
+      color="warning">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Despesas"
+      [value]="quantidadeDespesas"
+      subtitle="Registros encontrados"
+      icon="trending_down"
+      color="violet">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Suas Despesas"
+    subtitle="Lista de despesas cadastradas no sistema">
+
+    <div class="filters-toolbar">
+
+      <div class="filters-search">
+
+        <app-search-input
+          label="Buscar"
+          placeholder="Buscar despesas..."
+          [(value)]="search"
+          (valueChange)="aoAlterarFiltros()">
+        </app-search-input>
+
+      </div>
+
+      <div class="filters-button">
+
+        <app-button
+          color="outline"
+          icon="filter_list"
+          (click)="showFilters = !showFilters">
+
+          {{ showFilters ? 'Ocultar filtros' : 'Filtros' }}
+
+        </app-button>
+
+      </div>
+
+    </div>
+
+    @if (showFilters) {
+
+      <div
+        class="advanced-filters"
+        [class.personalizado]="filtroPeriodo === 'Personalizado'">
+
+        <app-select
+          label="Categoria"
+          [options]="categorias"
+          [(value)]="categoria"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        <app-select
+          label="Período"
+          [options]="periodoOptions"
+          [(value)]="filtroPeriodo"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        @if (filtroPeriodo === 'Personalizado') {
+
+          <app-date-input
+            label="Data inicial"
+            [(value)]="dataInicialFiltro"
+            (valueChange)="aoAlterarFiltros()">
+          </app-date-input>
+
+          <app-date-input
+            label="Data final"
+            [(value)]="dataFinalFiltro"
+            (valueChange)="aoAlterarFiltros()">
+          </app-date-input>
+
+        }
+
+        <app-button
+          color="outline"
+          icon="restart_alt"
+          (click)="limparFiltros()">
+          Limpar
+        </app-button>
+
+      </div>
+
+    }
+
+    @if (despesasFiltradas.length === 0) {
+
+      <app-empty-state
+        icon="receipt_long"
+        title="Nenhuma despesa encontrada"
+        description="Cadastre uma nova despesa ou ajuste os filtros de busca.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="finance-list">
+
+        @for (
+          despesa of despesasPaginadas;
+          track despesa.id
+        ) {
+
+          <app-finance-item
+            [title]="despesa.descricao"
+            [category]="despesa.categoria"
+            [date]="despesa.data"
+            [value]="despesa.valorFormatado"
+
+            [extraBadge]="
+              despesa.origem === 'parcelada'
+                ? 'Parcelado'
+                : ''
+            "
+
+            [showActions]="
+              despesa.origem !== 'parcelada'
+            "
+
+            [icon]="
+              buscarCategoria(
+                despesa.categoria
+              )?.icone ?? 'payments'
+            "
+
+            [color]="
+              buscarCategoria(
+                despesa.categoria
+              )?.cor ?? '#ef4444'
+            "
+
+            type="expense"
+
+            (edit)="editarDespesa(despesa)"
+            (delete)="solicitarExclusao(despesa)">
+          </app-finance-item>
+
+        }
+
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="mudarPagina($event)">
+      </app-pagination>
+
+    }
+
+  </app-card>
+
+  @if (showModal) {
+
+    <app-modal
+      [title]="tituloModal"
+      [subtitle]="subtituloModal"
+      size="medium"
+      (close)="fecharModal()">
+
+      <div modal-body>
+
+        <div class="form-grid">
+
+          <app-search-input
+            label="Descrição"
+            placeholder="Descrição da despesa"
+            [(value)]="descricao">
+          </app-search-input>
+
+          <app-select
+            label="Categoria"
+            [options]="categoriasFormulario"
+            [(value)]="categoriaFormulario">
+          </app-select>
+
+          <app-currency-input
+            label="Valor"
+            [(value)]="valor">
+          </app-currency-input>
+
+          <app-date-input
+            label="Data"
+            [required]="true"
+            [(value)]="data">
+          </app-date-input>
+
+          <app-checkbox
+            label="Repetir esta despesa automaticamente"
+            [(checked)]="recorrente">
+          </app-checkbox>
+
+          @if (recorrente) {
+
+            <app-select
+              label="Frequência"
+              [options]="frequenciasRecorrencia"
+              [(value)]="frequenciaRecorrencia">
+            </app-select>
+
+            <app-date-input
+              label="Repetir até (opcional)"
+              [(value)]="recorrenteAte">
+            </app-date-input>
+
+          }
+
+          <app-textarea
+            label="Observações"
+            placeholder="Digite uma observação..."
+            [(value)]="observacao">
+          </app-textarea>
+
+        </div>
+
+      </div>
+
+      <div modal-footer>
+
+        <app-button
+          color="outline"
+          (click)="fecharModal()">
+          Cancelar
+        </app-button>
+
+        <app-button
+          color="danger"
+          (click)="salvarDespesa()">
+          Salvar
+        </app-button>
+
+      </div>
+
+    </app-modal>
+
+  }
+
+  @if (showConfirmDialog) {
+
+    <app-confirm-dialog
+      title="Excluir despesa"
+      message="Deseja realmente excluir esta despesa? Esta ação não poderá ser desfeita."
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      (confirm)="confirmarExclusao()"
+      (cancel)="cancelarExclusao()">
+    </app-confirm-dialog>
+
+  }
+
+</main>

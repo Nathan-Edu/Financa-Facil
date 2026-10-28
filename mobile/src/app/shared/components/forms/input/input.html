@@ -1,0 +1,58 @@
+<label class="input-field">
+
+  @if (label) {
+
+    <span class="input-label">
+
+      {{ label }}
+
+      @if (required) {
+        <span class="required">*</span>
+      }
+
+    </span>
+
+  }
+
+  <div
+    class="input-wrapper"
+    [class.has-icon]="icon"
+    [class.has-error]="error"
+    [class.disabled]="disabled">
+
+    @if (icon) {
+
+      <mat-icon class="input-icon">
+        {{ icon }}
+      </mat-icon>
+
+    }
+
+    <input
+      [type]="type"
+      [value]="value"
+      [placeholder]="placeholder"
+      [required]="required"
+      [disabled]="disabled"
+      [readOnly]="readonly"
+      [attr.autocomplete]="autocomplete"
+      [attr.inputmode]="inputMode || null"
+      (input)="atualizarValor($event)">
+
+  </div>
+
+  @if (error) {
+
+    <span class="input-message error-message">
+      {{ error }}
+    </span>
+
+  } @else if (hint) {
+
+    <span class="input-message">
+      {{ hint }}
+    </span>
+
+  }
+
+</label>

@@ -1,0 +1,46 @@
+<div
+  class="transaction-item"
+  [class.income]="type === 'income'"
+  [class.expense]="type === 'expense'">
+
+  <div class="transaction-left">
+
+    <div
+      class="transaction-icon"
+      [style.background-color]="color + '20'">
+
+      <mat-icon
+        [style.color]="color">
+        {{ icon }}
+      </mat-icon>
+
+    </div>
+
+    <div class="transaction-info">
+
+      <strong>
+        {{ title }}
+      </strong>
+
+      <div class="transaction-meta">
+
+        <span class="transaction-category">
+          {{ category }}
+        </span>
+
+        <span class="transaction-date">
+          {{ dataFormatada }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <span class="transaction-value">
+    {{ type === 'income' ? '+' : '-' }}
+    {{ value }}
+  </span>
+
+</div>

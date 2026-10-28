@@ -1,0 +1,34 @@
+<app-modal
+  [title]="title"
+  size="small"
+  (close)="cancel.emit()">
+
+  <div modal-body>
+
+    <p class="message">
+      {{ message }}
+    </p>
+
+  </div>
+
+  <div modal-footer>
+
+    <app-button
+      color="outline"
+      (click)="cancel.emit()">
+
+      {{ cancelText }}
+
+    </app-button>
+
+    <app-button
+      [color]="confirmColor"
+      (click)="confirm.emit()">
+
+      {{ confirmText }}
+
+    </app-button>
+
+  </div>
+
+</app-modal>

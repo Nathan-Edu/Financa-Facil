@@ -1,0 +1,146 @@
+<main class="dashboard-page">
+
+  <app-page-header
+    title="Painel de Controle"
+    subtitle="Monitoramento centralizado de receitas e fluxos">
+
+    <app-dashboard-quick-actions>
+    </app-dashboard-quick-actions>
+
+  </app-page-header>
+
+
+  <!-- =====================================================
+       FILTRO DE PERÍODO
+  ====================================================== -->
+
+  <section class="dashboard-filter">
+
+    <div class="dashboard-filter-main">
+
+      <app-select
+        label="Período"
+        [options]="periodos"
+        [value]="periodoSelecionado"
+        (valueChange)="alterarPeriodo($event)">
+      </app-select>
+
+    </div>
+
+
+    @if (
+      periodoSelecionado ===
+      'personalizado'
+    ) {
+
+      <div class="dashboard-custom-period">
+
+        <div class="dashboard-date-field">
+
+          <label>
+            Data inicial
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="dataInicioPersonalizada">
+
+        </div>
+
+
+        <div class="dashboard-date-field">
+
+          <label>
+            Data final
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="dataFimPersonalizada">
+
+        </div>
+
+
+        <button
+          type="button"
+          class="dashboard-filter-button"
+          (click)="aplicarPeriodo()">
+
+          Aplicar
+
+        </button>
+
+      </div>
+
+    }
+
+  </section>
+
+
+  <!-- =====================================================
+       RESUMO
+  ====================================================== -->
+
+  <section class="dashboard-summary-section">
+
+    <app-dashboard-summary
+      [resumo]="resumo">
+    </app-dashboard-summary>
+
+  </section>
+
+
+  <!-- =====================================================
+       CONTEÚDO
+  ====================================================== -->
+
+  <section class="dashboard-main-grid">
+
+    <div class="dashboard-main-column">
+
+      <div class="dashboard-analysis-area">
+
+        <app-dashboard-analysis
+          [resumo]="resumo">
+        </app-dashboard-analysis>
+
+      </div>
+
+
+      <div class="dashboard-transactions-section">
+
+        <app-dashboard-transactions
+          [receitas]="resumo.ultimasReceitas"
+          [despesas]="resumo.ultimasDespesas">
+        </app-dashboard-transactions>
+
+      </div>
+
+
+      <div class="dashboard-categories-section">
+
+        <app-dashboard-categories
+          [categorias]="resumo.categorias">
+        </app-dashboard-categories>
+
+      </div>
+
+    </div>
+
+
+    <aside class="dashboard-sidebar">
+
+      <app-dashboard-payments
+        [parcelas]="resumo.parcelasAtivas">
+      </app-dashboard-payments>
+
+
+      <app-dashboard-alerts
+        [alertas]="resumo.alertas">
+      </app-dashboard-alerts>
+
+    </aside>
+
+  </section>
+
+</main>

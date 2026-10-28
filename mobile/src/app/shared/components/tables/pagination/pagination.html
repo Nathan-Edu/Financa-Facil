@@ -1,0 +1,31 @@
+@if (totalPages > 1) {
+  <nav class="pagination">
+    <app-button
+      color="outline"
+      size="small"
+      icon="chevron_left"
+      appearance="icon"
+      [disabled]="currentPage === 1"
+      (click)="goToPage(currentPage - 1)">
+    </app-button>
+
+    @for (page of pages; track page) {
+      <button
+        type="button"
+        class="page"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    }
+
+    <app-button
+      color="outline"
+      size="small"
+      icon="chevron_right"
+      appearance="icon"
+      [disabled]="currentPage === totalPages"
+      (click)="goToPage(currentPage + 1)">
+    </app-button>
+  </nav>
+}

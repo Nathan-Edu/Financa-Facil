@@ -1,0 +1,36 @@
+.playground {
+  min-height: calc(100vh - 72px);
+  padding: 36px 7%;
+  background: var(--bg);
+  color: var(--text);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin: 20px 0;
+}
+
+@media (max-width: 800px) {
+  .form-grid,
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}

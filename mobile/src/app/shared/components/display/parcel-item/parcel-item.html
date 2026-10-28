@@ -1,0 +1,121 @@
+<div class="parcel-item">
+
+  <div class="parcel-header">
+
+    <div class="title-area">
+
+      <div
+        class="parcel-icon"
+        [style.background-color]="color + '20'">
+
+        <mat-icon [style.color]="color">
+          {{ icon }}
+        </mat-icon>
+
+      </div>
+
+      <div class="parcel-title">
+
+        <div class="title-line">
+
+          <h3>{{ parcela.descricao }}</h3>
+
+          <app-badge [color]="statusColor">
+            {{ statusLabel }}
+          </app-badge>
+
+        </div>
+
+        <span>{{ parcela.categoria }}</span>
+
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <app-button
+        color="outline"
+        size="small"
+        icon="visibility"
+        appearance="icon"
+        aria-label="Ver parcelas"
+        (click)="view.emit(parcela)">
+      </app-button>
+
+      <app-button
+        color="outline"
+        size="small"
+        icon="edit"
+        appearance="icon"
+        aria-label="Editar"
+        (click)="edit.emit(parcela)">
+      </app-button>
+
+      @if (parcela.status !== 'finalizada') {
+
+        <app-button
+          color="success"
+          size="small"
+          icon="payments"
+          appearance="icon"
+          aria-label="Registrar pagamento"
+          (click)="pay.emit(parcela)">
+        </app-button>
+
+      }
+
+      <app-button
+        color="danger"
+        size="small"
+        icon="delete"
+        appearance="icon"
+        aria-label="Excluir"
+        (click)="remove.emit(parcela)">
+      </app-button>
+
+    </div>
+
+  </div>
+
+  <div class="details-grid">
+
+    <div>
+      <span>Valor Total:</span>
+      <strong>
+        {{ parcela.valorTotalFormatado }}
+      </strong>
+    </div>
+
+    <div>
+      <span>Parcelas:</span>
+      <strong>
+        {{ parcela.parcelasPagas }}/{{ parcela.totalParcelas }}
+      </strong>
+    </div>
+
+    <div>
+      <span>Valor Parcela:</span>
+      <strong>
+        {{ parcela.valorParcelaFormatado }}
+      </strong>
+    </div>
+
+    <div>
+      <span>Próximo Venc.:</span>
+      <strong>
+        {{ dataVencimentoFormatada }}
+      </strong>
+    </div>
+
+  </div>
+
+  <app-progress-bar
+    [value]="parcela.percentualPago">
+  </app-progress-bar>
+
+  <p class="progress-label">
+    {{ parcela.percentualPago }}% pago
+  </p>
+
+</div>

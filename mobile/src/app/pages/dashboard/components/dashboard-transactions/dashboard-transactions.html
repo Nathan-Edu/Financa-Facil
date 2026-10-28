@@ -1,0 +1,126 @@
+<section class="transactions-grid">
+
+  <app-card
+    title="Últimas Receitas"
+    subtitle="Entradas financeiras recentes">
+
+    <app-button
+      card-action
+      color="outline"
+      size="small"
+      (click)="abrirReceitas()">
+
+      Ver Todas
+
+    </app-button>
+
+
+    @if (receitas.length === 0) {
+
+      <app-empty-state
+        icon="trending_up"
+        title="Nenhuma receita"
+        description="Ainda não existem receitas cadastradas.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="transaction-list">
+
+        @for (
+          receita of receitas;
+          track receita.id
+        ) {
+
+          <app-transaction-item
+            [title]="receita.descricao"
+            [category]="receita.categoria"
+            [date]="receita.data"
+            [value]="receita.valorFormatado"
+
+            [icon]="
+              buscarCategoria(
+                receita.categoria
+              )?.icone ?? 'payments'
+            "
+
+            [color]="
+              buscarCategoria(
+                receita.categoria
+              )?.cor ?? '#22c55e'
+            "
+
+            type="income">
+          </app-transaction-item>
+
+        }
+
+      </div>
+
+    }
+
+  </app-card>
+
+
+  <app-card
+    title="Últimas Despesas"
+    subtitle="Saídas financeiras recentes">
+
+    <app-button
+      card-action
+      color="outline"
+      size="small"
+      (click)="abrirDespesas()">
+
+      Ver Todas
+
+    </app-button>
+
+
+    @if (despesas.length === 0) {
+
+      <app-empty-state
+        icon="trending_down"
+        title="Nenhuma despesa"
+        description="Ainda não existem despesas cadastradas.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="transaction-list">
+
+        @for (
+          despesa of despesas;
+          track despesa.id
+        ) {
+
+          <app-transaction-item
+            [title]="despesa.descricao"
+            [category]="despesa.categoria"
+            [date]="despesa.data"
+            [value]="despesa.valorFormatado"
+
+            [icon]="
+              buscarCategoria(
+                despesa.categoria
+              )?.icone ?? 'payments'
+            "
+
+            [color]="
+              buscarCategoria(
+                despesa.categoria
+              )?.cor ?? '#ef4444'
+            "
+
+            type="expense">
+          </app-transaction-item>
+
+        }
+
+      </div>
+
+    }
+
+  </app-card>
+
+</section>

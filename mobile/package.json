@@ -1,0 +1,64 @@
+{
+  "name": "financa-facil-mobile",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "mobile:android": "cap sync android",
+    "mobile:ios": "cap sync ios",
+    "mobile:sync": "cap sync",
+    "mobile:open:android": "cap open android",
+    "mobile:open:ios": "cap open ios"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/cdk": "^20.2.14",
+    "@angular/common": "~20.3.34",
+    "@angular/compiler": "~20.3.34",
+    "@angular/core": "~20.3.34",
+    "@angular/forms": "~20.3.34",
+    "@angular/material": "^20.2.14",
+    "@angular/platform-browser": "~20.3.34",
+    "@angular/router": "~20.3.34",
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/ios": "^7.6.9",
+    "@ionic/angular": "^8.8.19",
+    "canvg": "^4.0.3",
+    "chart.js": "^4.5.1",
+    "ionicons": "^8.1.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "ng2-charts": "^9.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "~20.3.40",
+    "@angular/cli": "~20.3.40",
+    "@angular/compiler-cli": "~20.3.34",
+    "@capacitor/cli": "^7.6.9",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.7.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.8.2"
+  }
+}

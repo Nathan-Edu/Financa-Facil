@@ -1,0 +1,158 @@
+.analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.analysis-header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    padding: 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--bg);
+  }
+
+  span {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  strong {
+    color: var(--text);
+    font-size: 18px;
+  }
+
+  .income {
+    color: #22c55e;
+  }
+
+  .expense {
+    color: #ef4444;
+  }
+}
+
+.expense-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color: var(--text-muted);
+  font-size: 13px;
+
+  strong {
+    color: var(--text);
+  }
+}
+
+.chart-placeholder {
+  min-height: 220px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  padding: 30px;
+
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+
+  background: var(--bg);
+  color: var(--text-muted);
+
+  > .material-icons {
+    width: 46px;
+    height: 46px;
+
+    font-size: 46px;
+    color: var(--primary);
+  }
+
+  strong {
+    color: var(--text);
+  }
+
+  p {
+    margin: 6px 0 0;
+    font-size: 13px;
+  }
+}
+
+.chart-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  button {
+    padding: 10px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: transparent;
+    color: var(--text-muted);
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  button.active {
+    color: #ffffff;
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+}
+
+.chart-container {
+  position: relative;
+
+  width: 100%;
+  height: 280px;
+
+  padding: 18px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: var(--bg);
+}
+
+@media (max-width: 650px) {
+  .chart-container {
+    height: 250px;
+    padding: 10px;
+  }
+
+  .chart-tabs {
+    button {
+      width: 100%;
+    }
+  }
+}

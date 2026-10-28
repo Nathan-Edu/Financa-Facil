@@ -1,0 +1,133 @@
+.toast {
+  min-width: 320px;
+  max-width: 420px;
+
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 16px 44px 16px 16px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  color: var(--text);
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .35);
+
+  animation: toastIn .22s ease;
+
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  > mat-icon {
+    flex-shrink: 0;
+  }
+
+  button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    width: 28px;
+    height: 28px;
+
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.success {
+  border-left: 4px solid #22c55e;
+
+  > mat-icon,
+  .progress {
+    color: #22c55e;
+    background: #22c55e;
+  }
+}
+
+.error {
+  border-left: 4px solid #ef4444;
+
+  > mat-icon,
+  .progress {
+    color: #ef4444;
+    background: #ef4444;
+  }
+}
+
+.warning {
+  border-left: 4px solid #f59e0b;
+
+  > mat-icon,
+  .progress {
+    color: #f59e0b;
+    background: #f59e0b;
+  }
+}
+
+.info {
+  border-left: 4px solid #3b82f6;
+
+  > mat-icon,
+  .progress {
+    color: #3b82f6;
+    background: #3b82f6;
+  }
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  height: 3px;
+  width: 100%;
+
+  animation-name: progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}

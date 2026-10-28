@@ -1,0 +1,36 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+.page {
+  min-width: 36px;
+  height: 36px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: transparent;
+  color: var(--text);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: .2s;
+}
+
+.page:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.page.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
