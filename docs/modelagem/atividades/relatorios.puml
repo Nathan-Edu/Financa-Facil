@@ -1,24 +1,33 @@
 @startuml
-title Gerar Relatório Financeiro
+
+title ACT11 - Gerar Relatório Financeiro
 
 start
 
-:Usuário acessa relatórios;
+:Usuário acessa a área de relatórios;
 
 repeat
-  :Seleciona período e tipo de relatório;
+  :Usuário seleciona o período e o perfil financeiro;
 
   if (Filtros válidos?) then (Sim)
-    :Sistema consulta movimentações;
-    :Sistema organiza dados financeiros;
-    :Sistema gera gráficos e resumo;
-    :Sistema exibe relatório;
+    break
   else (Não)
-    :Sistema solicita ajuste dos filtros;
+    :Sistema solicita o ajuste dos filtros;
   endif
 
 repeat while (Filtros válidos?) is (Não)
--> Sim;
+
+:Sistema consulta as movimentações financeiras;
+:Sistema organiza os dados financeiros;
+:Sistema gera gráficos e resumo;
+:Sistema exibe o relatório;
+
+if (Exportar relatório?) then (Sim)
+  :Sistema gera o relatório em formato PDF;
+  :Sistema disponibiliza o arquivo ao usuário;
+else (Não)
+endif
 
 stop
+
 @enduml
