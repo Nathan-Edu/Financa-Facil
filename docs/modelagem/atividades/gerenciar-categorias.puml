@@ -1,18 +1,19 @@
 @startuml
-title Gerenciar Categorias
+
+title ACT06 - Gerenciar Categorias Financeiras
 
 start
 
-:Usuário acessa categorias;
-:Seleciona ação desejada;
+:Usuário acessa a área de categorias;
+:Usuário seleciona a ação desejada;
 
 if (Criar categoria?) then (Sim)
 
   repeat
-    :Informa nome e tipo da categoria;
+    :Usuário informa nome e tipo da categoria;
 
     if (Dados válidos?) then (Sim)
-      :Sistema salva nova categoria;
+      :Sistema registra a nova categoria;
     else (Não)
       :Sistema exibe mensagem de erro;
     endif
@@ -21,14 +22,16 @@ if (Criar categoria?) then (Sim)
   -> Sim;
 
 else (Não)
+
   if (Editar categoria?) then (Sim)
-    :Seleciona categoria existente;
+
+    :Usuário seleciona uma categoria existente;
 
     repeat
-      :Altera informações;
+      :Usuário altera as informações da categoria;
 
       if (Dados válidos?) then (Sim)
-        :Sistema atualiza categoria;
+        :Sistema atualiza a categoria;
       else (Não)
         :Sistema exibe mensagem de erro;
       endif
@@ -37,12 +40,16 @@ else (Não)
     -> Sim;
 
   else (Excluir)
-    :Seleciona categoria;
-    :Sistema remove categoria;
+
+    :Usuário seleciona uma categoria;
+    :Sistema remove a categoria;
+
   endif
+
 endif
 
-:Sistema exibe confirmação;
+:Sistema exibe mensagem de confirmação;
 
 stop
+
 @enduml
