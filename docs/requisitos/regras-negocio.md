@@ -2,22 +2,19 @@
 
 | Código | Regra de Negócio |
 |---|---|
-| RN01 | Cada usuário deverá possuir um cadastro único no sistema. |
-| RN02 | O e-mail informado deverá ser único para autenticação no sistema. |
-| RN03 | Um usuário poderá cadastrar e gerenciar diferentes perfis financeiros, podendo incluir perfis pessoais e empresariais. |
-| RN04 | Receitas e despesas deverão estar associadas a uma categoria. |
-| RN05 | O saldo financeiro será calculado com base nas receitas cadastradas menos as despesas registradas. |
-| RN06 | Contas parceladas deverão gerar parcelas conforme a quantidade informada pelo usuário. |
-| RN07 | Uma parcela somente poderá ser marcada como paga se estiver pendente. |
-| RN08 | O pagamento de uma parcela deverá atualizar o saldo financeiro correspondente. |
-| RN09 | O sistema deverá gerar alertas para parcelas próximas ao vencimento. |
-| RN10 | Relatórios financeiros deverão ser gerados com base no período informado pelo usuário. |
-| RN11 | Apenas administradores poderão gerenciar usuários cadastrados. |
-| RN12 | O CPF informado em perfis pessoais e o CNPJ em perfis empresariais deverão ser validados. |
-| RN13 | Caso o CPF ou CNPJ seja inválido, o sistema deverá impedir o cadastro e exibir mensagem de erro. |
-| RN14 | O sistema deverá bloquear o acesso caso a senha informada esteja incorreta. |
-| RN15 | O usuário poderá atualizar sua renda sempre que houver alteração, como recebimento de décimo terceiro ou reajuste salarial. |
-| RN16 | A senha somente poderá ser alterada mediante confirmação da senha atual. |
-| RN17 | Após 5 tentativas de login incorretas, a conta deverá ser bloqueada temporariamente. |
-| RN18 | Parcelas não pagas após a data de vencimento deverão ter seu status alterado automaticamente para "vencida". |
-| RN19 | O sistema deverá emitir alertas de vencimento com antecedência de 7 dias antes da data de vencimento da parcela. |
+| RN01 | Cada usuário deve possuir um cadastro único no sistema. |
+| RN02 | Um endereço de e-mail pode estar associado a apenas um usuário. |
+| RN03 | Um usuário pode possuir múltiplos perfis financeiros, pessoais ou empresariais. |
+| RN04 | Toda receita ou despesa deve estar associada a uma categoria financeira. |
+| RN05 | O saldo financeiro de um perfil corresponde ao total de receitas menos o total de despesas consideradas no período. |
+| RN06 | A quantidade de parcelas geradas para uma conta parcelada deve corresponder à quantidade de parcelas informada no cadastro. |
+| RN07 | Apenas parcelas com situação pendente ou vencida podem ser registradas como pagas. |
+| RN08 | O registro do pagamento de uma parcela deve alterar sua situação para paga e refletir seu valor nos cálculos financeiros correspondentes. |
+| RN09 | Os relatórios financeiros devem considerar somente as movimentações pertencentes ao perfil financeiro e ao período selecionados. |
+| RN10 | O gerenciamento de usuários é restrito a usuários com permissão administrativa. |
+| RN11 | Perfis pessoais devem possuir CPF válido e perfis empresariais devem possuir CNPJ válido. |
+| RN12 | A alteração de senha exige a confirmação da senha atual do usuário autenticado. |
+| RN13 | O limite de segurança para falhas consecutivas de autenticação é de 5 tentativas. |
+| RN14 | Parcelas pendentes cuja data de vencimento tenha sido ultrapassada devem assumir a situação "vencida". |
+| RN15 | O período de antecedência utilizado para alertas de vencimento de parcelas é de 7 dias. |
+| RN16 | As informações financeiras de um perfil devem permanecer associadas exclusivamente ao respectivo perfil financeiro. |
