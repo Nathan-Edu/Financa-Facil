@@ -1,18 +1,20 @@
 @startuml
-title Cadastrar Conta Parcelada
+
+title ACT10 - Cadastrar Conta Parcelada
 
 start
 
-:Usuário acessa contas parceladas;
+:Usuário acessa a área de contas parceladas;
+:Usuário seleciona a opção de cadastrar conta parcelada;
 
 repeat
-  :Informa descrição, valor total, quantidade de parcelas e vencimento;
+  :Usuário informa descrição, valor total,\nquantidade de parcelas e vencimento;
 
   if (Dados válidos?) then (Sim)
-    :Sistema calcula valor das parcelas;
-    :Sistema gera parcelas;
-    :Sistema registra conta parcelada;
-    :Sistema exibe confirmação;
+    :Sistema calcula o valor das parcelas;
+    :Sistema gera as parcelas;
+    :Sistema registra a conta parcelada;
+    :Sistema exibe mensagem de confirmação;
   else (Não)
     :Sistema exibe mensagem de erro;
   endif
@@ -21,4 +23,5 @@ repeat while (Dados válidos?) is (Não)
 -> Sim;
 
 stop
+
 @enduml
