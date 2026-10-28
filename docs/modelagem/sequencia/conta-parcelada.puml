@@ -1,23 +1,27 @@
 @startuml
-title Diagrama de Sequência — Conta Parcelada
+
+title SEQ03 - Cadastrar Conta Parcelada
 
 actor "Usuário" as Usuario
 participant "Interface" as Interface
 participant "Sistema Finança Fácil" as Sistema
 database "Banco de Dados" as Banco
 
-Usuario -> Interface: Informa descrição, valor total, quantidade de parcelas e vencimento
-Interface -> Sistema: Envia informações da conta
-Sistema -> Sistema: Valida dados informados
+Usuario -> Interface: Informa descrição, valor total,\nquantidade de parcelas e vencimento
+Interface -> Sistema: Envia dados da conta parcelada
+Sistema -> Sistema: Valida os dados informados
 
 alt Dados inválidos
-    Sistema --> Interface: Retorna mensagem de erro
-    Interface --> Usuario: Exibe inconsistência nos dados
+    Sistema --> Interface: Retorna erro de validação
+    Interface --> Usuario: Exibe mensagem de erro
+
 else Dados válidos
-    Sistema -> Sistema: Calcula valor de cada parcela
-    Sistema -> Banco: Salva conta parcelada e parcelas geradas
+    Sistema -> Sistema: Calcula o valor das parcelas
+    Sistema -> Sistema: Gera as parcelas
+    Sistema -> Banco: Registra conta parcelada e parcelas
     Banco --> Sistema: Confirma registro
-    Sistema --> Interface: Retorna parcelas geradas
-    Interface --> Usuario: Exibe confirmação e parcelas
+    Sistema --> Interface: Retorna confirmação do cadastro
+    Interface --> Usuario: Exibe conta e parcelas geradas
 end
+
 @enduml
