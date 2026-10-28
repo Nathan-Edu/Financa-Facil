@@ -1,24 +1,29 @@
 @startuml
 
-title ACT02 - Cadastrar Despesa
+title ACT09 - Autenticar Usuário
 
 start
 
-:Usuário acessa o painel financeiro;
-:Usuário seleciona a opção de cadastrar despesa;
+:Usuário acessa a tela de login;
 
 repeat
-  :Usuário informa valor, data, categoria e descrição;
+  :Usuário informa e-mail e senha;
 
-  if (Dados válidos?) then (Sim)
-    :Sistema registra a despesa;
-    :Sistema atualiza o saldo financeiro;
-    :Sistema exibe mensagem de confirmação;
+  if (Campos preenchidos?) then (Sim)
+    :Sistema valida as credenciais;
+
+    if (Credenciais válidas?) then (Sim)
+      :Sistema libera o acesso;
+      :Usuário acessa o painel financeiro;
+    else (Não)
+      :Sistema exibe mensagem de erro;
+    endif
+
   else (Não)
-    :Sistema exibe mensagem de erro;
+    :Sistema solicita o preenchimento dos campos obrigatórios;
   endif
 
-repeat while (Dados válidos?) is (Não)
+repeat while (Credenciais válidas?) is (Não)
 -> Sim;
 
 stop
