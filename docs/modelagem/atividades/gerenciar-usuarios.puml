@@ -1,20 +1,21 @@
 @startuml
-title Gerenciar Usuários
+
+title ACT07 - Gerenciar Usuários
 
 start
 
 :Administrador acessa o sistema;
-:Seleciona gerenciamento de usuários;
-:Sistema lista usuários cadastrados;
-:Administrador seleciona usuário;
+:Administrador seleciona o gerenciamento de usuários;
+:Sistema lista os usuários cadastrados;
+:Administrador seleciona um usuário;
 
 if (Editar usuário?) then (Sim)
 
   repeat
-    :Administrador altera informações;
+    :Administrador altera as informações do usuário;
 
     if (Dados válidos?) then (Sim)
-      :Sistema atualiza cadastro;
+      :Sistema atualiza o cadastro do usuário;
     else (Não)
       :Sistema exibe mensagem de erro;
     endif
@@ -23,13 +24,27 @@ if (Editar usuário?) then (Sim)
   -> Sim;
 
 else (Não)
+
   if (Excluir usuário?) then (Sim)
-    :Administrador confirma exclusão;
+
+    :Administrador confirma a exclusão;
 
     if (Confirmação válida?) then (Sim)
-      :Sistema remove usuário;
+      :Sistema remove o usuário;
     else (Não)
-      :Sistema cancela operação;
+      :Sistema cancela a operação;
     endif
 
   else (Consultar)
+
+    :Administrador consulta as informações do usuário;
+
+  endif
+
+endif
+
+:Sistema exibe mensagem de confirmação;
+
+stop
+
+@enduml
