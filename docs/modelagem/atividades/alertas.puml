@@ -1,21 +1,22 @@
 @startuml
-title Alerta de Parcelas Próximas do Vencimento
+title ACT01 - Alerta de Parcelas Próximas do Vencimento
 
 start
 
 repeat
-  :Sistema verifica contas parceladas;
-  :Sistema identifica parcelas próximas do vencimento;
+  :Sistema verifica as contas parceladas;
+  :Sistema identifica parcelas com vencimento em até 7 dias;
 
-  if (Existem parcelas próximas?) then (Sim)
-    :Sistema gera alerta;
-    :Sistema exibe alerta ao usuário;
+  if (Existem parcelas próximas do vencimento?) then (Sim)
+    :Sistema gera o alerta de vencimento;
+    :Sistema disponibiliza o alerta ao usuário;
   else (Não)
-    :Sistema não gera notificação;
+    :Sistema não gera alerta;
   endif
 
 repeat while (Continuar monitorando?) is (Sim)
 -> Não;
 
 stop
+
 @enduml
