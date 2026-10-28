@@ -1,29 +1,32 @@
 @startuml
-title Cadastro de Usuário
+
+title ACT04 - Cadastrar Usuário
 
 start
 
-:Usuário acessa tela de cadastro;
+:Usuário acessa a tela de cadastro;
 
 repeat
-  :Informa nome, e-mail e senha;
+  :Usuário informa nome, e-mail e senha;
 
-  if (Dados preenchidos corretamente?) then (Sim)
-    :Sistema verifica e-mail;
+  if (Dados válidos?) then (Sim)
+
+    :Sistema verifica se o e-mail já está cadastrado;
 
     if (E-mail já cadastrado?) then (Sim)
-      :Sistema exibe mensagem de e-mail existente;
+      :Sistema exibe mensagem informando que o e-mail já está em uso;
     else (Não)
-      :Sistema registra novo usuário;
-      :Sistema exibe confirmação de cadastro;
+      :Sistema registra o novo usuário;
+      :Sistema exibe mensagem de confirmação do cadastro;
     endif
 
   else (Não)
     :Sistema exibe mensagem de dados inválidos;
   endif
 
-repeat while (Dados preenchidos corretamente?) is (Não)
+repeat while (Dados válidos?) is (Não)
 -> Sim;
 
 stop
+
 @enduml
