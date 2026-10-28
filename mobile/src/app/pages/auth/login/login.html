@@ -1,0 +1,117 @@
+﻿<main class="login-page">
+
+  <app-card class="login-card">
+
+    <div class="login-header">
+
+      <div class="logo">
+
+        <img class="brand-logo" src="assets/logo-financa-facil.png" alt="Finança Fácil" width="80" height="80">
+
+      </div>
+
+      <h1>
+        Finança Fácil
+      </h1>
+
+      <p>
+        Organize suas finanças de forma simples e inteligente.
+      </p>
+
+    </div>
+
+    <div class="welcome">
+
+      <h2>
+        Bem-vindo de volta 👋
+      </h2>
+
+      <span>
+
+        Faça login para continuar utilizando o sistema.
+
+      </span>
+
+    </div>
+
+    <div class="form">
+
+      <app-input
+
+        label="E-mail"
+
+        icon="mail"
+
+        type="email"
+
+        placeholder="Digite seu e-mail"
+
+        [(value)]="email">
+
+      </app-input>
+
+      <app-password-input
+
+        label="Senha"
+
+        placeholder="Digite sua senha"
+
+        [(value)]="senha">
+
+      </app-password-input>
+
+      @if (erro) {
+      <div class="login-error">
+        {{ erro }}
+      </div>
+      }
+
+      <app-checkbox
+
+        label="Lembrar acesso"
+
+        [(checked)]="lembrar">
+
+      </app-checkbox>
+
+      <app-button
+
+        color="primary"
+
+        [disabled]="carregando"
+
+        (click)="entrar()">
+
+          {{ carregando ? 'Entrando...' : 'Entrar' }}
+
+      </app-button>
+
+    </div>
+
+    <app-divider text="ou">
+    </app-divider>
+
+    <div class="footer-links">
+
+      <button
+        type="button"
+        (click)="criarConta()">
+
+        Criar conta
+
+      </button>
+
+      <button
+        type="button"
+        (click)="recuperarSenha()">
+
+        Esqueci minha senha
+
+      </button>
+
+    </div>
+
+  </app-card>
+
+</main>
+

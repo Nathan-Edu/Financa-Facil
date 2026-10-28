@@ -1,0 +1,18 @@
+<div class="progress-wrapper">
+
+  <div
+    class="progress"
+    [style.height.px]="height">
+
+    <div
+      class="fill"
+      [style.width.%]="progress">
+    </div>
+
+  </div>
+
+  @if (showLabel) {
+    <span>{{ progress }}%</span>
+  }
+
+</div>

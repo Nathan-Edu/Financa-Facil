@@ -1,0 +1,70 @@
+.stat-card {
+  padding: 24px;
+  border-radius: 14px;
+  min-height: 126px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+
+  p {
+    margin: 0 0 12px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  span {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    opacity: 0.9;
+  }
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.18);
+
+  mat-icon {
+    font-size: 25px;
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.primary {
+  background: linear-gradient(135deg, var(--primary), #1d4ed8);
+}
+
+.success {
+  background: linear-gradient(135deg, var(--success), #15803d);
+}
+
+.danger {
+  background: linear-gradient(135deg, var(--danger), #991b1b);
+}
+
+.warning {
+  background: linear-gradient(135deg, var(--warning), #b45309);
+}
+
+.violet {
+  background: linear-gradient(135deg, var(--purple), #7e22ce);
+}

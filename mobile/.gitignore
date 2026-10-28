@@ -1,0 +1,13 @@
+﻿node_modules/
+dist/
+.angular/
+referencia/
+android/.gradle/
+android/local.properties
+ios/App/Pods/
+
+node_modules.previous/
+package-lock.previous.json
+
+.build-tools/
+apk/

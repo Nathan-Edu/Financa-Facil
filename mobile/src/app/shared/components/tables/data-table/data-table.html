@@ -1,0 +1,68 @@
+<div class="data-table">
+
+  @if (loading) {
+    <app-loading
+      message="Carregando registros..."
+      size="medium">
+    </app-loading>
+  } @else if (data.length === 0) {
+    <app-empty-state
+      icon="table_rows"
+      title="Nenhum registro encontrado"
+      description="Não existem informações para exibir no momento.">
+    </app-empty-state>
+  } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            @for (column of columns; track column.field) {
+              <th>{{ column.header }}</th>
+            }
+
+            @if (showActions) {
+              <th class="actions-header">Ações</th>
+            }
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (row of data; track row) {
+            <tr>
+              @for (column of columns; track column.field) {
+                <td>{{ row[column.field] }}</td>
+              }
+
+              @if (showActions) {
+                <td class="actions">
+                  <app-button
+                    color="outline"
+                    size="small"
+                    icon="edit"
+                    appearance="icon"
+                    (click)="edit.emit(row)">
+                  </app-button>
+
+                  <app-button
+                    color="danger"
+                    size="small"
+                    icon="delete"
+                    appearance="icon"
+                    (click)="delete.emit(row)">
+                  </app-button>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (pageChange)="pageChange.emit($event)">
+    </app-pagination>
+  }
+
+</div>

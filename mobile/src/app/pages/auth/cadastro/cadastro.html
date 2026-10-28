@@ -1,0 +1,76 @@
+﻿<main class="cadastro-page">
+  <app-card class="cadastro-card">
+
+    <div class="cadastro-header">
+      <img class="brand-logo" src="assets/logo-financa-facil.png" alt="Finança Fácil" width="80" height="80">
+
+      <h1>Criar sua conta</h1>
+
+      <p>
+        Comece a organizar suas finanças de forma simples e inteligente.
+      </p>
+    </div>
+
+    <form
+      class="cadastro-form"
+      (submit)="$event.preventDefault(); cadastrar()">
+
+      <app-input
+        label="Nome completo"
+        icon="person"
+        placeholder="Digite seu nome completo"
+        [(value)]="nome">
+      </app-input>
+
+      <app-input
+        label="E-mail"
+        icon="mail"
+        type="email"
+        placeholder="Digite seu e-mail"
+        [(value)]="email">
+      </app-input>
+
+      <app-password-input
+        label="Senha"
+        placeholder="Crie uma senha"
+        [(value)]="senha">
+      </app-password-input>
+
+      <app-password-input
+        label="Confirmar senha"
+        placeholder="Digite a senha novamente"
+        [(value)]="confirmarSenha">
+      </app-password-input>
+
+      <app-checkbox
+        label="Li e aceito os termos de uso"
+        [(checked)]="aceitouTermos">
+      </app-checkbox>
+
+      @if (erro) {
+        <div class="cadastro-error">{{ erro }}</div>
+      }
+
+      <app-button
+        type="submit"
+        [disabled]="carregando"
+        color="primary">
+        {{ carregando ? 'Criando conta...' : 'Criar conta' }}
+      </app-button>
+    </form>
+
+    <app-divider text="ou"></app-divider>
+
+    <div class="cadastro-footer">
+      <span>Já possui uma conta?</span>
+
+      <button
+        type="button"
+        (click)="voltarLogin()">
+        Entrar
+      </button>
+    </div>
+
+  </app-card>
+</main>
+

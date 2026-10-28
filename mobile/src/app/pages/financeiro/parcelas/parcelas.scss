@@ -1,0 +1,289 @@
+.parceladas-page {
+  min-height: calc(100vh - 72px);
+
+  padding: 36px 7%;
+
+  background: var(--bg);
+  color: var(--text);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 22px;
+}
+
+/* =====================================================
+   BUSCA + BOTÃO FILTROS
+   ===================================================== */
+
+.filters-toolbar {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    190px;
+
+  align-items: end;
+
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.filters-search {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.filters-search app-search-input {
+  display: block;
+  width: 100%;
+}
+
+.filters-button {
+  width: 190px;
+
+  display: flex;
+  align-items: flex-end;
+}
+
+.filters-button app-button {
+  display: block;
+  width: 100%;
+}
+
+.filters-button app-button ::ng-deep .ff-button {
+  width: 100%;
+  min-height: 48px;
+}
+
+/* =====================================================
+   FILTROS AVANÇADOS
+   ===================================================== */
+
+.advanced-filters {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    130px;
+
+  align-items: end;
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+
+  padding: 16px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    12px;
+
+  background:
+    var(--bg);
+}
+
+.advanced-filters app-button {
+  width: 100%;
+}
+
+/* =====================================================
+   LISTA
+   ===================================================== */
+
+.parcel-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+/* =====================================================
+   FORMULÁRIO
+   ===================================================== */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 18px;
+}
+
+.form-grid app-textarea {
+  grid-column:
+    1 / -1;
+}
+
+/* =====================================================
+   HISTÓRICO DAS PARCELAS
+   ===================================================== */
+
+.parcel-history {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.history-item {
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 16px;
+
+  padding:
+    14px 16px;
+
+  background:
+    var(--bg);
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    12px;
+
+  transition:
+    0.2s;
+}
+
+.history-item > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.history-item strong {
+  color:
+    var(--text);
+
+  font-size:
+    14px;
+}
+
+.history-item span {
+  color:
+    var(--text-muted);
+
+  font-size:
+    13px;
+}
+
+.history-item.paid {
+  border-left:
+    4px solid
+    #22c55e;
+}
+
+/* =====================================================
+   TABLET
+   ===================================================== */
+
+@media (
+  max-width: 1100px
+) {
+
+  .summary-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+}
+
+@media (
+  max-width: 900px
+) {
+
+  .advanced-filters {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+}
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (
+  max-width: 700px
+) {
+
+  .parceladas-page {
+    padding:
+      24px 5%;
+  }
+
+  .summary-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .filters-toolbar {
+    grid-template-columns:
+      1fr;
+  }
+
+  .filters-button {
+    width:
+      100%;
+  }
+
+  .filters-button app-button {
+    width:
+      100%;
+  }
+
+  .advanced-filters {
+    grid-template-columns:
+      1fr;
+  }
+
+  .advanced-filters app-button {
+    width:
+      100%;
+  }
+
+  .form-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .history-item {
+    align-items:
+      flex-start;
+  }
+
+}

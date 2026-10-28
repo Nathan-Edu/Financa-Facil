@@ -1,0 +1,22 @@
+<div class="toast" [class]="toast.type">
+
+  <mat-icon>
+    {{ icon(toast.type) }}
+  </mat-icon>
+
+  <span>
+    {{ toast.message }}
+  </span>
+
+  <button
+    type="button"
+    (click)="close.emit(toast.id)">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div
+    class="progress"
+    [style.animation-duration.ms]="toast.duration">
+  </div>
+
+</div>

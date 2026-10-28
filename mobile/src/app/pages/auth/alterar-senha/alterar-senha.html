@@ -1,0 +1,204 @@
+﻿<section class="alterar-senha-page">
+
+  <app-page-header
+    title="Alterar Senha"
+    subtitle="Atualize sua senha de acesso ao Finança Fácil."
+  />
+
+  <div class="password-content">
+
+    <app-card>
+
+      <div class="security-header">
+
+        <div class="security-header-icon">
+          <mat-icon>shield_lock</mat-icon>
+        </div>
+
+        <div>
+          <h2>Segurança da conta</h2>
+
+          <p>
+            Informe sua senha atual e escolha uma nova senha.
+          </p>
+        </div>
+
+      </div>
+
+      <form
+        class="password-form"
+        (ngSubmit)="salvar()"
+      >
+
+        <div class="form-field">
+
+          <label for="senhaAtual">
+            Senha atual
+          </label>
+
+          <div class="password-field">
+
+            <div class="field-icon">
+              <mat-icon>lock</mat-icon>
+            </div>
+
+            <input
+              id="senhaAtual"
+              name="senhaAtual"
+              [type]="mostrarSenhaAtual ? 'text' : 'password'"
+              placeholder="Digite sua senha atual"
+              [(ngModel)]="senhaAtual"
+              autocomplete="current-password"
+            />
+
+            <button
+              class="visibility-button"
+              type="button"
+              aria-label="Exibir ou ocultar senha atual"
+              (click)="mostrarSenhaAtual = !mostrarSenhaAtual"
+            >
+              <mat-icon>
+                {{
+                  mostrarSenhaAtual
+                    ? 'visibility_off'
+                    : 'visibility'
+                }}
+              </mat-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="novaSenha">
+            Nova senha
+          </label>
+
+          <div class="password-field">
+
+            <div class="field-icon new-password-icon">
+              <mat-icon>lock_reset</mat-icon>
+            </div>
+
+            <input
+              id="novaSenha"
+              name="novaSenha"
+              [type]="mostrarNovaSenha ? 'text' : 'password'"
+              placeholder="Digite sua nova senha"
+              [(ngModel)]="novaSenha"
+              autocomplete="new-password"
+            />
+
+            <button
+              class="visibility-button"
+              type="button"
+              aria-label="Exibir ou ocultar nova senha"
+              (click)="mostrarNovaSenha = !mostrarNovaSenha"
+            >
+              <mat-icon>
+                {{
+                  mostrarNovaSenha
+                    ? 'visibility_off'
+                    : 'visibility'
+                }}
+              </mat-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="form-field">
+
+          <label for="confirmarSenha">
+            Confirmar nova senha
+          </label>
+
+          <div class="password-field">
+
+            <div class="field-icon new-password-icon">
+              <mat-icon>lock_reset</mat-icon>
+            </div>
+
+            <input
+              id="confirmarSenha"
+              name="confirmarSenha"
+              [type]="
+                mostrarConfirmacaoSenha
+                  ? 'text'
+                  : 'password'
+              "
+              placeholder="Digite novamente a nova senha"
+              [(ngModel)]="confirmarSenha"
+              autocomplete="new-password"
+            />
+
+            <button
+              class="visibility-button"
+              type="button"
+              aria-label="Exibir ou ocultar confirmação da senha"
+              (click)="
+                mostrarConfirmacaoSenha =
+                  !mostrarConfirmacaoSenha
+              "
+            >
+              <mat-icon>
+                {{
+                  mostrarConfirmacaoSenha
+                    ? 'visibility_off'
+                    : 'visibility'
+                }}
+              </mat-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="password-rules">
+
+          <div class="rules-icon">
+            <mat-icon>security</mat-icon>
+          </div>
+
+          <div class="rules-content">
+
+            <strong>
+              Requisitos da senha
+            </strong>
+
+            <div class="rules-list">
+              <span>Mínimo de 8 caracteres</span>
+              <span>Diferente da senha atual</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+
+          <app-button
+            type="submit"
+            icon="lock_reset"
+            [disabled]="salvando"
+            [loading]="salvando"
+          >
+            {{
+              salvando
+                ? 'Salvando...'
+                : 'Alterar senha'
+            }}
+          </app-button>
+
+        </div>
+
+      </form>
+
+    </app-card>
+
+  </div>
+
+</section>

@@ -1,0 +1,38 @@
+<app-card
+  title="Alertas"
+  subtitle="Notificações que precisam da sua atenção">
+
+  <app-button
+    card-action
+    color="outline"
+    size="small"
+    (click)="abrirAlertas()">
+    Ver Todos
+  </app-button>
+
+  @if (alertas.length === 0) {
+
+    <app-empty-state
+      icon="notifications_none"
+      title="Nenhum alerta pendente"
+      description="Você está com tudo em dia no momento.">
+    </app-empty-state>
+
+  } @else {
+
+    <div class="alert-list">
+
+      @for (alerta of alertas; track alerta.id) {
+
+        <app-alert-item
+          [alerta]="alerta"
+          [compact]="true">
+        </app-alert-item>
+
+      }
+
+    </div>
+
+  }
+
+</app-card>

@@ -1,0 +1,228 @@
+﻿@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/padding.css';
+:root,
+.theme-dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --card: #334155;
+  --nav-bg: #020617;
+
+  --text: #ffffff;
+  --text-muted: #cbd5e1;
+  --border: #475569;
+
+  --primary: #3b82f6;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #9333ea;
+}
+
+.theme-light {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --card: #e2e8f0;
+  --nav-bg: #ffffff;
+
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #cbd5e1;
+
+  --primary: #2563eb;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #9333ea;
+}
+
+.theme-green {
+  --bg: #052e1b;
+  --surface: #064e3b;
+  --card: #065f46;
+  --nav-bg: #022c22;
+
+  --text: #ffffff;
+  --text-muted: #bbf7d0;
+  --border: #10b981;
+
+  --primary: #22c55e;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #84cc16;
+}
+
+.theme-violet {
+    --bg:#231942;
+    --surface:#312E81;
+    --card:#4338CA;
+    --nav-bg:#1E1B4B;
+
+    --text:#FFFFFF;
+    --text-muted:#C4B5FD;
+    --border:#6D28D9;
+
+    --primary:#A855F7;
+    --success:#22C55E;
+    --danger:#EF4444;
+    --warning:#F59E0B;
+    --purple:#C084FC;
+
+}
+
+.theme-black-all {
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --card: #171717;
+  --nav-bg: #000000;
+
+  --text: #ffffff;
+  --text-muted: #a3a3a3;
+  --border: #262626;
+
+  --primary: #3b82f6;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --purple: #9333ea;
+}
+
+.theme-orange {
+  --bg: #1c0f02;
+  --surface: #431e05;
+  --card: #7c2d12;
+  --nav-bg: #140b02;
+
+  --text: #ffffff;
+  --text-muted: #fed7aa;
+  --border: #ea580c;
+
+  --primary: #f97316;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #eab308;
+  --purple: #a855f7;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.mat-mdc-menu-panel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  min-width: 280px !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45) !important;
+  overflow: hidden !important;
+}
+
+.mat-mdc-menu-content {
+  padding: 8px 0 !important;
+  background: var(--surface) !important;
+}
+
+.mat-mdc-menu-item {
+  color: var(--text) !important;
+  min-height: 46px !important;
+}
+
+.mat-mdc-menu-item .mat-icon {
+  color: var(--text) !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.cdk-overlay-pane {
+  background: transparent !important;
+}
+
+.current-value{
+
+    background:#334155;
+    color:white;
+    padding:3px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+
+}
+
+.theme-dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    margin-right:12px;
+}
+
+.dark{
+    background:#0F172A;
+}
+
+.light{
+    background:#E2E8F0;
+}
+
+.green{
+    background:#16A34A;
+}
+
+.violet{
+    background:#A855F7;
+}
+
+.black-all{
+  background: #000000;
+}
+
+.orange {
+  background: #f97316;
+}
+
+/* Ajustes de toque, teclado e áreas seguras compartilhados por todas as telas. */
+html, body { width:100%; height:100%; }
+body { font-family:Inter, Arial, sans-serif; }
+ion-app { background:var(--bg); color:var(--text); }
+input, select, textarea { font-size:16px; }
+button, a, input, select, textarea { touch-action:manipulation; }
+:focus-visible { outline:2px solid var(--primary); outline-offset:3px; }
+@media (max-width:600px) {
+ [class$='-page'] { padding:20px 16px !important; min-width:0; }
+ .page-header, .header-actions, .filters, .filter-row { flex-wrap:wrap; gap:12px; }
+ .page-header h1 { font-size:26px; }
+ .modal { width:100% !important; max-width:100% !important; max-height:92dvh; border-radius:20px 20px 0 0; }
+ .overlay { align-items:flex-end; padding-bottom:env(safe-area-inset-bottom); }
+ .modal-header, .modal-body, .modal-footer { padding:16px; }
+ .modal-header h2 { font-size:22px; }
+ .modal-footer { flex-wrap:wrap; }
+ .form-grid { grid-template-columns:minmax(0,1fr) !important; }
+ .table-container, .table-wrapper { overflow-x:auto; max-width:100%; }
+ .login-container, .cadastro-container, .auth-container { padding:20px 16px !important; }
+}
+app-login, app-cadastro, app-recuperar-senha, app-redefinir-senha {
+ display:block; height:100%; overflow-y:auto; padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+}
+@media (max-width:600px) {
+ .login-card .card, .cadastro-card .card { padding:24px 18px !important; }
+}
+app-login, app-cadastro, app-recuperar-senha, app-redefinir-senha { width:100%; min-width:0; }
+.login-card, .cadastro-card, .recovery-card { min-width:0; }
+@media (max-width:600px) {
+ .login-card .ff-card, .cadastro-card .ff-card { padding:24px 18px; }
+ app-input input, app-password-input input, app-currency-input input { font-size:16px !important; }
+}
+.brand-logo { display:block; width:80px; height:80px; object-fit:contain; border-radius:18px; flex-shrink:0; }
+.brand-logo-small { width:32px; height:32px; object-fit:contain; border-radius:8px; vertical-align:middle; margin-right:8px; }

@@ -1,0 +1,19 @@
+<button
+  class="ff-button {{ color }} {{ size }} {{ appearance }}"
+  [type]="type"
+  [disabled]="disabled || loading"
+>
+  @if (loading) {
+    <span class="loader"></span>
+  }
+
+  @if (icon && !loading) {
+    <mat-icon>{{ icon }}</mat-icon>
+  }
+
+  @if (appearance !== 'icon') {
+    <span>
+      <ng-content></ng-content>
+    </span>
+  }
+</button>

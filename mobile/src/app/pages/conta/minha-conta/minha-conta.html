@@ -1,0 +1,96 @@
+<main class="minha-conta-page">
+
+  <app-page-header
+    title="Minha Conta"
+    subtitle="Gerencie os dados da sua conta">
+  </app-page-header>
+
+
+  <app-card>
+
+    <div class="profile-summary">
+
+      <div class="profile-avatar">
+        {{ iniciaisUsuario }}
+      </div>
+
+
+      <div class="profile-info">
+
+        <strong>
+          {{ usuario.nome || 'Usuário' }}
+        </strong>
+
+        <span>
+          {{ usuario.email || 'E-mail não informado' }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </app-card>
+
+
+  <app-card
+    title="Dados da Conta"
+    subtitle="Informações utilizadas no seu acesso ao sistema">
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="nome">
+          Nome completo
+        </label>
+
+        <input
+          id="nome"
+          class="account-input"
+          type="text"
+          autocomplete="name"
+          placeholder="Digite seu nome completo"
+          [(ngModel)]="usuario.nome">
+
+      </div>
+
+
+      <div class="form-field">
+
+        <label for="email">
+          E-mail
+        </label>
+
+        <input
+          id="email"
+          class="account-input"
+          type="email"
+          autocomplete="email"
+          placeholder="Digite seu e-mail"
+          [(ngModel)]="usuario.email">
+
+      </div>
+
+    </div>
+
+  </app-card>
+
+
+  <div class="account-actions">
+
+    <app-button
+      color="primary"
+      icon="save"
+      (click)="salvar()">
+
+      {{
+        salvando
+          ? 'Salvando...'
+          : 'Salvar alterações'
+      }}
+
+    </app-button>
+
+  </div>
+
+</main>

@@ -1,0 +1,266 @@
+:host {
+  display: block;
+}
+
+.minha-conta-page {
+  width: min(100%, 1000px);
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 70px;
+}
+
+.profile-avatar {
+  display: grid;
+
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    var(
+      --primary-color,
+      #3b82f6
+    );
+
+  color: #ffffff;
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.profile-info {
+  display: flex;
+
+  min-width: 0;
+
+  flex: 1;
+  flex-direction: column;
+
+  gap: 2px;
+
+  strong {
+    overflow: hidden;
+
+    color:
+      var(
+        --text-primary,
+        #f8fafc
+      );
+
+    font-size: 0.95rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    overflow: hidden;
+
+    color:
+      var(
+        --text-secondary,
+        #94a3b8
+      );
+
+    font-size: 0.78rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+}
+
+.form-field {
+  display: flex;
+
+  width: 100%;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  label {
+    display: block;
+
+    color:
+      var(
+        --text-primary,
+        #f8fafc
+      );
+
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
+
+.account-input {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+
+  box-sizing: border-box;
+
+  padding: 0 14px;
+
+  border:
+    1px solid
+    var(
+      --border-color,
+      #475569
+    );
+
+  border-radius: 10px;
+
+  outline: none;
+
+  appearance: none;
+
+  background-color:
+    var(
+      --surface-color,
+      #1e293b
+    );
+
+  color:
+    var(
+      --text-primary,
+      #f8fafc
+    );
+
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &::placeholder {
+
+    color:
+      var(
+        --text-secondary,
+        #94a3b8
+      );
+
+    opacity: 1;
+
+  }
+
+  &:hover {
+
+    border-color:
+      var(
+        --primary-color,
+        #3b82f6
+      );
+
+  }
+
+  &:focus {
+
+    border-color:
+      var(
+        --primary-color,
+        #3b82f6
+      );
+
+    box-shadow:
+      0 0 0 3px
+      color-mix(
+        in srgb,
+        var(
+          --primary-color,
+          #3b82f6
+        ) 12%,
+        transparent
+      );
+
+  }
+}
+
+.account-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (
+  max-width: 700px
+) {
+
+  .minha-conta-page {
+
+    padding:
+      24px
+      18px
+      36px;
+
+  }
+
+  .form-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+}
+
+@media (
+  max-width: 600px
+) {
+
+  .minha-conta-page {
+
+    padding:
+      20px
+      14px
+      32px;
+
+    gap: 16px;
+
+  }
+
+  .account-actions {
+
+    justify-content:
+      stretch;
+
+    app-button {
+
+      width: 100%;
+
+    }
+
+  }
+
+}

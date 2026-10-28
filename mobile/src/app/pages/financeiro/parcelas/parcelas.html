@@ -1,0 +1,359 @@
+<main class="parceladas-page">
+
+  <app-page-header
+    title="Contas Parceladas"
+    subtitle="Controle suas compras parceladas">
+
+    <app-button
+      color="primary"
+      icon="add"
+      (click)="abrirNovaParcela()">
+      Nova Conta Parcelada
+    </app-button>
+
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total em Aberto"
+      [value]="totalAberto"
+      subtitle="Contas não finalizadas"
+      icon="credit_card"
+      color="danger">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Contas Ativas"
+      [value]="contasAtivas"
+      subtitle="Parcelas em andamento"
+      icon="schedule"
+      color="warning">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Contas Finalizadas"
+      [value]="contasFinalizadas"
+      subtitle="Parcelamentos concluídos"
+      icon="check_circle"
+      color="success">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Próx. Vencimento"
+      [value]="proximoVencimento"
+      subtitle="Próxima parcela ativa"
+      icon="calendar_month"
+      color="primary">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Suas Contas Parceladas"
+    subtitle="Lista de compras parceladas cadastradas no sistema">
+
+    <div class="filters-toolbar">
+
+      <div class="filters-search">
+
+        <app-search-input
+          label="Buscar"
+          placeholder="Buscar conta parcelada..."
+          [(value)]="search"
+          (valueChange)="aoAlterarFiltros()">
+        </app-search-input>
+
+      </div>
+
+      <div class="filters-button">
+
+        <app-button
+          color="outline"
+          icon="filter_list"
+          (click)="showFilters = !showFilters">
+
+          {{ showFilters ? 'Ocultar filtros' : 'Filtros' }}
+
+        </app-button>
+
+      </div>
+
+    </div>
+
+    @if (showFilters) {
+
+      <div class="advanced-filters">
+
+        <app-select
+          label="Categoria"
+          [options]="categorias"
+          [(value)]="categoria"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        <app-select
+          label="Status"
+          [options]="statusOptions"
+          [(value)]="status"
+          (valueChange)="aoAlterarFiltros()">
+        </app-select>
+
+        <app-button
+          color="outline"
+          icon="restart_alt"
+          (click)="limparFiltros()">
+          Limpar
+        </app-button>
+
+      </div>
+
+    }
+
+    @if (parcelasFiltradas.length === 0) {
+
+      <app-empty-state
+        icon="credit_card_off"
+        title="Nenhuma conta parcelada encontrada"
+        description="Cadastre uma nova conta parcelada ou ajuste os filtros de busca.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="parcel-list">
+
+        @for (
+          parcela of parcelasPaginadas;
+          track parcela.id
+        ) {
+
+          <app-parcel-item
+            [parcela]="parcela"
+
+            [icon]="
+              buscarCategoria(
+                parcela.categoria
+              )?.icone ?? 'credit_card'
+            "
+
+            [color]="
+              buscarCategoria(
+                parcela.categoria
+              )?.cor ?? '#3b82f6'
+            "
+
+            (view)="verParcelas($event)"
+            (edit)="editar($event)"
+            (pay)="solicitarPagamento($event)"
+            (remove)="solicitarExclusao($event)">
+          </app-parcel-item>
+
+        }
+
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="mudarPagina($event)">
+      </app-pagination>
+
+    }
+
+  </app-card>
+
+  @if (showModal) {
+
+    <app-modal
+      [title]="tituloModal"
+      [subtitle]="subtituloModal"
+      size="medium"
+      (close)="fecharModal()">
+
+      <div modal-body>
+
+        <div class="form-grid">
+
+          <app-search-input
+            label="Descrição"
+            placeholder="Ex: Notebook Dell"
+            [(value)]="descricao">
+          </app-search-input>
+
+          <app-select
+            label="Categoria"
+            [options]="categoriasFormulario"
+            [(value)]="categoriaFormulario">
+          </app-select>
+
+          <app-currency-input
+            [disabled]="!!parcelaSelecionada"
+            label="Valor Total"
+            [(value)]="valorTotal">
+          </app-currency-input>
+
+          <app-search-input
+            [disabled]="!!parcelaSelecionada"
+            label="Quantidade de Parcelas"
+            placeholder="Ex: 12"
+            [(value)]="totalParcelasInput">
+          </app-search-input>
+
+          @if (parcelaSelecionada) {
+
+            <app-search-input
+              [disabled]="true"
+              label="Parcelas Pagas"
+              placeholder="Ex: 3"
+              [(value)]="parcelasPagasInput">
+            </app-search-input>
+
+          }
+
+          <app-date-input
+            [disabled]="!!parcelaSelecionada"
+            label="Próximo Vencimento"
+            [required]="true"
+            [(value)]="dataVencimento">
+          </app-date-input>
+
+          <app-textarea
+            label="Observações"
+            placeholder="Digite uma observação..."
+            [(value)]="observacao">
+          </app-textarea>
+
+        </div>
+
+      </div>
+
+      <div modal-footer>
+
+        <app-button
+          color="outline"
+          (click)="fecharModal()">
+          Cancelar
+        </app-button>
+
+        <app-button
+          color="primary"
+          (click)="salvar()">
+          Salvar
+        </app-button>
+
+      </div>
+
+    </app-modal>
+
+  }
+
+  @if (
+    showParcelasModal &&
+    parcelaSelecionada
+  ) {
+
+    <app-modal
+      [title]="parcelaSelecionada.descricao"
+      subtitle="Histórico das parcelas"
+      size="medium"
+      (close)="fecharParcelasModal()">
+
+      <div modal-body>
+
+        <div class="parcel-history">
+
+          @for (
+            numero of historicoParcelas;
+            track numero
+          ) {
+
+            <div
+              class="history-item"
+              [class.paid]="
+                parcelaEstaPaga(numero)
+              ">
+
+              <div>
+
+                <strong>
+                  Parcela
+                  {{ numero }}/
+                  {{
+                    parcelaSelecionada
+                      .totalParcelas
+                  }}
+                </strong>
+
+                <span>
+                  {{
+                    parcelaSelecionada
+                      .valorParcelaFormatado
+                  }}
+                </span>
+
+              </div>
+
+              <app-badge
+                [color]="
+                  parcelaEstaPaga(numero)
+                    ? 'success'
+                    : 'warning'
+                ">
+
+                {{
+                  parcelaEstaPaga(numero)
+                    ? 'Paga'
+                    : 'Pendente'
+                }}
+
+              </app-badge>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div modal-footer>
+
+        <app-button
+          color="outline"
+          (click)="fecharParcelasModal()">
+          Fechar
+        </app-button>
+
+      </div>
+
+    </app-modal>
+
+  }
+
+  @if (showConfirmPagamento) {
+
+    <app-confirm-dialog
+      title="Registrar pagamento"
+      message="Deseja registrar o pagamento da próxima parcela?"
+      confirmText="Registrar"
+      cancelText="Cancelar"
+      (confirm)="confirmarPagamento()"
+      (cancel)="cancelarPagamento()">
+    </app-confirm-dialog>
+
+  }
+
+  @if (showConfirmExclusao) {
+
+    <app-confirm-dialog
+      title="Excluir conta parcelada"
+      message="Deseja realmente excluir esta conta parcelada? Esta ação não poderá ser desfeita."
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      (confirm)="confirmarExclusao()"
+      (cancel)="cancelarExclusao()">
+    </app-confirm-dialog>
+
+  }
+
+</main>

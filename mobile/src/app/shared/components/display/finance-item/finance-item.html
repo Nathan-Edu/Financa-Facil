@@ -1,0 +1,95 @@
+<div
+  class="finance-item"
+  [class.income]="type === 'income'"
+  [class.expense]="type === 'expense'">
+
+  <div class="finance-main">
+
+    <div
+      class="finance-icon"
+      [style.background-color]="color + '20'">
+
+      <mat-icon
+        [style.color]="color">
+
+        {{ icon }}
+
+      </mat-icon>
+
+    </div>
+
+    <div class="finance-info">
+
+      <strong class="finance-title">
+        {{ title }}
+      </strong>
+
+      <div class="finance-meta">
+
+        <app-badge
+          [color]="
+            type === 'income'
+              ? 'success'
+              : 'danger'
+          ">
+
+          {{ category }}
+
+        </app-badge>
+
+        @if (extraBadge) {
+
+          <app-badge color="warning">
+            {{ extraBadge }}
+          </app-badge>
+
+        }
+
+        <span class="finance-date">
+          {{ dataFormatada }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="finance-right">
+
+    <strong class="finance-value">
+
+      {{ type === 'income' ? '+' : '-' }}
+      {{ value }}
+
+    </strong>
+
+    @if (showActions) {
+
+      <div class="finance-actions">
+
+        <app-button
+          color="outline"
+          size="small"
+          icon="edit"
+          appearance="icon"
+          aria-label="Editar"
+          (click)="edit.emit()">
+        </app-button>
+
+        <app-button
+          color="danger"
+          size="small"
+          icon="delete"
+          appearance="icon"
+          aria-label="Excluir"
+          (click)="delete.emit()">
+        </app-button>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

@@ -1,0 +1,49 @@
+<div class="form-field">
+
+  @if (label) {
+
+    <label>
+
+      {{ label }}
+
+      @if (required) {
+        <span>*</span>
+      }
+
+    </label>
+
+  }
+
+
+  <select
+    [value]="value"
+    [disabled]="disabled"
+    (change)="onChange($event)">
+
+    @for (
+      item of options;
+      track item.value
+    ) {
+
+      <option
+        [value]="item.value"
+        [selected]="item.value === value">
+
+        {{ item.label }}
+
+      </option>
+
+    }
+
+  </select>
+
+
+  @if (hint) {
+
+    <small>
+      {{ hint }}
+    </small>
+
+  }
+
+</div>

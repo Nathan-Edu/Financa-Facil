@@ -1,0 +1,19 @@
+﻿<ion-menu contentId="mobile-content" type="overlay">
+ <ion-header><ion-toolbar><ion-title><img class="brand-logo-small" src="assets/logo-financa-facil.png" alt=""> Finança Fácil</ion-title></ion-toolbar></ion-header>
+ <ion-content><ion-list lines="none">
+  @for (link of extras; track link.path) {
+   <ion-menu-toggle><ion-item [routerLink]="link.path" routerLinkActive="selected" detail="true"><mat-icon slot="start">{{link.icon}}</mat-icon><ion-label>{{link.label}}</ion-label></ion-item></ion-menu-toggle>
+  }
+ </ion-list></ion-content>
+</ion-menu>
+<div class="ion-page" id="mobile-content">
+ <ion-header><ion-toolbar><ion-title><img class="brand-logo-small" src="assets/logo-financa-facil.png" alt=""> Finança <span>Fácil</span></ion-title><div slot="end"><app-settings-menu /></div></ion-toolbar></ion-header>
+ <ion-content><main><router-outlet /></main></ion-content>
+ <ion-footer><nav aria-label="Navegação principal">
+  @for (link of links; track link.path) {
+   <a [routerLink]="link.path" routerLinkActive="active"><mat-icon>{{link.icon}}</mat-icon><span>{{link.label}}</span></a>
+  }
+  <ion-menu-toggle><button type="button" aria-label="Mais opções"><mat-icon>menu</mat-icon><span>Mais</span></button></ion-menu-toggle>
+ </nav></ion-footer>
+</div>
+
