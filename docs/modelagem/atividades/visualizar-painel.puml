@@ -1,14 +1,16 @@
 @startuml
-title Visualizar Painel Financeiro
+
+title ACT12 - Visualizar Painel Financeiro
 
 start
 
-:Usuário acessa painel financeiro;
-:Sistema consulta receitas registradas;
-:Sistema consulta despesas registradas;
-:Sistema consulta parcelas pagas e pendentes;
-:Sistema calcula saldo atualizado;
-:Sistema exibe saldo ao usuário;
+:Usuário acessa o painel financeiro;
+:Sistema consulta as receitas registradas;
+:Sistema consulta as despesas registradas;
+:Sistema consulta as parcelas pagas e pendentes;
+:Sistema calcula o saldo financeiro;
+:Sistema exibe as informações financeiras ao usuário;
 
 stop
+
 @enduml
