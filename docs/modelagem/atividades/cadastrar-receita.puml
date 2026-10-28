@@ -1,18 +1,18 @@
 @startuml
-title Cadastrar Receita
+title ACT03 - Cadastrar Receita
 
 start
 
-:Usuário acessa painel financeiro;
-:Seleciona cadastrar receita;
+:Usuário acessa o painel financeiro;
+:Usuário seleciona a opção de cadastrar receita;
 
 repeat
-  :Informa valor, data, categoria e descrição;
+  :Usuário informa valor, data, categoria e descrição;
 
   if (Dados válidos?) then (Sim)
-    :Sistema registra receita;
-    :Sistema atualiza saldo;
-    :Sistema exibe confirmação;
+    :Sistema registra a receita;
+    :Sistema atualiza o saldo financeiro;
+    :Sistema exibe mensagem de confirmação;
   else (Não)
     :Sistema exibe mensagem de erro;
   endif
@@ -21,4 +21,5 @@ repeat while (Dados válidos?) is (Não)
 -> Sim;
 
 stop
+
 @enduml
