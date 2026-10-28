@@ -1,24 +1,35 @@
 @startuml
-title Diagrama de Sequência — Geração de Relatórios
+
+title SEQ06 - Gerar Relatório Financeiro
 
 actor "Usuário" as Usuario
 participant "Interface" as Interface
 participant "Sistema Finança Fácil" as Sistema
 database "Banco de Dados" as Banco
 
-Usuario -> Interface: Seleciona período e tipo de relatório
-Interface -> Sistema: Solicita geração de relatório
-Sistema -> Sistema: Valida filtros informados
+Usuario -> Interface: Seleciona período e perfil financeiro
+Interface -> Sistema: Solicita geração do relatório
+Sistema -> Sistema: Valida os filtros informados
 
 alt Filtros inválidos
-    Sistema --> Interface: Retorna erro de filtros
+    Sistema --> Interface: Retorna erro de validação
     Interface --> Usuario: Exibe mensagem de filtros inválidos
+
 else Filtros válidos
-    Sistema -> Banco: Consulta movimentações do período
+    Sistema -> Banco: Consulta movimentações do período\ne do perfil financeiro
     Banco --> Sistema: Retorna dados financeiros
-    Sistema -> Sistema: Organiza e agrupa informações
+    Sistema -> Sistema: Organiza os dados
     Sistema -> Sistema: Gera gráficos e resumo financeiro
-    Sistema --> Interface: Retorna relatório gerado
+    Sistema --> Interface: Retorna relatório
     Interface --> Usuario: Exibe relatório financeiro
+
+    opt Usuário solicita exportação
+        Usuario -> Interface: Solicita exportação em PDF
+        Interface -> Sistema: Solicita arquivo PDF
+        Sistema -> Sistema: Gera relatório em PDF
+        Sistema --> Interface: Retorna arquivo PDF
+        Interface --> Usuario: Disponibiliza arquivo
+    end
 end
+
 @enduml
