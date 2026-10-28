@@ -1,29 +1,34 @@
 @startuml
-title Diagrama de Sequência — Cadastro de Usuário
+
+title SEQ02 - Cadastrar Usuário
 
 actor "Usuário" as Usuario
 participant "Interface" as Interface
 participant "Sistema Finança Fácil" as Sistema
 database "Banco de Dados" as Banco
 
-Usuario -> Interface: Informa nome, e-mail, CPF e senha
+Usuario -> Interface: Informa nome, e-mail e senha
 Interface -> Sistema: Envia dados de cadastro
-Sistema -> Sistema: Valida formato dos dados e CPF
+Sistema -> Sistema: Valida os dados informados
 
 alt Dados inválidos
     Sistema --> Interface: Retorna erro de validação
     Interface --> Usuario: Exibe mensagem de dados inválidos
+
 else Dados válidos
-    Sistema -> Banco: Verifica se e-mail já está cadastrado
-    Banco --> Sistema: Retorna resultado da verificação
+    Sistema -> Banco: Verifica se o e-mail já está cadastrado
+    Banco --> Sistema: Retorna resultado da consulta
+
     alt E-mail já cadastrado
         Sistema --> Interface: Retorna erro de e-mail existente
         Interface --> Usuario: Exibe mensagem de e-mail já cadastrado
+
     else E-mail disponível
-        Sistema -> Banco: Salva novo usuário
+        Sistema -> Banco: Registra o novo usuário
         Banco --> Sistema: Confirma cadastro
-        Sistema --> Interface: Retorna confirmação de cadastro
+        Sistema --> Interface: Retorna confirmação
         Interface --> Usuario: Exibe mensagem de sucesso
     end
 end
+
 @enduml
