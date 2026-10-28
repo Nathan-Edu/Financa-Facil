@@ -1,5 +1,6 @@
 @startuml
-title Diagrama de Sequência — Login
+
+title SEQ04 - Autenticar Usuário
 
 actor "Usuário" as Usuario
 participant "Interface" as Interface
@@ -8,22 +9,28 @@ database "Banco de Dados" as Banco
 
 Usuario -> Interface: Informa e-mail e senha
 Interface -> Sistema: Envia credenciais
-Sistema -> Banco: Verifica usuário e senha
+Sistema -> Banco: Consulta usuário
 Banco --> Sistema: Retorna dados do usuário
+Sistema -> Sistema: Valida as credenciais
 
 alt Credenciais válidas
-    Sistema --> Interface: Libera acesso
+    Sistema --> Interface: Autoriza acesso
     Interface --> Usuario: Exibe painel financeiro
+
 else Credenciais inválidas
-    Sistema -> Banco: Incrementa tentativas de login
-    Banco --> Sistema: Retorna total de tentativas
-    alt 5 ou mais tentativas incorretas
-        Sistema -> Banco: Bloqueia conta temporariamente
-        Sistema --> Interface: Retorna erro de conta bloqueada
-        Interface --> Usuario: Exibe mensagem de conta bloqueada
-    else Menos de 5 tentativas
-        Sistema --> Interface: Retorna erro de credenciais
-        Interface --> Usuario: Exibe mensagem de e-mail ou senha incorretos
+    Sistema -> Banco: Registra tentativa de autenticação
+    Banco --> Sistema: Retorna quantidade de tentativas
+
+    alt Limite de 5 tentativas atingido
+        Sistema -> Banco: Registra bloqueio temporário
+        Banco --> Sistema: Confirma bloqueio
+        Sistema --> Interface: Informa bloqueio temporário
+        Interface --> Usuario: Exibe mensagem de bloqueio
+
+    else Limite não atingido
+        Sistema --> Interface: Retorna erro de autenticação
+        Interface --> Usuario: Exibe mensagem de credenciais inválidas
     end
 end
+
 @enduml
