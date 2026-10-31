@@ -9,31 +9,19 @@ start
 :Sistema lista os usuários cadastrados;
 :Administrador seleciona um usuário;
 
-if (Editar usuário?) then (Sim)
+if (Alterar status?) then (Sim)
 
-  repeat
-    :Administrador altera as informações do usuário;
-
-    if (Dados válidos?) then (Sim)
-      :Sistema atualiza o cadastro do usuário;
-    else (Não)
-      :Sistema exibe mensagem de erro;
-    endif
-
-  repeat while (Dados válidos?) is (Não)
-  -> Sim;
+  :Administrador seleciona o novo status;
+  :Sistema atualiza o status do usuário;
+  :Sistema exibe mensagem de confirmação;
 
 else (Não)
 
-  if (Excluir usuário?) then (Sim)
+  if (Alterar tipo de usuário?) then (Sim)
 
-    :Administrador confirma a exclusão;
-
-    if (Confirmação válida?) then (Sim)
-      :Sistema remove o usuário;
-    else (Não)
-      :Sistema cancela a operação;
-    endif
+    :Administrador seleciona o novo tipo de usuário;
+    :Sistema atualiza o tipo do usuário;
+    :Sistema exibe mensagem de confirmação;
 
   else (Consultar)
 
@@ -42,8 +30,6 @@ else (Não)
   endif
 
 endif
-
-:Sistema exibe mensagem de confirmação;
 
 stop
 
