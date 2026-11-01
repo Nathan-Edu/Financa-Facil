@@ -86,6 +86,7 @@
     );
 
   color: #ffffff;
+
   font-size: 20px;
   font-weight: 900;
   letter-spacing: 0.5px;
@@ -141,8 +142,23 @@
   font-weight: 800;
 }
 
+.login-error {
+  padding: 12px 14px;
+
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 app-divider {
   display: block;
+
   margin: 24px 0;
 }
 
@@ -182,6 +198,7 @@ app-divider {
   button:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 5px;
+
     border-radius: 4px;
   }
 }
@@ -197,6 +214,7 @@ app-divider {
 
   .login-card ::ng-deep .card {
     padding: 28px 22px;
+
     border-radius: 18px;
   }
 
@@ -259,19 +277,4 @@ app-divider {
     justify-content: center;
     gap: 14px;
   }
-
-  .login-error {
-  padding: 12px 14px;
-
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 10px;
-
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
 }
