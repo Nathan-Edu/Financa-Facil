@@ -153,8 +153,7 @@ export class CategoriasService {
 
     }),
 
-
-    // Despesas normais pagas no mês
+   // Despesas normais pertencentes ao mês atual
     this.prisma.transacao.findMany({
 
       where: {
@@ -167,12 +166,9 @@ export class CategoriasService {
         status:
           StatusTransacao.PAGA,
 
-        dataPagamento: {
-
+        dataCompetencia: {
           gte: inicioMes,
-
           lt: inicioProximoMes
-
         }
 
       },
@@ -235,10 +231,7 @@ export class CategoriasService {
 
   ]);
 
-
-  // =====================================================
   // SOMA DESPESAS NORMAIS POR CATEGORIA
-  // =====================================================
 
   const gastosTransacoes =
     new Map<string, number>();
@@ -261,10 +254,7 @@ export class CategoriasService {
 
   }
 
-
-  // =====================================================
   // SOMA PARCELAS POR CATEGORIA
-  // =====================================================
 
   const gastosParcelas =
     new Map<string, number>();
@@ -291,10 +281,7 @@ export class CategoriasService {
 
   }
 
-
-  // =====================================================
   // RESULTADO
-  // =====================================================
 
   return categorias.map(
     (categoria) => {

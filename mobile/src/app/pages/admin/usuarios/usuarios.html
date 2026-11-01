@@ -1,0 +1,209 @@
+<main class="usuarios-page">
+
+  <app-page-header
+    title="Gerenciamento de Usuários"
+    subtitle="Gerencie permissões e status dos usuários cadastrados">
+  </app-page-header>
+
+  <section class="summary-grid">
+
+    <app-stat-card
+      title="Total"
+      [value]="usuarios.length.toString()"
+      subtitle="Usuários cadastrados"
+      icon="group"
+      color="primary">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Administradores"
+      [value]="totalAdministradores"
+      subtitle="Usuários administrativos"
+      icon="admin_panel_settings"
+      color="violet">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Ativos"
+      [value]="totalAtivos"
+      subtitle="Usuários com acesso"
+      icon="check_circle"
+      color="success">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Inativos"
+      [value]="totalInativos"
+      subtitle="Usuários sem acesso"
+      icon="block"
+      color="danger">
+    </app-stat-card>
+
+  </section>
+
+  <app-card
+    title="Usuários cadastrados"
+    subtitle="Lista de usuários disponíveis no sistema">
+
+    <div class="filters-toolbar">
+
+      <app-search-input
+        label="Buscar"
+        placeholder="Buscar por nome ou e-mail..."
+        [(value)]="busca">
+      </app-search-input>
+
+    </div>
+
+    @if (carregando) {
+
+      <div class="loading-message">
+        Carregando usuários...
+      </div>
+
+    } @else if (
+      usuariosFiltrados.length === 0
+    ) {
+
+      <app-empty-state
+        icon="person_search"
+        title="Nenhum usuário encontrado"
+        description="Não existem usuários correspondentes à busca informada.">
+      </app-empty-state>
+
+    } @else {
+
+      <div class="users-list">
+
+        @for (
+          usuario of usuariosFiltrados;
+          track usuario.id
+        ) {
+
+          <article class="user-card">
+
+            <div class="user-header">
+
+              <div class="user-avatar">
+                {{
+                  usuario.nome
+                    .charAt(0)
+                    .toUpperCase()
+                }}
+              </div>
+
+              <div class="user-main-info">
+
+                <div class="user-name-line">
+
+                  <strong>
+                    {{ usuario.nome }}
+                  </strong>
+
+                  @if (
+                    ehUsuarioAtual(usuario)
+                  ) {
+                    <span class="current-user">
+                      Você
+                    </span>
+                  }
+
+                </div>
+
+                <span class="user-email">
+                  {{ usuario.email }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="user-fields">
+
+              <div class="field-group">
+
+                <label>
+                  Tipo
+                </label>
+
+                <select
+                  class="type-select"
+                  [value]="usuario.tipo"
+                  [disabled]="ehUsuarioAtual(usuario)"
+                  (change)="
+                    alterarTipo(
+                      usuario,
+                      $any($event.target).value
+                    )
+                  ">
+
+                  <option value="USUARIO">
+                    Usuário
+                  </option>
+
+                  <option value="ADMINISTRADOR">
+                    Administrador
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div class="field-group">
+
+                <label>
+                  Status
+                </label>
+
+                <span
+                  class="status-badge"
+                  [class.active]="usuario.ativo"
+                  [class.inactive]="!usuario.ativo">
+
+                  <span class="status-dot"></span>
+
+                  {{
+                    usuario.ativo
+                      ? 'Ativo'
+                      : 'Inativo'
+                  }}
+
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="user-actions">
+
+              <app-button
+                [color]="
+                  usuario.ativo
+                    ? 'danger'
+                    : 'success'
+                "
+                size="small"
+                [disabled]="ehUsuarioAtual(usuario)"
+                (click)="alterarStatus(usuario)">
+
+                {{
+                  usuario.ativo
+                    ? 'Desativar'
+                    : 'Ativar'
+                }}
+
+              </app-button>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </app-card>
+
+</main>

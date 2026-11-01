@@ -87,4 +87,23 @@
     <app-settings-menu></app-settings-menu>
   </div>
 
+  @if (administrador) {
+
+  <a
+    class="nav-item"
+    routerLink="/usuarios"
+    routerLinkActive="active">
+
+    <mat-icon>
+      manage_accounts
+    </mat-icon>
+
+    <span>
+      Usuários
+    </span>
+
+  </a>
+
+}
+
 </header>

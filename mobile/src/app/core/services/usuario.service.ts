@@ -8,6 +8,29 @@ import { AuthService } from './auth.service';
 
 interface UsuarioApi { id: string; nome: string; email: string; tipo: 'USUARIO' | 'ADMINISTRADOR'; }
 
+export interface UsuarioAdministracao {
+  id: string;
+  nome: string;
+  email: string;
+  tipo: 'USUARIO' | 'ADMINISTRADOR';
+  ativo: boolean;
+  bloqueadoAte?: string | null;
+  ultimoLoginEm?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface ListaUsuariosApi {
+  data: UsuarioAdministracao[];
+
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
   constructor(private readonly http: HttpClient, private readonly auth: AuthService) {}
@@ -42,4 +65,36 @@ export class UsuarioService {
       avatar: atual?.avatar
     };
   }
+
+  listarUsuarios(): Observable<UsuarioAdministracao[]> {
+  return this.http
+    .get<ListaUsuariosApi>(
+      `${API_URL}/usuarios`
+    )
+    .pipe(
+      map((resposta) => resposta.data)
+    );
+}
+
+alterarStatus(
+  id: string,
+  ativo: boolean
+): Observable<UsuarioAdministracao> {
+
+  return this.http.patch<UsuarioAdministracao>(
+    `${API_URL}/usuarios/${id}/status`,
+    { ativo }
+  );
+}
+
+alterarTipo(
+  id: string,
+  tipo: 'USUARIO' | 'ADMINISTRADOR'
+): Observable<UsuarioAdministracao> {
+
+  return this.http.patch<UsuarioAdministracao>(
+    `${API_URL}/usuarios/${id}/tipo`,
+    { tipo }
+  );
+}
 }

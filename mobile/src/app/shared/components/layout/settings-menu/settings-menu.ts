@@ -55,9 +55,7 @@ import {
   styleUrl: './settings-menu.scss'
 })
 export class SettingsMenu
-  implements
-    OnInit,
-    OnDestroy {
+  implements OnInit, OnDestroy {
 
   usuario:
     Usuario | null =
@@ -73,10 +71,14 @@ export class SettingsMenu
   temaAtual =
     'Dark';
 
+  aparenciaAberta =
+    false;
+
+  perfilAberto =
+    false;
 
   private readonly destroy$ =
     new Subject<void>();
-
 
   constructor(
     private readonly authService:
@@ -89,7 +91,6 @@ export class SettingsMenu
       Router
   ) {}
 
-
   ngOnInit():
     void {
 
@@ -98,7 +99,6 @@ export class SettingsMenu
     this.carregarPerfisFinanceiros();
 
     this.carregarTemaAtual();
-
 
     // Mudança do perfil ativo
     this.perfilFinanceiroService
@@ -116,8 +116,7 @@ export class SettingsMenu
         }
       );
 
-
-    // Criação / edição / exclusão
+    // Atualização dos perfis
     this.perfilFinanceiroService
       .perfisAtualizados$
       .pipe(
@@ -135,7 +134,6 @@ export class SettingsMenu
 
   }
 
-
   ngOnDestroy():
     void {
 
@@ -146,7 +144,6 @@ export class SettingsMenu
       .complete();
 
   }
-
 
   carregarPerfisFinanceiros():
     void {
@@ -176,7 +173,6 @@ export class SettingsMenu
 
   }
 
-
   selecionarPerfil(
     perfil:
       PerfilFinanceiro
@@ -185,6 +181,9 @@ export class SettingsMenu
     if (
       perfil.ativo
     ) {
+
+      this.perfilAberto =
+        false;
 
       return;
 
@@ -209,12 +208,10 @@ export class SettingsMenu
 
           }
 
-
           this.authService
             .alterarPerfilAtivo(
               perfil.tipo
             );
-
 
           if (
             this.usuario
@@ -231,14 +228,8 @@ export class SettingsMenu
 
           }
 
-          /*
-           * Não precisa mais chamar
-           * carregarPerfisFinanceiros()
-           * aqui.
-           *
-           * O evento global do service
-           * já fará isso.
-           */
+          this.perfilAberto =
+            false;
 
         }
 
@@ -246,16 +237,59 @@ export class SettingsMenu
 
   }
 
+  alternarPerfil(
+    event:
+      Event
+  ): void {
+
+    event.stopPropagation();
+
+    this.perfilAberto =
+      !this.perfilAberto;
+
+    if (
+      this.perfilAberto
+    ) {
+
+      this.aparenciaAberta =
+        false;
+
+    }
+
+  }
+
+  alternarAparencia(
+    event:
+      Event
+  ): void {
+
+    event.stopPropagation();
+
+    this.aparenciaAberta =
+      !this.aparenciaAberta;
+
+    if (
+      this.aparenciaAberta
+    ) {
+
+      this.perfilAberto =
+        false;
+
+    }
+
+  }
 
   gerenciarPerfis():
     void {
+
+    this.perfilAberto =
+      false;
 
     this.router.navigate([
       '/perfis-financeiros'
     ]);
 
   }
-
 
   alterarTema(
     tema:
@@ -283,8 +317,10 @@ export class SettingsMenu
       tema
     );
 
-  }
+    this.aparenciaAberta =
+      false;
 
+  }
 
   abrirMinhaConta():
     void {
@@ -295,7 +331,6 @@ export class SettingsMenu
 
   }
 
-
   alterarSenha():
     void {
 
@@ -304,7 +339,6 @@ export class SettingsMenu
     ]);
 
   }
-
 
   sair():
     void {
@@ -318,7 +352,6 @@ export class SettingsMenu
 
   }
 
-
   private carregarUsuario():
     void {
 
@@ -328,7 +361,6 @@ export class SettingsMenu
 
   }
 
-
   private carregarTemaAtual():
     void {
 
@@ -336,7 +368,6 @@ export class SettingsMenu
       localStorage.getItem(
         this.obterChaveTema()
       );
-
 
     if (
       !temaSalvo
@@ -350,13 +381,11 @@ export class SettingsMenu
 
     }
 
-
     this.alterarTema(
       temaSalvo
     );
 
   }
-
 
   private obterChaveTema():
     string {
@@ -364,7 +393,6 @@ export class SettingsMenu
     const usuario =
       this.authService
         .obterUsuario();
-
 
     if (
       !usuario
@@ -374,11 +402,9 @@ export class SettingsMenu
 
     }
 
-
     return `financa_facil_tema_${usuario.id}`;
 
   }
-
 
   get iniciaisUsuario():
     string {
@@ -391,12 +417,10 @@ export class SettingsMenu
 
     }
 
-
     const nomes =
       this.usuario.nome
         .trim()
         .split(' ');
-
 
     if (
       nomes.length ===
@@ -409,20 +433,17 @@ export class SettingsMenu
 
     }
 
-
     return (
       nomes[0]
         .charAt(0) +
       nomes[
-        nomes.length -
-        1
+        nomes.length - 1
       ]
         .charAt(0)
     )
       .toUpperCase();
 
   }
-
 
   get nomePerfilAtual():
     string {
@@ -434,7 +455,6 @@ export class SettingsMenu
     );
 
   }
-
 
   get classePerfil():
     string {

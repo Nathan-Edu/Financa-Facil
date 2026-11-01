@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
 
+import { adminGuard } from './core/guards/admin.guard';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', loadComponent: () => import('./pages/auth/login/login').then((m) => m.Login) },
@@ -23,6 +25,7 @@ export const routes: Routes = [
       { path: 'minha-conta', loadComponent: () => import('./pages/conta/minha-conta/minha-conta').then((m) => m.MinhaConta) },
       { path: 'alterar-senha', loadComponent: () => import('./pages/auth/alterar-senha/alterar-senha').then((m) => m.AlterarSenha) },
       { path: 'perfis-financeiros', loadComponent: () => import('./pages/conta/perfis-financeiros/perfis-financeiros').then((m) => m.PerfisFinanceiros) },
+      { path: 'usuarios', canActivate: [adminGuard],loadComponent: () => import('./pages/admin/usuarios/usuarios').then((m) => m.Usuarios)},
       { path: 'playground', loadComponent: () => import('./pages/dev/playground/playground').then((m) => m.Playground) }
     ]
   },

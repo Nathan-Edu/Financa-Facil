@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
 
+import { adminGuard } from './core/guards/admin.guard';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', loadComponent: () => import('./pages/auth/login/login').then((m) => m.Login) },
@@ -21,9 +23,12 @@ export const routes: Routes = [
       { path: 'categorias', loadComponent: () => import('./pages/financeiro/categorias/categorias').then((m) => m.Categorias) },
       { path: 'relatorios', loadComponent: () => import('./pages/relatorios/relatorios').then((m) => m.Relatorios) },
       { path: 'minha-conta', loadComponent: () => import('./pages/conta/minha-conta/minha-conta').then((m) => m.MinhaConta) },
+      { path: 'usuarios', canActivate: [adminGuard], loadComponent: () => import('./pages/admin/usuarios/usuarios').then((m) => m.Usuarios)},
       { path: 'alterar-senha', loadComponent: () => import('./pages/auth/alterar-senha/alterar-senha').then((m) => m.AlterarSenha) },
       { path: 'perfis-financeiros', loadComponent: () => import('./pages/conta/perfis-financeiros/perfis-financeiros').then((m) => m.PerfisFinanceiros) },
       { path: 'playground', loadComponent: () => import('./pages/dev/playground/playground').then((m) => m.Playground) }
+
+      
     ]
   },
   { path: '**', redirectTo: 'login' }

@@ -15,9 +15,13 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api/v1');
   app.use(helmet());
   app.enableCors({
-    origin: config.get<string>('FRONTEND_URL', 'http://localhost:4200'),
-    credentials: true,
-  });
+  origin: [
+    'http://localhost:4200',
+    'http://localhost:4201'
+  ],
+
+  credentials: true
+});
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   );
