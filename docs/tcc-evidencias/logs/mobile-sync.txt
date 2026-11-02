@@ -1,0 +1,20 @@
+
+> financa-facil-mobile@0.0.0 mobile:sync
+> cap sync
+
+√ Copying web assets from browser to android\app\src\main\assets\public in 146.38ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 4.10ms
+√ copy android in 236.39ms
+√ Updating Android plugins in 24.22ms
+√ update android in 176.42ms
+√ Copying web assets from browser to ios\App\App\public in 157.03ms
+√ Creating capacitor.config.json in ios\App\App in 6.50ms
+√ copy ios in 310.84ms
+√ Updating iOS plugins in 14.97ms
+[warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 80.36ms
+√ update ios in 199.03ms
+√ copy web in 32.46ms
+√ update web in 25.14ms
+[info] Sync finished in 1.356s

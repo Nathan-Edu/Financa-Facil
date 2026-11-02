@@ -1,0 +1,23 @@
+{
+  "node": "v24.18.0",
+  "backend": {
+    "@nestjs/core": "11.1.28",
+    "@prisma/client": "6.19.3",
+    "argon2": "0.43.1",
+    "jest": "29.7.0",
+    "prisma": "6.19.3",
+    "typescript": "5.9.3"
+  },
+  "frontend": {
+    "@angular/core": "20.3.29",
+    "karma": "6.4.4",
+    "typescript": "5.8.3"
+  },
+  "mobile": {
+    "@angular/core": "20.3.34",
+    "@capacitor/core": "7.6.9",
+    "@ionic/angular": "8.8.19",
+    "karma": "6.4.4",
+    "typescript": "5.8.3"
+  }
+}

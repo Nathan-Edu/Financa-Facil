@@ -1,0 +1,200 @@
+[
+  {
+    "arquivo": "docs/capturas/mobile/01-login.png",
+    "largura": 527,
+    "altura": 876,
+    "sha256": "925b138d3c739991b97555bb0ab0ea691c32518348404039bdca9c5003e19d4b"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/02-cadastro-usuario.png",
+    "largura": 511,
+    "altura": 836,
+    "sha256": "6cc63069cff5e1c7d90518bf82ff0239c471e4c9b267b8ef78ee42587e4f9baa"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/03-dashboard.png",
+    "largura": 540,
+    "altura": 882,
+    "sha256": "b2003337d961cf98c80ac0e2c2109695669eb8b0d0e5a14ba0c0ba8cd34b4b08"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/03.1-dashboard.png",
+    "largura": 507,
+    "altura": 882,
+    "sha256": "fe152d145d247e4c0857ab1ea1baaca4d1f5a512b98785c298760909bf3d2110"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/03.2-dashboard.png",
+    "largura": 502,
+    "altura": 882,
+    "sha256": "6ea199b7051a8de66863ea6785fe88db561a0110d36e2ff735434b914e2d988d"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/03.3-dashboard.png",
+    "largura": 502,
+    "altura": 882,
+    "sha256": "d4fc954482a1da3d56eb4ce19c10a0bffe925c0dbf5f22550b8c3e645048e465"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/04-perfis-financeiros.png",
+    "largura": 525,
+    "altura": 882,
+    "sha256": "4e94a18c807eb2fb1d710fb645db289726d6c2443fe9af04be33cbd419b72145"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/04.1-perfis-financeiros.png",
+    "largura": 496,
+    "altura": 881,
+    "sha256": "6873cabcd59baf82b70fec8f997874e492f3811b77c8edebb7fb29b8e3b38e97"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/05-receitas.png",
+    "largura": 517,
+    "altura": 886,
+    "sha256": "a76a72f6a76238e54e2b957aca7a4109ee5b2ee3f6fc8f518117d11f110bf0e7"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/05.1-receitas.png",
+    "largura": 502,
+    "altura": 877,
+    "sha256": "df8fea68b1036a35efdd6e633fd4b39f598d976b7f91945aa9e82295c7e2f415"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/06-despesas.png",
+    "largura": 521,
+    "altura": 881,
+    "sha256": "d9f9c7b6c0586192cd53c1b112a042950abd9dd4feb7f91d1f324b8400bbf795"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/06.1-despesas.png",
+    "largura": 495,
+    "altura": 886,
+    "sha256": "6f43b42e8fd3d0267134166a8587dea4fcae39a1b304294f153cc61d5bb6131b"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/07-categorias.png",
+    "largura": 510,
+    "altura": 880,
+    "sha256": "65323fafb668a2db1e0574af0f458d70e34077407682beafcd2f1b37273753ab"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/07.1-categorias.png",
+    "largura": 495,
+    "altura": 877,
+    "sha256": "ae86cb4b4f560d053ce1541c296092c24bd24f34b45458b7bf2bbf69724ca21b"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/08-contas-parceladas.png",
+    "largura": 515,
+    "altura": 881,
+    "sha256": "8cabc1f5569f1148f572c8d6671c64081575fddf6f40ba60e83786545f0901f9"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/08.1-contas-parceladas.png",
+    "largura": 492,
+    "altura": 880,
+    "sha256": "83da68dbcd9b4129e2db511b52d7ad6bc2d502671c33aa3150b072669d234f01"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/09-alertas.png",
+    "largura": 505,
+    "altura": 876,
+    "sha256": "f981372d2328791d988844765f85ec20b90a779395895000809e31ea03962bd7"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/09.1-alertas.png",
+    "largura": 496,
+    "altura": 872,
+    "sha256": "7d060251d8d3f6334d773dedc6eb3df14f4d022862f8046c25b182ae04df5594"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/10-relatorios.png",
+    "largura": 512,
+    "altura": 885,
+    "sha256": "1ccfe687d2d221e0cde808a3cb2508a33eb85433bbfa211a6c23f03ee1f5293a"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/10.1-relatorios.png",
+    "largura": 497,
+    "altura": 881,
+    "sha256": "83fc531c0f42367c84ca2afdce9b793bccc927c21184a58be26895cf57390a40"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/10.2-relatorios.png",
+    "largura": 577,
+    "altura": 877,
+    "sha256": "a4a6179440548d9a625dd59447f85bd4e8ec83fd5f3aeb34e849ae4d2861d5a6"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/11-gerenciamento-usuarios.png",
+    "largura": 477,
+    "altura": 880,
+    "sha256": "2f5bc15952588efa95d300c882111229956a4b1e683efcd94d5b41d1df7bbc67"
+  },
+  {
+    "arquivo": "docs/capturas/mobile/11.1-gerenciamento-usuarios.png",
+    "largura": 497,
+    "altura": 882,
+    "sha256": "6528fcb8caa07c1562af120ccf6f387352490ed3afed779daac66a0e0f45368d"
+  },
+  {
+    "arquivo": "docs/capturas/web/01-login.png",
+    "largura": 1912,
+    "altura": 907,
+    "sha256": "cb9cdce56e9cc3532e86ded6c8aa373492116399e93842092593002559f97c24"
+  },
+  {
+    "arquivo": "docs/capturas/web/02-cadastro-usuario.png",
+    "largura": 1917,
+    "altura": 902,
+    "sha256": "2cbd1ea8affb89ed9f341352d3cc598ffd14c91104341431d5889b52afbb10d1"
+  },
+  {
+    "arquivo": "docs/capturas/web/03-dashboard.png",
+    "largura": 1917,
+    "altura": 1077,
+    "sha256": "f878210dba834676c9f3bf04352cc8a4baff0fb405ead71fedb83b59ead9afc3"
+  },
+  {
+    "arquivo": "docs/capturas/web/04-perfis-financeiros.png",
+    "largura": 1895,
+    "altura": 901,
+    "sha256": "d6ba5c0123c85675a7f34ab2583fd1e8335e96ab7ea78c688c3ff723af9017b3"
+  },
+  {
+    "arquivo": "docs/capturas/web/05-receitas.png",
+    "largura": 1917,
+    "altura": 1077,
+    "sha256": "2d27ba020d8cc813ea906c9cc0ca82f5f45edf3be616c594b7f40bf4ece5ae42"
+  },
+  {
+    "arquivo": "docs/capturas/web/06-despesas.png",
+    "largura": 1917,
+    "altura": 1077,
+    "sha256": "5504a237bec540d3c8480fc7384c02d0c2e2c4f7f75c88c787a6b7751ca0cb29"
+  },
+  {
+    "arquivo": "docs/capturas/web/07-categorias.png",
+    "largura": 1892,
+    "altura": 911,
+    "sha256": "5a4f0c9b47a7d0a8a667319ac00530fd3732791be53fee81dc5a71ed2dcf3338"
+  },
+  {
+    "arquivo": "docs/capturas/web/08-contas-parceladas.png",
+    "largura": 1896,
+    "altura": 907,
+    "sha256": "bb0d6d46c183c23d8007d6625130544e80003493a3e836e31288e35537cfe6e5"
+  },
+  {
+    "arquivo": "docs/capturas/web/10-relatorios.png",
+    "largura": 1917,
+    "altura": 1077,
+    "sha256": "9b17c05768ae23b8f68274e4849a2a15aad65ba04b1f372a87733fddace35bee"
+  },
+  {
+    "arquivo": "docs/capturas/web/11-gerenciamento-usuarios.png",
+    "largura": 1896,
+    "altura": 900,
+    "sha256": "965a37ffeefa46477d946b563e3f10d973bd5da162cc1140ec9e53217001e26c"
+  }
+]

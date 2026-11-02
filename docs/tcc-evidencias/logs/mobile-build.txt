@@ -1,0 +1,68 @@
+
+> financa-facil-mobile@0.0.0 build
+> ng build
+
+> Building...
+√ Building...
+Initial chunk files   | Names                |  Raw size | Estimated transfer size
+chunk-37NVAPTG.js     | -                    | 226.22 kB |                64.21 kB
+chunk-H3DOVMHG.js     | -                    | 220.18 kB |                66.07 kB
+main-B5T75ASS.js      | main                 | 103.18 kB |                26.15 kB
+chunk-5TU26E6M.js     | -                    |  72.83 kB |                18.23 kB
+chunk-PFARRFXV.js     | -                    |  43.45 kB |                12.39 kB
+chunk-RLWH4PYO.js     | -                    |  36.57 kB |                12.70 kB
+chunk-Q7TH7TBP.js     | -                    |  34.80 kB |                 7.47 kB
+polyfills-5CFQRCPP.js | polyfills            |  34.59 kB |                11.33 kB
+styles-WJBCKOJ2.css   | styles               |  20.63 kB |                 4.19 kB
+chunk-DDWAGWK6.js     | -                    |  10.16 kB |                 2.63 kB
+chunk-VBZ2GHNX.js     | -                    |   5.84 kB |                 2.31 kB
+chunk-WH2HIQK6.js     | -                    |   5.58 kB |                 2.06 kB
+chunk-DRDFBWJA.js     | -                    |   2.94 kB |               984 bytes
+chunk-NMDLJX5Q.js     | -                    |   1.41 kB |               624 bytes
+chunk-KZXFGRRF.js     | -                    |   1.20 kB |               516 bytes
+chunk-AUMCWXNN.js     | -                    |   1.04 kB |               490 bytes
+chunk-2NIBOUWM.js     | -                    | 998 bytes |               998 bytes
+chunk-XG47CSHC.js     | -                    | 976 bytes |               976 bytes
+chunk-RDZETSCM.js     | -                    | 932 bytes |               932 bytes
+chunk-LC4F7QW4.js     | -                    | 667 bytes |               667 bytes
+chunk-I547WOKC.js     | -                    | 544 bytes |               544 bytes
+chunk-NMFL75IO.js     | -                    |  99 bytes |                99 bytes
+chunk-7A7MVM3Y.js     | -                    |  95 bytes |                95 bytes
+
+                      | Initial total        | 824.92 kB |               236.67 kB
+
+Lazy chunk files      | Names                |  Raw size | Estimated transfer size
+chunk-SVZDYLAQ.js     | relatorios           | 480.43 kB |               129.49 kB
+chunk-EFC5VSTK.js     | html2canvas          | 202.84 kB |                38.53 kB
+chunk-OKKEQKJY.js     | main-layout          | 196.90 kB |                36.47 kB
+chunk-CNOBSYJD.js     | index-es             | 159.07 kB |                47.01 kB
+chunk-UYBGZJLM.js     | ion-datetime_3-entry |  79.81 kB |                16.01 kB
+chunk-JYUKJCVF.js     | ion-item_8-entry     |  56.97 kB |                 7.63 kB
+chunk-DF57AI2A.js     | -                    |  51.67 kB |                15.91 kB
+chunk-CRDFHLBQ.js     | ion-textarea-entry   |  47.23 kB |                 5.75 kB
+chunk-CZ2MJ3NV.js     | ion-select_3-entry   |  43.59 kB |                 7.42 kB
+chunk-IVUPICJ7.js     | ion-modal-entry      |  43.54 kB |                10.37 kB
+chunk-RXIM26T4.js     | ion-app_8-entry      |  42.76 kB |                 9.43 kB
+chunk-G5GLOFWR.js     | ion-input-entry      |  41.61 kB |                 5.83 kB
+chunk-B4VFWBH6.js     | ion-alert-entry      |  36.32 kB |                 6.55 kB
+chunk-B6ABXBFZ.js     | dashboard            |  33.83 kB |                 7.24 kB
+chunk-2VJUPPOG.js     | ion-range-entry      |  31.04 kB |                 6.06 kB
+...and 138 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [21.062 seconds] - 2026-11-02T00:15:38.192Z
+
+npm.cmd : ▲ [WARNING] bundle initial exceeded maximum budget. Budget 600.00 kB was not met by 224.92 kB with a total
+of 824.92 kB.
+No linha:2 caractere:1
++ npm.cmd run build *> ../docs/tcc-evidencias/logs/mobile-build.txt; "e ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (▲ [WARNING] bun...l of 824.92 kB.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+
+
+▲ [WARNING] src/app/pages/relatorios/relatorios.scss exceeded maximum budget. Budget 10.00 kB was not met by 552 bytes
+with a total of 10.55 kB.
+
+
+Output location: C:\Users\julia\OneDrive\Documentos\Faculdade\moblie do tcc\mobile\dist\frontend

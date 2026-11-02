@@ -47,6 +47,26 @@ describe('AuthService', () => {
     });
     expect(sessionStorage.getItem('financa_facil_refresh_token')).toBe('refresh-novo');
   });
+
+  it('limpa a sessão quando a renovação é recusada', () => {
+    service.login('ana@example.com', 'Senha@123', false).subscribe();
+    http.expectOne(`${API_URL}/auth/login`).flush({
+      accessToken: jwtComExpiracao(Date.now() + 60_000), refreshToken: 'refresh-sintetico',
+      usuario: { id: 'u1', nome: 'Ana', email: 'ana@example.com', tipo: 'USUARIO' }
+    });
+    service.renovar().subscribe((ok) => expect(ok).toBeFalse());
+    http.expectOne(`${API_URL}/auth/refresh`).flush({}, { status: 401, statusText: 'Unauthorized' });
+    expect(service.obterToken()).toBeNull();
+    expect(service.obterRefreshToken()).toBeNull();
+    expect(service.obterUsuario()).toBeNull();
+  });
+
+  it('rejeita tokens expirados ou malformados', () => {
+    sessionStorage.setItem('financa_facil_access_token', jwtComExpiracao(Date.now() - 1000));
+    expect(service.estaAutenticado()).toBeFalse();
+    sessionStorage.setItem('financa_facil_access_token', 'invalido');
+    expect(service.estaAutenticado()).toBeFalse();
+  });
 });
 
 function jwtComExpiracao(expiraEm: number): string {

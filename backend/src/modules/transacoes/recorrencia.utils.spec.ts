@@ -16,4 +16,10 @@ describe('recorrência de transações', () => {
     );
     expect(vencimento?.toISOString()).toBe('2026-02-15T00:00:00.000Z');
   });
+
+  it('trata ano bissexto e recorrência semanal entre anos', () => {
+    expect(adicionarPeriodo(new Date('2024-02-29'), FrequenciaRecorrencia.ANUAL).toISOString().slice(0, 10)).toBe('2025-02-28');
+    expect(adicionarPeriodo(new Date('2026-12-29'), FrequenciaRecorrencia.SEMANAL).toISOString().slice(0, 10)).toBe('2027-01-05');
+    expect(deslocarVencimento(new Date('2026-01-01'), null, new Date('2026-02-01'))).toBeNull();
+  });
 });

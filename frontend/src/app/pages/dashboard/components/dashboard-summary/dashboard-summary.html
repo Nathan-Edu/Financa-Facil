@@ -3,7 +3,7 @@
   <app-stat-card
     title="Saldo Geral"
     [value]="formatarMoeda(resumo.saldo)"
-    subtitle="Receitas menos despesas"
+    subtitle="Receitas pagas menos despesas e parcelas do per&#237;odo"
     icon="account_balance_wallet"
     color="primary">
   </app-stat-card>
@@ -19,7 +19,7 @@
   <app-stat-card
     title="Despesas"
     [value]="formatarMoeda(resumo.totalDespesas)"
-    subtitle="Total de despesas"
+    subtitle="Despesas pagas e parcelas pagas ou em aberto"
     icon="trending_down"
     color="danger">
   </app-stat-card>

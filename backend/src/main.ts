@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { DecimalInterceptor } from './common/interceptors/decimal.interceptor';
+import { origensCors } from './config/cors.config';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -15,13 +16,9 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api/v1');
   app.use(helmet());
   app.enableCors({
-  origin: [
-    'http://localhost:4200',
-    'http://localhost:4201'
-  ],
-
-  credentials: true
-});
+    origin: origensCors(config.get<string>('CORS_ORIGINS')),
+    credentials: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   );

@@ -1,0 +1,13 @@
+backend/src/common/validators/documento.validator.spec.ts
+backend/src/modules/dashboard/dashboard.service.spec.ts
+backend/src/modules/parcelamentos/parcelamento.utils.spec.ts
+backend/src/modules/parcelamentos/parcelas.service.spec.ts
+backend/src/modules/transacoes/recorrencia.utils.spec.ts
+backend/src/modules/usuarios/dto/usuario.dto.spec.ts
+backend/test/api.e2e-spec.ts
+frontend/src/app/core/services/auth.service.spec.ts
+frontend/src/app/core/services/perfil-financeiro.service.spec.ts
+frontend/src/app/core/services/receita.service.spec.ts
+mobile/src/app/core/services/auth.service.spec.ts
+mobile/src/app/core/services/perfil-financeiro.service.spec.ts
+mobile/src/app/core/services/receita.service.spec.ts

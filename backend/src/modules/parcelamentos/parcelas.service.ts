@@ -21,10 +21,20 @@ export class ParcelasService {
     }
 
     return this.prisma.$transaction(async (tx) => {
-      const atualizada = await tx.parcela.update({
-        where: { id },
+      // Serializa pagamentos e cancelamento da mesma conta antes de alterar parcelas.
+      const contaAtiva = await tx.contaParcelada.updateMany({
+        where: { id: parcela.contaParceladaId, status: StatusContaParcelada.ATIVA },
+        data: { status: StatusContaParcelada.ATIVA },
+      });
+      if (contaAtiva.count !== 1) throw new BadRequestException('A conta parcelada não está ativa');
+      const pagamento = await tx.parcela.updateMany({
+        where: { id, status: { in: [StatusParcela.PENDENTE, StatusParcela.VENCIDA] }, contaParcelada: { status: StatusContaParcelada.ATIVA } },
         data: { status: StatusParcela.PAGA, dataPagamento: dataPagamento ? new Date(`${dataPagamento.slice(0, 10)}T12:00:00.000Z`) : new Date() },
       });
+      if (pagamento.count !== 1) {
+        throw new BadRequestException('A parcela já foi paga ou cancelada');
+      }
+      const atualizada = await tx.parcela.findUniqueOrThrow({ where: { id } });
       const restantes = await tx.parcela.count({
         where: { contaParceladaId: parcela.contaParceladaId, status: { in: [StatusParcela.PENDENTE, StatusParcela.VENCIDA] } },
       });

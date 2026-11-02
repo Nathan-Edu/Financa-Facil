@@ -1,0 +1,12 @@
+## revisao/validacao-tecnica-tcc
+?? ../.angular/
+?? ../.build-tools/
+?? ../android/
+?? ../apk/
+?? docs/
+?? ../dist/
+?? ../ios/
+?? ../node_modules.previous/
+?? ../node_modules/
+?? ../package-lock.previous.json
+?? ../referencia/

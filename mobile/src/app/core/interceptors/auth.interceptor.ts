@@ -13,14 +13,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   const token = auth.obterToken();
-  const autenticada = token && req.url.startsWith(API_URL)
+  const daApi = req.url === API_URL || req.url.startsWith(`${API_URL}/`) || req.url.startsWith(`${API_URL}?`);
+  const autenticada = token && daApi
     ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
     : req;
 
   return next(autenticada).pipe(
     catchError((erro: HttpErrorResponse) => {
       const rotaAuth = req.url.includes('/auth/login') || req.url.includes('/auth/cadastro') || req.url.includes('/auth/refresh');
-      if (erro.status !== 401 || rotaAuth || !auth.obterRefreshToken()) return throwError(() => erro);
+      if (!daApi || erro.status !== 401 || rotaAuth || !auth.obterRefreshToken()) return throwError(() => erro);
 
       if (!renovando) {
         renovando = true;

@@ -5,6 +5,7 @@ import request = require('supertest');
 import { AppModule } from '../src/app.module';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 import { DecimalInterceptor } from '../src/common/interceptors/decimal.interceptor';
+import { AcessoPerfilService } from '../src/common/services/acesso-perfil.service';
 import { AlertasService } from '../src/modules/alertas/alertas.service';
 import { TransacoesService } from '../src/modules/transacoes/transacoes.service';
 import { PrismaService } from '../src/prisma/prisma.service';
@@ -22,6 +23,7 @@ describe('Finança Fácil API (e2e)', () => {
   let perfilId = '';
   let categoriaId = '';
   let contaId = '';
+  let parcelaPagaId = '';
 
   const hoje = new Date();
   const dataHoje = hoje.toISOString().slice(0, 10);
@@ -41,9 +43,13 @@ describe('Finança Fácil API (e2e)', () => {
     app.useGlobalInterceptors(new DecimalInterceptor());
     await app.init();
     prisma = app.get(PrismaService);
-  });
+  }, 60_000);
 
   afterAll(async () => {
+    if (!prisma || !app) {
+      if (app) await app.close();
+      return;
+    }
     try {
       const usuarios = await prisma.usuario.findMany({
         where: { email: { in: [email, emailOutro] } }, select: { id: true },
@@ -134,9 +140,10 @@ describe('Finança Fácil API (e2e)', () => {
         quantidadeParcelas: 3, dataCompra: dataHoje, primeiroVencimento: vencimento,
       }).expect(201);
     contaId = conta.body.id;
+    parcelaPagaId = conta.body.parcelas[0].id;
     expect(conta.body.parcelas.map((item: { valor: number }) => item.valor)).toEqual([33.34, 33.33, 33.33]);
 
-    await app.get(AlertasService).processarVencimentos();
+    await app.get(AlertasService).processarAlertas();
     const alertas = await request(app.getHttpServer()).get(`/api/v1/alertas?perfilId=${perfilId}`)
       .set('Authorization', `Bearer ${token}`).expect(200);
     expect(alertas.body.length).toBeGreaterThan(0);
@@ -148,17 +155,38 @@ describe('Finança Fácil API (e2e)', () => {
       .set('Authorization', `Bearer ${token}`).send({ dataPagamento: dataHoje }).expect(200);
   });
 
-  it('calcula dashboard e relatório em regime de caixa', async () => {
-    const dashboard = await request(app.getHttpServer()).get(`/api/v1/dashboard/resumo?perfilId=${perfilId}`)
+  it('recusa pagamento duplicado, acesso cruzado e entradas inválidas', async () => {
+    await request(app.getHttpServer()).patch(`/api/v1/parcelas/${parcelaPagaId}/pagar`)
+      .set('Authorization', `Bearer ${token}`).send({}).expect(400);
+    await request(app.getHttpServer()).patch(`/api/v1/parcelas/${parcelaPagaId}/pagar`)
+      .set('Authorization', `Bearer ${tokenOutro}`).send({}).expect(404);
+    await request(app.getHttpServer()).get(`/api/v1/dashboard/resumo?perfilId=${perfilId}`)
+      .set('Authorization', `Bearer ${tokenOutro}`).expect(404);
+    await request(app.getHttpServer()).get(`/api/v1/relatorios/financeiro?perfilId=${perfilId}&dataInicial=${dataHoje}&dataFinal=${vencimento}`)
+      .set('Authorization', `Bearer ${tokenOutro}`).expect(404);
+    await request(app.getHttpServer()).get(`/api/v1/dashboard/resumo?perfilId=${perfilId}`).expect(401);
+    await request(app.getHttpServer()).post('/api/v1/transacoes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ perfilId, categoriaId, tipo: 'DESPESA', descricao: 'Inválida', valor: -1, dataCompetencia: dataHoje }).expect(400);
+  });
+
+  it('calcula por competência e vencimento, independentemente do pagamento', async () => {
+    const dashboard = await request(app.getHttpServer()).get(`/api/v1/dashboard/resumo?perfilId=${perfilId}&inicio=${dataHoje}&fim=${vencimento}`)
       .set('Authorization', `Bearer ${token}`).expect(200);
-    expect(dashboard.body.despesas).toBeCloseTo(58.34, 2);
+    expect(dashboard.body.totalDespesas).toBeCloseTo(58.34, 2);
     expect(dashboard.body.saldo).toBeCloseTo(-58.34, 2);
 
     const relatorio = await request(app.getHttpServer())
       .get(`/api/v1/relatorios/financeiro?perfilId=${perfilId}&dataInicial=${dataHoje}&dataFinal=${dataHoje}`)
       .set('Authorization', `Bearer ${token}`).expect(200);
-    expect(relatorio.body.resumo.despesas).toBeCloseTo(58.34, 2);
-    expect(relatorio.body.movimentacoes).toHaveLength(2);
+    expect(relatorio.body.resumo.despesas).toBeCloseTo(25, 2);
+    expect(relatorio.body.movimentacoes).toHaveLength(1);
+
+    const comVencimento = await request(app.getHttpServer())
+      .get(`/api/v1/relatorios/financeiro?perfilId=${perfilId}&dataInicial=${dataHoje}&dataFinal=${vencimento}`)
+      .set('Authorization', `Bearer ${token}`).expect(200);
+    expect(comVencimento.body.resumo.despesas).toBeCloseTo(58.34, 2);
+    expect(comVencimento.body.movimentacoes).toHaveLength(2);
   });
 
   it('preserva parcela paga ao cancelar o restante da conta', async () => {
@@ -180,15 +208,33 @@ describe('Finança Fácil API (e2e)', () => {
         dataCompetencia: dataHaQuinzeDias, recorrente: true, frequenciaRecorrencia: 'SEMANAL',
       }).expect(201);
 
-    const primeiraExecucao = await app.get(TransacoesService).processarRecorrencias();
+    const execucoes = await Promise.all([
+      app.get(TransacoesService).processarRecorrencias(),
+      app.get(TransacoesService).processarRecorrencias(),
+    ]);
     const segundaExecucao = await app.get(TransacoesService).processarRecorrencias();
-    expect(primeiraExecucao.geradas).toBe(2);
+    expect(execucoes.reduce((soma, item) => soma + item.geradas, 0)).toBe(2);
     expect(segundaExecucao.geradas).toBe(0);
+    const novoServico = new TransacoesService(prisma, app.get(AcessoPerfilService), app.get(AlertasService));
+    expect((await novoServico.processarRecorrencias()).geradas).toBe(0);
 
     await request(app.getHttpServer())
       .get(`/api/v1/transacoes?perfilId=${perfilId}&tipo=DESPESA&status=PENDENTE&busca=Recorrente%20E2E&limit=100`)
       .set('Authorization', `Bearer ${token}`).expect(200)
       .expect(({ body }) => expect(body.meta.total).toBe(3));
+  });
+
+  it('finaliza a conta ao pagar simultaneamente as duas últimas parcelas', async () => {
+    const conta = await request(app.getHttpServer()).post('/api/v1/contas-parceladas')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ perfilId, categoriaId, descricao: 'Concorrência E2E', valorTotal: 10, quantidadeParcelas: 2, dataCompra: dataHoje, primeiroVencimento: vencimento })
+      .expect(201);
+    await Promise.all(conta.body.parcelas.map((parcela: { id: string }) =>
+      request(app.getHttpServer()).patch(`/api/v1/parcelas/${parcela.id}/pagar`)
+        .set('Authorization', `Bearer ${token}`).send({ dataPagamento: dataHoje }).expect(200)));
+    const atualizada = await prisma.contaParcelada.findUniqueOrThrow({ where: { id: conta.body.id } });
+    expect(atualizada.status).toBe('FINALIZADA');
+    expect(await prisma.parcela.count({ where: { contaParceladaId: conta.body.id, status: 'PAGA' } })).toBe(2);
   });
 
   it('protege rotas administrativas por papel', async () => {
@@ -208,8 +254,13 @@ describe('Finança Fácil API (e2e)', () => {
     expect(esqueci.body.tokenDesenvolvimento).toBeTruthy();
     await request(app.getHttpServer()).post('/api/v1/auth/redefinir-senha')
       .send({ token: primeiro.body.tokenDesenvolvimento, novaSenha: 'Ignorada@1234' }).expect(400);
-    await request(app.getHttpServer()).post('/api/v1/auth/redefinir-senha')
-      .send({ token: esqueci.body.tokenDesenvolvimento, novaSenha: 'Nova@1234' }).expect(204);
+    const redefinicoes = await Promise.all([
+      request(app.getHttpServer()).post('/api/v1/auth/redefinir-senha')
+        .send({ token: esqueci.body.tokenDesenvolvimento, novaSenha: 'Nova@1234' }),
+      request(app.getHttpServer()).post('/api/v1/auth/redefinir-senha')
+        .send({ token: esqueci.body.tokenDesenvolvimento, novaSenha: 'Nova@1234' }),
+    ]);
+    expect(redefinicoes.map((item) => item.status).sort()).toEqual([204, 400]);
     await request(app.getHttpServer()).post('/api/v1/auth/login')
       .send({ email, senha: 'Teste@123' }).expect(401);
     await request(app.getHttpServer()).post('/api/v1/auth/login')

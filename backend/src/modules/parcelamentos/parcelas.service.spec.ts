@@ -27,4 +27,20 @@ describe('ParcelasService', () => {
     });
     await expect(service.pagar('u1', 'p1')).rejects.toBeInstanceOf(BadRequestException);
   });
+
+  it('recusa uma disputa de pagamento sem duplicar auditoria', async () => {
+    prisma.parcela.findFirst.mockResolvedValue({
+      id: 'p1', status: StatusParcela.PENDENTE,
+      contaParcelada: { status: StatusContaParcelada.ATIVA },
+    });
+    const tx = {
+      contaParcelada: { updateMany: jest.fn().mockResolvedValue({ count: 1 }) },
+      parcela: { updateMany: jest.fn().mockResolvedValue({ count: 0 }), findUniqueOrThrow: jest.fn() },
+      logAuditoria: { create: jest.fn() },
+    };
+    prisma.$transaction.mockImplementation((callback: (client: typeof tx) => unknown) => callback(tx));
+    await expect(service.pagar('u1', 'p1')).rejects.toBeInstanceOf(BadRequestException);
+    expect(tx.logAuditoria.create).not.toHaveBeenCalled();
+    expect(tx.parcela.findUniqueOrThrow).not.toHaveBeenCalled();
+  });
 });
