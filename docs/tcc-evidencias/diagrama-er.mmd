@@ -1,0 +1,143 @@
+erDiagram
+  Usuario {
+    String id PK
+    String nome
+    String email UK
+    String senhaHash
+    TipoUsuario tipo
+    Boolean ativo
+    Int tentativasLogin
+    DateTime bloqueadoAte
+    DateTime ultimoLoginEm
+    DateTime createdAt
+    DateTime updatedAt
+  }
+  RefreshToken {
+    String id PK
+    String usuarioId FK
+    String tokenHash UK
+    DateTime expiraEm
+    DateTime revogadoEm
+    DateTime createdAt
+  }
+  TokenRedefinicaoSenha {
+    String id PK
+    String usuarioId FK
+    String tokenHash UK
+    DateTime expiraEm
+    DateTime utilizadoEm
+    DateTime createdAt
+  }
+  PerfilFinanceiro {
+    String id PK
+    String usuarioId FK
+    String nome
+    TipoPerfil tipo
+    String documento
+    String descricao
+    String cor
+    String icone
+    Decimal renda
+    Boolean ativo
+    Boolean selecionado
+    DateTime createdAt
+    DateTime updatedAt
+  }
+  Categoria {
+    String id PK
+    String perfilId FK
+    String nome
+    TipoCategoria tipo
+    String icone
+    String cor
+    Decimal orcamentoMensal
+    Boolean ativa
+    DateTime createdAt
+    DateTime updatedAt
+  }
+  Transacao {
+    String id PK
+    String perfilId FK
+    String categoriaId FK
+    TipoTransacao tipo
+    String descricao
+    Decimal valor
+    DateTime dataCompetencia
+    DateTime dataVencimento
+    DateTime dataPagamento
+    StatusTransacao status
+    String observacao
+    Boolean recorrente
+    FrequenciaRecorrencia frequenciaRecorrencia
+    DateTime recorrenteAte
+    DateTime proximaRecorrencia
+    String transacaoOrigemId FK
+    String formaPagamento
+    DateTime createdAt
+    DateTime updatedAt
+  }
+  ContaParcelada {
+    String id PK
+    String perfilId FK
+    String categoriaId FK
+    String descricao
+    Decimal valorTotal
+    Int quantidadeParcelas
+    DateTime dataCompra
+    StatusContaParcelada status
+    String observacao
+    DateTime createdAt
+    DateTime updatedAt
+  }
+  Parcela {
+    String id PK
+    String contaParceladaId FK
+    Int numero
+    Decimal valor
+    DateTime dataVencimento
+    DateTime dataPagamento
+    StatusParcela status
+    DateTime createdAt
+    DateTime updatedAt
+  }
+  Alerta {
+    String id PK
+    String perfilId FK
+    String parcelaId FK
+    String categoriaId FK
+    String chave UK
+    TipoAlerta tipo
+    PrioridadeAlerta prioridade
+    String titulo
+    String mensagem
+    Boolean lido
+    Boolean descartado
+    DateTime dataAlerta
+  }
+  LogAuditoria {
+    String id PK
+    String usuarioId FK
+    String perfilId FK
+    String acao
+    String entidade
+    String entidadeId FK
+    Json dadosAnteriores
+    Json dadosNovos
+    String ip
+    DateTime createdAt
+  }
+  Usuario ||--o{ RefreshToken : "usuarioId"
+  Usuario ||--o{ TokenRedefinicaoSenha : "usuarioId"
+  Usuario ||--o{ PerfilFinanceiro : "usuarioId"
+  PerfilFinanceiro ||--o{ Categoria : "perfilId"
+  PerfilFinanceiro ||--o{ Transacao : "perfilId"
+  Categoria ||--o{ Transacao : "categoriaId"
+  Transacao |o--o{ Transacao : "transacaoOrigemId"
+  PerfilFinanceiro ||--o{ ContaParcelada : "perfilId"
+  Categoria ||--o{ ContaParcelada : "categoriaId"
+  ContaParcelada ||--o{ Parcela : "contaParceladaId"
+  PerfilFinanceiro ||--o{ Alerta : "perfilId"
+  Parcela |o--o| Alerta : "parcelaId"
+  Categoria |o--o{ Alerta : "categoriaId"
+  Usuario ||--o{ LogAuditoria : "usuarioId"
+  PerfilFinanceiro |o--o{ LogAuditoria : "perfilId"

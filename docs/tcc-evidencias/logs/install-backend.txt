@@ -1,0 +1,32 @@
+npm.cmd : npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out
+lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more
+comprehensive and powerful.
+No linha:2 caractere:208
++ ... videncias'; npm.cmd ci --no-audit --no-fund *> ../docs/tcc-evidencias ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn deprec...e and powerful.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security
+vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be
+purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security
+vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be
+purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security
+vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be
+purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security
+vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be
+purchased (at exorbitant rates) by contacting i@izs.me
+
+added 736 packages in 6m
+npm warn allow-scripts 5 packages have install scripts not yet covered by allowScripts:
+npm warn allow-scripts   @prisma/client@6.19.3 (postinstall: node scripts/postinstall.js)
+npm warn allow-scripts   @prisma/engines@6.19.3 (postinstall: node scripts/postinstall.js)
+npm warn allow-scripts   @scarf/scarf@1.4.0 (postinstall: node ./report.js)
+npm warn allow-scripts   argon2@0.43.1 (install: node-gyp-build)
+npm warn allow-scripts   prisma@6.19.3 (preinstall: node scripts/preinstall-entry.js)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to
+allow.

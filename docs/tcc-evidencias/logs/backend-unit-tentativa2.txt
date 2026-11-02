@@ -1,0 +1,26 @@
+
+> financa-facil-backend@0.1.0 test:cov
+> jest --coverage --runInBand --json --outputFile=../docs/tcc-evidencias/logs/backend-unit.json
+
+npm.cmd : PASS src/modules/auth/auth.service.spec.ts (13.988 s)
+No linha:2 caractere:227
++ ... ativa1.txt; npm.cmd run test:cov -- --json --outputFile=../docs/tcc-e ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS src/module...c.ts (13.988 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+PASS src/config/cors.config.spec.ts
+PASS src/modules/dashboard/dashboard.service.spec.ts
+PASS src/modules/usuarios/dto/usuario.dto.spec.ts
+PASS src/modules/relatorios/relatorios.service.spec.ts
+PASS src/modules/parcelamentos/parcelas.service.spec.ts
+PASS src/modules/transacoes/recorrencia.utils.spec.ts
+PASS src/modules/parcelamentos/parcelamento.utils.spec.ts
+PASS src/common/validators/documento.validator.spec.ts
+
+Test Suites: 9 passed, 9 total
+Tests:       32 passed, 32 total
+Snapshots:   0 total
+Time:        21.208 s, estimated 68 s
+Ran all test suites.
+Test results written to: ..\docs\tcc-evidencias\logs\backend-unit.json

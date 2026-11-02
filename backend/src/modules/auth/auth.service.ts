@@ -131,14 +131,20 @@ export class AuthService {
       throw new BadRequestException('Token inválido ou expirado');
     }
     const agora = new Date();
-    await this.prisma.$transaction([
-      this.prisma.usuario.update({ where: { id: registro.usuarioId }, data: { senhaHash: await argon2.hash(novaSenha) } }),
-      this.prisma.tokenRedefinicaoSenha.updateMany({
+    const senhaHash = await argon2.hash(novaSenha);
+    await this.prisma.$transaction(async (tx) => {
+      const consumido = await tx.tokenRedefinicaoSenha.updateMany({
+        where: { id: registro.id, utilizadoEm: null, expiraEm: { gt: agora } },
+        data: { utilizadoEm: agora },
+      });
+      if (consumido.count !== 1) throw new BadRequestException('Token inválido ou expirado');
+      await tx.usuario.update({ where: { id: registro.usuarioId }, data: { senhaHash } });
+      await tx.tokenRedefinicaoSenha.updateMany({
         where: { usuarioId: registro.usuarioId, utilizadoEm: null },
         data: { utilizadoEm: agora },
-      }),
-      this.prisma.refreshToken.updateMany({ where: { usuarioId: registro.usuarioId, revogadoEm: null }, data: { revogadoEm: agora } }),
-    ]);
+      });
+      await tx.refreshToken.updateMany({ where: { usuarioId: registro.usuarioId, revogadoEm: null }, data: { revogadoEm: agora } });
+    });
   }
 
   private async registrarFalha(usuario: Usuario): Promise<void> {

@@ -1,0 +1,235 @@
+
+> financa-facil-backend@0.1.0 test:e2e
+> jest --config test/jest-e2e.json --runInBand --json --outputFile=../docs/tcc-evidencias/logs/backend-e2e.json
+
+npm.cmd : FAIL test/api.e2e-spec.ts (75.094 s)
+No linha:2 caractere:259
++ ... DE -eq 0) { npm.cmd run test:e2e -- --json --outputFile=../docs/tcc-e ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (FAIL test/api.e2e-spec.ts (75.094 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  Finança Fácil API (e2e)
+    × responde no health check (114 ms)
+    × cadastra dois usuários e autentica
+    × permite apenas uma rotação concorrente do mesmo refresh token
+    × cria perfil e impede acesso por outro usuário
+    × cria categoria e transação paga
+    × gera parcelas, alerta e registra pagamento
+    × recusa pagamento duplicado, acesso cruzado e entradas inválidas
+    × calcula por competência e vencimento, independentemente do pagamento
+    × preserva parcela paga ao cancelar o restante da conta
+    × gera e recupera ocorrências recorrentes sem duplicar (1 ms)
+    × protege rotas administrativas por papel
+    × recupera a senha com token de desenvolvimento e invalida a antiga
+
+  ● Finança Fácil API (e2e) › responde no health check
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › cadastra dois usuários e autentica
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › permite apenas uma rotação concorrente do mesmo refresh token
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › cria perfil e impede acesso por outro usuário
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › cria categoria e transação paga
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › gera parcelas, alerta e registra pagamento
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › recusa pagamento duplicado, acesso cruzado e entradas inválidas
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › calcula por competência e vencimento, independentemente do pagamento
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › preserva parcela paga ao cancelar o restante da conta
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › gera e recupera ocorrências recorrentes sem duplicar
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › protege rotas administrativas por papel
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+  ● Finança Fácil API (e2e) › recupera a senha com token de desenvolvimento e invalida a antiga
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+      34 |   const dataHaQuinzeDias = haQuinzeDias.toISOString().slice(0, 10);
+      35 |
+    > 36 |   beforeAll(async () => {
+         |   ^
+      37 |     const modulo = await Test.createTestingModule({ imports: [AppModule] }).compile();
+      38 |     app = modulo.createNestApplication();
+      39 |     app.setGlobalPrefix('api/v1');
+
+      at test/api.e2e-spec.ts:36:3
+      at Object.<anonymous> (test/api.e2e-spec.ts:12:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       12 failed, 12 total
+Snapshots:   0 total
+Time:        75.816 s
+Ran all test suites.
+Test results written to: ..\docs\tcc-evidencias\logs\backend-e2e.json

@@ -94,6 +94,11 @@ export class ParcelamentosService {
     const conta = await this.buscarInterno(usuarioId, id);
     if (conta.status !== StatusContaParcelada.ATIVA) throw new BadRequestException('Somente contas ativas podem ser canceladas');
     return this.prisma.$transaction(async (tx) => {
+      const cancelada = await tx.contaParcelada.updateMany({
+        where: { id, status: StatusContaParcelada.ATIVA },
+        data: { status: StatusContaParcelada.CANCELADA },
+      });
+      if (cancelada.count !== 1) throw new BadRequestException('Somente contas ativas podem ser canceladas');
       await tx.parcela.updateMany({
         where: { contaParceladaId: id, status: { in: [StatusParcela.PENDENTE, StatusParcela.VENCIDA] } },
         data: { status: StatusParcela.CANCELADA },

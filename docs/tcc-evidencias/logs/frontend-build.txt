@@ -1,0 +1,51 @@
+
+> frontend@0.0.0 build
+> ng build
+
+> Building...
+√ Building...
+Initial chunk files   | Names              |  Raw size | Estimated transfer size
+chunk-OGKVQ2OD.js     | -                  | 221.35 kB |                62.99 kB
+chunk-2UPIRPNG.js     | -                  | 220.18 kB |                66.04 kB
+chunk-53PCR5UG.js     | -                  |  72.23 kB |                18.05 kB
+polyfills-5CFQRCPP.js | polyfills          |  34.59 kB |                11.33 kB
+main-REG6ON3J.js      | main               |   7.23 kB |                 2.31 kB
+chunk-WRRHVI7Q.js     | -                  |   2.95 kB |               991 bytes
+styles-GECHJXWU.css   | styles             |   2.37 kB |               712 bytes
+chunk-TQPZRHFO.js     | -                  | 931 bytes |               931 bytes
+chunk-SMIHVZL6.js     | -                  | 667 bytes |               667 bytes
+chunk-MJQDJRWL.js     | -                  | 189 bytes |               189 bytes
+
+                      | Initial total      | 562.68 kB |               164.22 kB
+
+Lazy chunk files      | Names              |  Raw size | Estimated transfer size
+chunk-UZHQFWPQ.js     | relatorios         | 480.59 kB |               129.40 kB
+chunk-GXAQDK3Q.js     | html2canvas        | 202.84 kB |                38.48 kB
+chunk-P3GCXJ7P.js     | index-es           | 159.05 kB |                47.00 kB
+chunk-6LX5QHQJ.js     | main-layout        | 102.83 kB |                23.72 kB
+chunk-XZHP3SIK.js     | dashboard          |  33.83 kB |                 7.24 kB
+chunk-JQ7RMNLR.js     | -                  |  32.76 kB |                 7.09 kB
+chunk-TIFU53NC.js     | perfis-financeiros |  28.80 kB |                 6.17 kB
+chunk-WG2YXPON.js     | purify-es          |  28.46 kB |                 9.83 kB
+chunk-QJOPLQBB.js     | categorias         |  21.83 kB |                 5.33 kB
+chunk-FJFPSWZP.js     | parcelas           |  20.49 kB |                 4.86 kB
+chunk-YSF22DQZ.js     | despesas           |  19.88 kB |                 4.90 kB
+chunk-K7Z5ROAJ.js     | receitas           |  18.75 kB |                 4.70 kB
+chunk-URPOLTRF.js     | playground         |  16.23 kB |                 4.64 kB
+chunk-FIRYDCO7.js     | alertas            |  12.17 kB |                 3.20 kB
+chunk-SRTPNL6J.js     | alterar-senha      |  10.33 kB |                 2.49 kB
+...and 31 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [15.549 seconds] - 2026-11-02T00:18:37.392Z
+
+npm.cmd : ▲ [WARNING] src/app/pages/relatorios/relatorios.scss exceeded maximum budget. Budget 10.00 kB was not met by
+1.26 kB with a total of 11.26 kB.
+No linha:2 caractere:401
++ ... s-exit.txt; npm.cmd run build *> ../docs/tcc-evidencias/logs/frontend ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (▲ [WARNING] src...al of 11.26 kB.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+
+
+Output location: C:\Users\julia\OneDrive\Documentos\Faculdade\moblie do tcc\frontend\dist\frontend

@@ -1,0 +1,10 @@
+
+> financa-facil-backend@0.1.0 lint
+> eslint src test --max-warnings=0
+
+
+C:\Users\julia\OneDrive\Documentos\Faculdade\moblie do tcc\backend\src\modules\auth\auth.service.spec.ts
+  32:63  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+✖ 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.

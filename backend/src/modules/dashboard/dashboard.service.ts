@@ -423,7 +423,11 @@ export class DashboardService {
       ) ||
       Number.isNaN(
         fimInformado.getTime()
-      )
+      ) ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(inicio) ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(fim) ||
+      inicioPeriodo.toISOString().slice(0, 10) !== inicio ||
+      fimInformado.toISOString().slice(0, 10) !== fim
     ) {
 
       throw new BadRequestException(

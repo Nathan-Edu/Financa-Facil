@@ -1,0 +1,31 @@
+
+> financa-facil-backend@0.1.0 test:e2e
+> jest --config test/jest-e2e.json --runInBand --json --outputFile=../docs/tcc-evidencias/logs/backend-e2e.json
+
+npm.cmd : PASS test/api.e2e-spec.ts (17.809 s)
+No linha:2 caractere:97
++ ... ma=public'; npm.cmd run test:e2e -- --json --outputFile=../docs/tcc-e ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS test/api.e2e-spec.ts (17.809 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  Finança Fácil API (e2e)
+    √ responde no health check (116 ms)
+    √ cadastra dois usuários e autentica (707 ms)
+    √ permite apenas uma rotação concorrente do mesmo refresh token (72 ms)
+    √ cria perfil e impede acesso por outro usuário (63 ms)
+    √ cria categoria e transação paga (112 ms)
+    √ gera parcelas, alerta e registra pagamento (131 ms)
+    √ recusa pagamento duplicado, acesso cruzado e entradas inválidas (67 ms)
+    √ calcula por competência e vencimento, independentemente do pagamento (82 ms)
+    √ preserva parcela paga ao cancelar o restante da conta (55 ms)
+    √ gera e recupera ocorrências recorrentes sem duplicar (72 ms)
+    √ protege rotas administrativas por papel (25 ms)
+    √ recupera a senha com token de desenvolvimento e invalida a antiga (487 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        20.995 s, estimated 76 s
+Ran all test suites.
+Test results written to: ..\docs\tcc-evidencias\logs\backend-e2e.json

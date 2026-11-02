@@ -1,0 +1,51 @@
+
+> financa-facil-mobile@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless --code-coverage
+
+> Building...
+√ Building...
+Initial chunk files                    | Names                               |  Raw size
+chunk-TKRRYGWT.js                      | -                                   |   2.14 MB |
+polyfills.js                           | polyfills                           |   1.04 MB |
+spec-auth.interceptor.spec.js          | spec-auth.interceptor.spec          | 221.21 kB |
+chunk-JQXAKZWT.js                      | -                                   | 215.16 kB |
+chunk-OWFYYXYW.js                      | -                                   | 101.98 kB |
+jasmine-cleanup-1.js                   | jasmine-cleanup-1                   |  67.20 kB |
+spec-receita.service.spec.js           | spec-receita.service.spec           |  60.29 kB |
+chunk-YPGBWEJY.js                      | -                                   |  52.41 kB |
+chunk-NUBEI2K2.js                      | -                                   |  51.27 kB |
+styles.css                             | styles                              |  24.41 kB |
+test_main.js                           | test_main                           |  21.43 kB |
+spec-auth.service.spec.js              | spec-auth.service.spec              |   3.42 kB |
+spec-perfil-financeiro.service.spec.js | spec-perfil-financeiro.service.spec |   1.83 kB |
+chunk-EVSPGG2W.js                      | -                                   |   1.64 kB |
+jasmine-cleanup-0.js                   | jasmine-cleanup-0                   | 519 bytes |
+
+                                       | Initial total                       |   4.01 MB
+
+Application bundle generation complete. [8.224 seconds] - 2026-11-02T00:18:16.081Z
+
+01 11 2026 21:18:16.579:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9877/
+01 11 2026 21:18:16.580:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+01 11 2026 21:18:16.673:INFO [launcher]: Starting browser ChromeHeadless
+01 11 2026 21:18:17.598:INFO [Chrome Headless 156.0.0.0 (Windows 10)]: Connected on socket LvzuAOf5zM3ieaoSAAAA with id 78359777
+Chrome Headless 156.0.0.0 (Windows 10): Executed 0 of 10[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 1 of 10[32m SUCCESS[39m (0 secs / 0.021 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 2 of 10[32m SUCCESS[39m (0 secs / 0.025 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 3 of 10[32m SUCCESS[39m (0 secs / 0.032 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 4 of 10[32m SUCCESS[39m (0 secs / 0.037 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 5 of 10[32m SUCCESS[39m (0 secs / 0.042 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 6 of 10[32m SUCCESS[39m (0 secs / 0.047 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 7 of 10[32m SUCCESS[39m (0 secs / 0.052 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 8 of 10[32m SUCCESS[39m (0 secs / 0.057 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 9 of 10[32m SUCCESS[39m (0 secs / 0.072 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 10 of 10[32m SUCCESS[39m (0 secs / 0.094 secs)
+[1A[2KChrome Headless 156.0.0.0 (Windows 10): Executed 10 of 10[32m SUCCESS[39m (0.128 secs / 0.094 secs)
+[32mTOTAL: 10 SUCCESS[39m
+
+=============================== Coverage summary ===============================
+Statements   : 51.29% ( 99/193 )
+Branches     : 42.85% ( 30/70 )
+Functions    : 39.39% ( 39/99 )
+Lines        : 52.8% ( 94/178 )
+================================================================================

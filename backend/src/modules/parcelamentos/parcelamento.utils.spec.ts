@@ -20,5 +20,15 @@ describe('ParcelamentoUtils', () => {
   it('rejeita entradas inválidas', () => {
     expect(() => distribuirParcelas(0, 2)).toThrow();
     expect(() => distribuirParcelas(100, 0)).toThrow();
+    expect(() => distribuirParcelas(Number.NaN, 3)).toThrow();
+    expect(() => distribuirParcelas(100, 2.5)).toThrow();
+    expect(() => distribuirParcelas(-1, 2)).toThrow();
+  });
+
+  it('preserva centavos em 360 parcelas e na virada do ano', () => {
+    const valores = distribuirParcelas(1234.57, 360);
+    expect(valores).toHaveLength(360);
+    expect(valores.reduce((soma, valor) => soma + Math.round(valor * 100), 0)).toBe(123457);
+    expect(adicionarMeses('2026-12-31', 1).toISOString().slice(0, 10)).toBe('2027-01-31');
   });
 });

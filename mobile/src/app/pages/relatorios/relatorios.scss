@@ -270,49 +270,13 @@
   font-weight: 800;
 }
 
-.stat-card__icon--success {
-  color: var(--success);
 
-  background:
-    color-mix(
-      in srgb,
-      var(--success) 15%,
-      transparent
-    );
-}
 
-.stat-card__icon--danger {
-  color: var(--danger);
 
-  background:
-    color-mix(
-      in srgb,
-      var(--danger) 15%,
-      transparent
-    );
-}
 
-.stat-card__icon--primary {
-  color: var(--primary);
 
-  background:
-    color-mix(
-      in srgb,
-      var(--primary) 15%,
-      transparent
-    );
-}
 
-.stat-card__icon--purple {
-  color: var(--purple);
 
-  background:
-    color-mix(
-      in srgb,
-      var(--purple) 15%,
-      transparent
-    );
-}
 
 .stat-card__value {
   display: block;
@@ -325,21 +289,13 @@
   letter-spacing: -0.02em;
 }
 
-.stat-card__value--success {
-  color: var(--success);
-}
 
-.stat-card__value--danger {
-  color: var(--danger);
-}
 
-.stat-card__value--primary {
-  color: var(--primary);
-}
 
-.stat-card__value--purple {
-  color: var(--purple);
-}
+
+
+
+
 
 .stat-card__description {
   display: block;
@@ -507,65 +463,13 @@
   width: 100%;
 }
 
-.chart-placeholder {
-  min-height: 310px;
 
-  display: flex;
-  align-items: flex-end;
 
-  gap: 10px;
 
-  overflow-x: auto;
 
-  padding:
-    24px 6px
-    8px;
-}
 
-.month-preview {
-  min-width: 90px;
-  min-height: 130px;
 
-  flex: 1;
 
-  display: flex;
-  flex-direction: column;
-
-  justify-content: flex-end;
-
-  gap: 7px;
-
-  padding: 14px 10px;
-
-  border: 1px solid var(--border);
-  border-radius: 12px;
-
-  background:
-    color-mix(
-      in srgb,
-      var(--card) 55%,
-      transparent
-    );
-
-  strong {
-    color: var(--text);
-
-    font-size: 12px;
-  }
-
-  span {
-    font-size: 11px;
-    font-weight: 700;
-  }
-}
-
-.preview-revenue {
-  color: var(--success);
-}
-
-.preview-expense {
-  color: var(--danger);
-}
 
 // Gráfico de receitas e despesas
 
@@ -791,74 +695,17 @@
 
 // Categorias
 
-.category-list {
-  display: flex;
-  flex-direction: column;
 
-  gap: 18px;
-}
 
-.category-item {
-  display: flex;
-  flex-direction: column;
 
-  gap: 7px;
-}
 
-.category-item__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 
-  gap: 12px;
 
-  span {
-    color: var(--text);
 
-    font-size: 13px;
-    font-weight: 600;
-  }
 
-  strong {
-    color: var(--text);
 
-    font-size: 12px;
-  }
-}
 
-.category-progress {
-  width: 100%;
-  height: 7px;
 
-  overflow: hidden;
-
-  border-radius: 999px;
-
-  background:
-    color-mix(
-      in srgb,
-      var(--border) 60%,
-      transparent
-    );
-}
-
-.category-progress__value {
-  height: 100%;
-
-  border-radius: inherit;
-
-  background: var(--danger);
-
-  transition: width 0.3s ease;
-}
-
-.category-percent {
-  color: var(--text-muted);
-
-  font-size: 11px;
-
-  text-align: right;
-}
 
 // Movimentações
 
