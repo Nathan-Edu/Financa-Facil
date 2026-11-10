@@ -41,5 +41,4 @@ físicas e jurídicas na organização financeira, oferecendo controle de receit
 despesas e contas parceladas em uma única plataforma integrada, disponível para
 web e mobile.
 
-Projeto desenvolvido como requisito parcial para o Curso Superior de Tecnologia
-em Análise e Desenvolvimento de Sistemas – Instituto Federal do Paraná (IFPR).
+Projeto desenvolvido como requisito parcial para o Curso Sistemas de Informação – Instituto Federal do Paraná (IFPR).
