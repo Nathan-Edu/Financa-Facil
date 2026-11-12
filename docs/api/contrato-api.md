@@ -119,7 +119,7 @@ Para empresa, `tipo` deve ser `EMPRESARIAL` e o documento deve ser um CNPJ.
 
 ## Decisões adotadas
 
-- Saldo e relatórios usam regime de caixa.
+- O dashboard e os relatórios utilizam critérios de período distintos conforme o tipo de registro. Transações comuns são atribuídas ao período pela data de competência. Parcelas são atribuídas pela data de vencimento. A data de pagamento registra a quitação, mas não define isoladamente o período das consultas. O dashboard pode considerar parcelas pagas, pendentes e vencidas, enquanto o relatório financeiro considera apenas movimentações pagas.
 - CPF/CNPJ é único por usuário, permitindo perfis de responsáveis distintos sobre o mesmo documento.
 - Cancelar parcelamento preserva parcelas pagas e cancela somente as abertas.
 - Alertas de parcelas são internos; recuperação de senha pode ser enviada por SMTP.
