@@ -36,7 +36,7 @@ A documentação Swagger fica em `http://localhost:3000/docs`.
 - Recuperação e alteração de senha, com SMTP opcional.
 - Administração de usuários e autorização por papel.
 - Contas parceladas, geração e pagamento de parcelas.
-- Dashboard e relatórios em regime de caixa.
+- Dashboard e relatórios financeiros com critérios de período baseados em competência para transações e vencimento para parcelas.
 - Alertas de vencimento e atualização automática diária.
 - Auditoria das operações críticas.
 - Respostas de erro padronizadas, rate limiting e health check.
