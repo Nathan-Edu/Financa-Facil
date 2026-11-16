@@ -1,29 +1,45 @@
 @startuml
 title ACT10 - Cadastrar Conta Parcelada
 
+skinparam shadowing false
+skinparam defaultFontSize 16
+
 start
 
-:Usuário acessa a área de contas parceladas;
-:Usuário seleciona cadastrar conta parcelada;
+:Usuário acessa a área\nde contas parceladas;
 
-:Informa descrição, categoria,\nvalor total, quantidade de parcelas,\ndata da compra e primeiro vencimento;
+:Usuário seleciona\ncadastrar conta parcelada;
 
-:Sistema valida os dados,\no perfil, a categoria e as datas;
+repeat
 
-if (Dados válidos?) then (Sim)
+  :Usuário informa ou corrige\nos dados da conta parcelada;
 
-  :Distribui o valor entre as parcelas;
-  :Calcula os vencimentos;
-  :Registra a conta parcelada\ne suas parcelas;
-  :Registra a operação na auditoria;
-  :Exibe mensagem de confirmação;
+  note right
+    Descrição
+    Categoria
+    Valor total
+    Quantidade de parcelas
+    Data da compra
+    Primeiro vencimento
+  end note
 
-else (Não)
+  :Sistema valida os dados,\no perfil, a categoria e as datas;
 
-  :Exibe mensagem de erro;
-  :Usuário corrige os dados;
+  if (Dados inválidos?) then (Sim)
+    :Sistema exibe mensagem de erro;
+  endif
 
-endif
+repeat while (Dados inválidos?) is (Sim) not (Não)
+
+:Sistema distribui o valor\nentre as parcelas;
+
+:Sistema calcula\nos vencimentos;
+
+:Sistema registra a conta parcelada\ne suas parcelas;
+
+:Sistema registra a operação\nna auditoria;
+
+:Sistema exibe mensagem\nde confirmação;
 
 stop
 
