@@ -1,65 +1,44 @@
 @startuml
+title Diagrama de Casos de Uso - Finança Fácil
 
 left to right direction
-skinparam linetype ortho
 
-actor "Usuário" as Usuario
+skinparam shadowing false
+skinparam defaultFontSize 16
+skinparam actorStyle stickman
+
+skinparam usecase {
+    BackgroundColor white
+    BorderColor black
+}
+
+actor "Usuário" as U
 
 rectangle "Finança Fácil" {
 
-  usecase "UC01\nCadastrar Usuário" as UC1
-  usecase "UC02\nAutenticar Usuário" as UC2
-  usecase "UC03\nGerenciar Receitas" as UC3
-  usecase "UC04\nGerenciar Despesas" as UC4
-  usecase "UC05\nGerenciar Categorias\nFinanceiras" as UC5
-  usecase "UC06\nGerenciar Contas\nParceladas" as UC6
-  usecase "UC07\nRegistrar Pagamento\nde Parcela" as UC7
-  usecase "UC08\nConsultar Saldo" as UC8
-  usecase "UC09\nGerar Relatórios\nFinanceiros" as UC9
-  usecase "UC10\nConsultar Movimentações\nFinanceiras" as UC10
-  usecase "UC11\nConsultar Alertas\nde Vencimento" as UC11
-  usecase "UC12\nGerenciar Perfis\nFinanceiros" as UC12
-  usecase "UC13\nAlterar Senha" as UC13
-  usecase "UC14\nRecuperar Senha" as UC14
-  usecase "UC15\nGerenciar Usuários" as UC15
-
-  UC1 -[hidden]right- UC2
-  UC2 -[hidden]right- UC3
-  UC3 -[hidden]right- UC4
-  UC4 -[hidden]right- UC5
-  UC5 -[hidden]down- UC6
-  UC6 -[hidden]right- UC7
-  UC7 -[hidden]right- UC8
-  UC8 -[hidden]right- UC9
-  UC9 -[hidden]down- UC10
-  UC10 -[hidden]right- UC11
-  UC11 -[hidden]right- UC12
-  UC12 -[hidden]down- UC13
-  UC13 -[hidden]right- UC14
-  UC14 -[hidden]right- UC15
+    usecase "Gerenciar\nSenha" as Senha
+    usecase "Cadastrar\nUsuário" as Cadastro
+    usecase "Consultar Informações\nFinanceiras" as Consultas
+    usecase "Gerenciar Contas\nParceladas" as Parcelas
+    usecase "Gerenciar\nCategorias" as Categorias
+    usecase "Gerenciar Receitas\ne Despesas" as Movimentacoes
+    usecase "Gerenciar Perfil\nFinanceiro" as Perfil
+    usecase "Autenticar\nUsuário" as Login
+    usecase "Gerenciar\nUsuários" as Usuarios
 }
 
-actor "Administrador" as Admin
+actor "Administrador" as A
 
-Usuario --> UC1
-Usuario --> UC2
-Usuario --> UC3
-Usuario --> UC4
-Usuario --> UC5
-Usuario --> UC6
-Usuario --> UC7
-Usuario --> UC8
-Usuario --> UC9
-Usuario --> UC10
-Usuario --> UC11
-Usuario --> UC12
-Usuario --> UC13
-Usuario --> UC14
+U -- Senha
+U -- Cadastro
+U -- Consultas
+U -- Parcelas
+U -- Categorias
+U -- Movimentacoes
+U -- Perfil
+U -- Login
 
-UC2 <-- Admin
-UC15 <-- Admin
-
-' força o Administrador a ficar à direita
-UC15 -[hidden]right- Admin
+A -- Login
+A -- Usuarios
 
 @enduml
