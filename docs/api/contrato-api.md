@@ -89,8 +89,6 @@ Exemplo de criação:
 }
 ```
 
-Para empresa, `tipo` deve ser `EMPRESARIAL` e o documento deve ser um CNPJ.
-
 ## Módulos financeiros
 
 | Módulo | Rotas principais |
@@ -120,7 +118,7 @@ Para empresa, `tipo` deve ser `EMPRESARIAL` e o documento deve ser um CNPJ.
 ## Decisões adotadas
 
 - O dashboard e os relatórios utilizam critérios de período distintos conforme o tipo de registro. Transações comuns são atribuídas ao período pela data de competência. Parcelas são atribuídas pela data de vencimento. A data de pagamento registra a quitação, mas não define isoladamente o período das consultas. O dashboard pode considerar parcelas pagas, pendentes e vencidas, enquanto o relatório financeiro considera apenas movimentações pagas.
-- CPF/CNPJ é único por usuário, permitindo perfis de responsáveis distintos sobre o mesmo documento.
+- O documento associado ao perfil é único por usuário, evitando duplicidade de perfis para o mesmo identificador.
 - Cancelar parcelamento preserva parcelas pagas e cancela somente as abertas.
 - Alertas de parcelas são internos; recuperação de senha pode ser enviada por SMTP.
 - Access token expira em 15 minutos, refresh token em 7 dias e bloqueio padrão dura 30 minutos.
