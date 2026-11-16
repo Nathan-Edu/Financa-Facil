@@ -1,33 +1,76 @@
 # Requisitos comprovados pelo código
 
-“Implementado” indica localização no código; não equivale a validação completa de interface. Os resultados realmente executados estão no documento 05. Os requisitos originais em `docs/requisitos` permanecem preservados.
+Esta matriz utiliza os mesmos identificadores definidos em
+`docs/requisitos/requisitos-funcionais.md` e
+`docs/requisitos/requisitos-nao-funcionais.md`.
+
+“Implementado” indica que foi localizada implementação correspondente no código-fonte.
+Isso não equivale, por si só, à validação completa da funcionalidade pela interface.
+Quando disponível, a coluna de evidência também indica testes automatizados ou outros
+artefatos utilizados na verificação. Os resultados das execuções estão documentados no
+arquivo `05-resultados-testes.md`.
+
+## Requisitos Funcionais
 
 | ID | Descrição | Módulo responsável | Situação | Evidência |
 |---|---|---|---|---|
-| RF01 | Cadastrar usuário e autenticar com senha | auth | Implementado; coberto na API | `auth.service.ts`, `test/api.e2e-spec.ts` |
-| RF02 | Renovar e revogar sessão | auth, serviços das interfaces | Implementado; rotação concorrente testada | `AuthService.renovar/logout`, testes AuthService |
-| RF03 | Recuperar e redefinir senha | auth | Implementado; SMTP real não validado | `MailService`, redefinição concorrente na API |
-| RF04 | Gerenciar perfis pessoais e empresariais | perfis | Implementado; validação de CPF/CNPJ | `perfis.service.ts`, `documento.validator.spec.ts` |
-| RF05 | Isolar informações por usuário e perfil | common e serviços financeiros | Implementado; cenários cruzados de API | `AcessoPerfilService.verificar`, filtros `perfil.usuarioId` |
-| RF06 | Registrar, editar, pagar e cancelar receitas/despesas | transacoes, serviços das interfaces | Implementado; cobertura parcial | `TransacoesService`, `ReceitaService`, `DespesaService` |
-| RF07 | Gerenciar categorias e orçamento | categorias, alertas | Implementado; cobertura parcial | `CategoriasService`, `AlertasService.processarOrcamentos` |
-| RF08 | Gerar parcelas preservando total em centavos | parcelamentos | Implementado e testado | `distribuirParcelas`, teste 100/3 e 360 parcelas |
-| RF09 | Calcular vencimentos em meses distintos | parcelamentos | Implementado e testado | `adicionarMeses`, fevereiro bissexto e virada do ano |
-| RF10 | Pagar parcelas pendentes/vencidas de conta ativa | parcelamentos | Implementado; proteção de disputa adicionada | `ParcelasService.pagar`, teste unitário e API |
-| RF11 | Cancelar saldo parcelado preservando parcelas pagas | parcelamentos | Implementado e cenário de API | `ParcelamentosService.cancelar` |
-| RF12 | Consultar dashboard por período | dashboard | Implementado; datas inválidas corrigidas | `DashboardService.resumo`, testes de competência |
-| RF13 | Gerar relatório por período e perfil | relatorios | Implementado e testado | `RelatoriosService.financeiro`, teste com pagamento distinto do vencimento |
-| RF14 | Gerar transações recorrentes sem duplicar a competência | transacoes | Implementado; concorrência e reexecução na API | reserva por `updateMany`, índice único origem/competência |
-| RF15 | Emitir e gerenciar alertas de vencimento | alertas | Implementado; integração parcial | `processarAlertas`, atualização e descarte na API |
-| RF16 | Restringir administração por papel | usuarios/common | Implementado; acesso 403/200 na API | `RolesGuard`, `UsuariosController` |
-| RF17 | Exportar relatórios na interface | páginas relatorios | Implementado; exportação visual não automatizada | `exportarRelatorio`, dependências jsPDF |
-| RNF01 | Proteger senhas com hash | auth | Implementado | `argon2.hash/verify`; hashes não retornados pela seleção pública |
-| RNF02 | Validar entradas e rejeitar campos extras | DTOs/main | Implementado; cobertura parcial | `ValidationPipe`, class-validator, testes DTO/API |
-| RNF03 | Preservar integridade referencial e valores decimais | Prisma/PostgreSQL | Implementado; migrations em banco isolado | `schema.prisma`, seis migrations |
-| RNF04 | Limitar requisições e tentativas de login | auth/app | Implementado; limites exatos não exercitados integralmente | Throttler global, login e recuperação; `registrarFalha` |
-| RNF05 | Não transmitir token a serviços externos | interceptor web/mobile | Corrigido e teste de regressão | `auth.interceptor.spec.ts` nas duas interfaces |
-| RNF06 | Restringir origens HTTP autorizadas | main/config | Configurável; padrão preservado | `CORS_ORIGINS`, `origensCors` |
-| RNF07 | Executar testes em banco exclusivo | infraestrutura E2E | Proteção adicionada | `test/ambiente-e2e.ts`, `E2E_DATABASE_URL` obrigatório |
-| RNF08 | Oferecer interface web e mobile | frontend/mobile | Builds e testes de serviços; execução nativa pendente | Angular/Ionic/Capacitor, capturas existentes |
+| RF01 | Cadastrar usuários | auth | Implementado; coberto em cenário de API | `AuthService.cadastrar`, `test/api.e2e-spec.ts` |
+| RF02 | Autenticar usuários cadastrados | auth | Implementado; coberto em cenário de API | `AuthService.login`, `test/api.e2e-spec.ts` |
+| RF03 | Cadastrar e gerenciar múltiplos perfis financeiros vinculados ao usuário | perfis | Implementado | `PerfisService.criar`, `listar`, `atualizar` e `remover` |
+| RF04 | Cadastrar receitas | transacoes / interface web e mobile | Implementado; cobertura parcial | `TransacoesService.criar`, serviços de receitas das interfaces |
+| RF05 | Cadastrar despesas | transacoes / interface web e mobile | Implementado; cobertura parcial | `TransacoesService.criar`, serviços de despesas das interfaces |
+| RF06 | Gerenciar categorias financeiras | categorias | Implementado; cobertura parcial | `CategoriasService` |
+| RF07 | Cadastrar e controlar contas parceladas | parcelamentos | Implementado e exercitado em testes selecionados | `ParcelamentosService.criar`, `listar` e `atualizar` |
+| RF08 | Registrar pagamento de parcelas | parcelamentos | Implementado e testado | `ParcelasService.pagar`, testes unitários e de API |
+| RF09 | Calcular o saldo financeiro por perfil | dashboard | Implementado; cenários financeiros verificados | `DashboardService.resumo` |
+| RF10 | Consultar movimentações com filtros por categoria, período e tipo | transacoes | Implementado | `TransacoesService.listar`, `FiltroTransacoesDto` |
+| RF11 | Gerar relatórios por período e perfil, com exportação em PDF | relatorios / interface | Implementado; geração dos dados testada e exportação presente na interface | `RelatoriosService.financeiro`, `exportarRelatorio`, jsPDF |
+| RF12 | Emitir alertas para parcelas próximas do vencimento | alertas | Implementado; processamento considera os próximos sete dias | `AlertasService.processarAlertas`, `processarVencimentos` |
+| RF13 | Permitir gerenciamento de usuários pelo administrador | usuarios / common | Implementado; controle por papel presente | `RolesGuard`, `UsuariosController` |
+| RF14 | Validar CPF durante cadastro e edição do perfil financeiro | perfis / validators | Implementado; validação automatizada existente | `documento.validator.ts`, `documento.validator.spec.ts`, `PerfisService.validarDocumento` |
+| RF15 | Bloquear temporariamente o usuário após tentativas consecutivas de autenticação inválidas | auth | Implementado; mecanismo de contagem e bloqueio presente | `AuthService`, controle de `tentativasLogin` e `bloqueadoAte` |
+| RF16 | Alterar senha mediante confirmação da senha atual | auth | Implementado | `AuthService.alterarSenha`, telas de alteração de senha |
+| RF17 | Atualizar informações do perfil financeiro, incluindo renda | perfis | Implementado | `PerfisService.atualizar`, `PATCH /perfis/:id/renda` |
+| RF18 | Recuperar senha por meio do e-mail cadastrado | auth / mail | Implementado; envio SMTP real não validado | `MailService`, fluxo de recuperação e redefinição de senha |
+| RF19 | Editar e excluir receitas e despesas cadastradas | transacoes | Implementado; exclusão tratada de forma lógica | `TransacoesService.atualizar`, operação de cancelamento/exclusão |
+| RF20 | Cancelar contas parceladas | parcelamentos | Implementado; preserva parcelas já pagas | `ParcelamentosService.cancelar` |
+| RF21 | Atualizar para vencida parcela pendente cuja data de vencimento tenha expirado | alertas / parcelamentos | Implementado no processamento periódico | `AlertasService.processarVencimentos` |
 
-As evidências não demonstram desempenho, disponibilidade em produção, acessibilidade integral ou satisfação de usuários. Esses atributos não recebem aprovação presumida.
+## Requisitos Não Funcionais
+
+| ID | Descrição | Situação | Evidência |
+|---|---|---|---|
+| RNF01 | Disponibilizar interface web responsiva para computadores e dispositivos móveis | Implementado na interface; sem ensaio formal completo de responsividade | Projeto Angular, estilos responsivos e capturas da interface |
+| RNF02 | Utilizar autenticação para restringir funcionalidades protegidas | Implementado e exercitado em cenários selecionados | JWT, guards de autenticação e testes da API |
+| RNF03 | Utilizar PostgreSQL para persistência dos dados | Implementado e utilizado na integração | `schema.prisma`, migrations e PostgreSQL isolado nos testes |
+| RNF04 | Utilizar Angular no frontend e Node.js/NestJS no backend | Atendido | Arquivos de dependências dos projetos frontend e backend |
+| RNF05 | Responder às operações usuais em até dois segundos no ambiente de testes | Não comprovado pela verificação realizada | Não foi executado ensaio controlado de desempenho |
+| RNF06 | Possuir estrutura modular com separação entre interface, serviços, regras e acesso a dados | Implementado | Módulos Angular/NestJS, serviços de negócio e `PrismaService` |
+| RNF07 | Armazenar senhas por meio de algoritmo de hash | Implementado | `argon2.hash` e `argon2.verify` |
+| RNF08 | Impedir acesso a rotas protegidas sem sessão autenticada válida | Implementado; exercitado em cenários selecionados | Guards JWT e respostas de autorização da API |
+| RNF09 | Registrar data e hora em operações relevantes para rastreabilidade | Implementado | Campos `createdAt`, `updatedAt` e `LogAuditoria` no schema Prisma |
+| RNF10 | Utilizar português brasileiro como idioma padrão da interface | Implementado na versão analisada | Textos, componentes e capturas das interfaces web e mobile |
+
+## Funcionalidades adicionais identificadas
+
+Durante a revisão também foram identificadas funcionalidades implementadas que não
+correspondem diretamente a um requisito funcional numerado na especificação original,
+entre elas:
+
+- renovação e revogação de sessão por refresh token;
+- geração e controle de transações recorrentes;
+- isolamento de informações por usuário e perfil;
+- controle de concorrência em operações financeiras;
+- descarte e atualização de alertas;
+- mecanismos adicionais de auditoria.
+
+Essas funcionalidades são tratadas como recursos adicionais da implementação e não
+recebem novos identificadores RF nesta matriz, evitando alterar a numeração dos requisitos
+originais.
+
+## Limites das evidências
+
+As evidências analisadas não demonstram desempenho dentro do limite definido no RNF05,
+disponibilidade em ambiente de produção, avaliação formal de usabilidade, conformidade
+integral de segurança ou execução nativa completa em dispositivos físicos. Esses aspectos
+não recebem aprovação presumida apenas pela existência da implementação.
