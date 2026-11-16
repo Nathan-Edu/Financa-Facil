@@ -38,9 +38,12 @@ aplicações web e mobile.
 
 ## Objetivo
 
-Desenvolver uma solução tecnológica simples e centralizada que auxilie pessoas
-físicas e jurídicas na organização financeira, oferecendo controle de receitas,
-despesas e contas parceladas em uma única plataforma integrada, disponível para
-web e mobile.
+## Objetivo
 
-Projeto desenvolvido como requisito parcial para o Curso Sistemas de Informação – Instituto Federal do Paraná (IFPR).
+Desenvolver uma solução tecnológica integrada para auxiliar pessoas físicas na
+organização de suas informações financeiras, oferecendo controle de receitas,
+despesas, contas parceladas, alertas e consultas por meio de interfaces web e
+mobile que compartilham a mesma API.
+
+Projeto desenvolvido como requisito parcial para o Curso Sistemas de Informação 
+– Instituto Federal do Paraná (IFPR).
