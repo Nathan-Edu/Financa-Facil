@@ -38,8 +38,6 @@ aplicações web e mobile.
 
 ## Objetivo
 
-## Objetivo
-
 Desenvolver uma solução tecnológica integrada para auxiliar pessoas físicas na
 organização de suas informações financeiras, oferecendo controle de receitas,
 despesas, contas parceladas, alertas e consultas por meio de interfaces web e
