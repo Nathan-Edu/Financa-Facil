@@ -1,10 +1,12 @@
 # Finança Fácil
 
 Finança Fácil é um projeto acadêmico desenvolvido com o objetivo de criar uma
-plataforma web e mobile para planejamento e controle financeiro pessoal e
-empresarial. O sistema busca auxiliar usuários no gerenciamento de receitas,
-despesas, contas parceladas e acompanhamento financeiro por meio de uma
-interface simples, intuitiva e acessível.
+plataforma web e mobile para planejamento e controle financeiro pessoal.
+
+O sistema permite que uma pessoa organize diferentes contextos financeiros por
+meio de perfis, como uso pessoal, familiar ou relacionado a atividade autônoma,
+mantendo receitas, despesas, contas parceladas e demais informações separadas
+dentro da mesma conta de usuário.
 
 O projeto utiliza conceitos de Engenharia de Software, incluindo levantamento
 de requisitos, modelagem UML, arquitetura de sistemas e desenvolvimento de
@@ -22,8 +24,8 @@ aplicações web e mobile.
 
 ## Funcionalidades previstas
 
-* Cadastro e autenticação de usuários com validação de CPF e CNPJ
-* Gerenciamento de perfis financeiros pessoais e empresariais
+* Cadastro e autenticação de usuários
+* Gerenciamento de múltiplos perfis financeiros
 * Cadastro e gerenciamento de receitas e despesas
 * Gerenciamento de categorias financeiras
 * Controle de contas parceladas com geração automática de parcelas
